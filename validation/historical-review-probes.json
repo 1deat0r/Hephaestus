@@ -1,0 +1,22 @@
+{
+  "synthetic_adversarial_probes_only": true,
+  "results": [
+    {
+      "probe": "promotion_from_blocked_unqualified_draft_plan",
+      "schema_errors": [],
+      "semantic_errors": []
+    },
+    {
+      "probe": "dossier_attached_to_unrelated_mission",
+      "schema_errors": [],
+      "semantic_errors": []
+    },
+    {
+      "probe": "known_candidate_taxonomy",
+      "schema_errors": [],
+      "semantic_errors": [
+        "NOVELTY_UNRESOLVED_FOR_PROMOTION: DOS-PLANNED"
+      ]
+    }
+  ]
+}

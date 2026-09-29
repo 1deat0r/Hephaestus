@@ -1,0 +1,29 @@
+{
+  "pages": 28,
+  "bookmarked_sections": 34,
+  "expected_bookmarks": 34,
+  "source_links": 15,
+  "text_outside_page_bounds_flags": 0,
+  "flags": [],
+  "render_directory": "/tmp/hephaestus-pdf-v1.1-2ff8hio0",
+  "rendering": "Every page rendered; visual inspection is reported separately.",
+  "source_documents": [
+    "MASTER_SPEC.md",
+    "docs/QUALIFICATION_CONTRACT.md",
+    "docs/CONTEXT_ASSEMBLY_CAMPAIGN.md",
+    "docs/RETRIEVAL_AND_MEMORY.md"
+  ],
+  "checked_text_blocks": 347,
+  "missing_text_blocks": [],
+  "limitations": "Document rendering/integrity only; no runtime or scientific validation.",
+  "visual_inspection": {
+    "contact_sheet": "validation/pdf-contact-sheet.png",
+    "detailed_pages": [
+      20,
+      23,
+      25,
+      28
+    ],
+    "scope": "Contact-sheet overview of all pages and selected full-page inspection; no claim of scientific validation"
+  }
+}

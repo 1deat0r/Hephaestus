@@ -1,0 +1,48 @@
+{
+  "recorded_at_utc": "2026-09-29T20:40:46.695426+00:00",
+  "scope": "Specification/reference review only; no runtime experiment",
+  "commands": [
+    {
+      "argv": [
+        "/tmp/hephaestus-review-20260930-venv/bin/python",
+        "tools/verify_package.py"
+      ],
+      "exit_code": 0,
+      "stdout": "{\n  \"status\": \"PASS\",\n  \"master_sections\": 31,\n  \"requirements\": 93,\n  \"runtime_acceptance_specs\": 93,\n  \"principal_record_schemas\": 12,\n  \"schema_valid_example_records\": 12,\n  \"semantic_validation_errors\": 0,\n  \"errors\": [],\n  \"limitations\": \"Package/reference checks only. No invention runtime, security boundary, scientific study, or runtime acceptance test was executed.\"\n}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/tmp/hephaestus-review-20260930-venv/bin/python",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-v"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": "test_abstention_has_no_selected_choice (test_reference_contracts.ReferenceContracts.test_abstention_has_no_selected_choice) ... ok\ntest_capability_not_implicitly_granted (test_reference_contracts.ReferenceContracts.test_capability_not_implicitly_granted) ... ok\ntest_compiled_blocked_example_is_not_deleted (test_reference_contracts.ReferenceContracts.test_compiled_blocked_example_is_not_deleted) ... ok\ntest_confirmatory_registration_required (test_reference_contracts.ReferenceContracts.test_confirmatory_registration_required) ... ok\ntest_data_access_cannot_precede_registration (test_reference_contracts.ReferenceContracts.test_data_access_cannot_precede_registration) ... ok\ntest_duplicate_version_rejected (test_reference_contracts.ReferenceContracts.test_duplicate_version_rejected) ... ok\ntest_example_schema_and_semantics (test_reference_contracts.ReferenceContracts.test_example_schema_and_semantics) ... ok\ntest_fixed_sample_requires_n (test_reference_contracts.ReferenceContracts.test_fixed_sample_requires_n) ... ok\ntest_incomplete_execution_cannot_support (test_reference_contracts.ReferenceContracts.test_incomplete_execution_cannot_support) ... ok\ntest_missing_reference_rejected (test_reference_contracts.ReferenceContracts.test_missing_reference_rejected) ... ok\ntest_model_calibration_needs_receipt (test_reference_contracts.ReferenceContracts.test_model_calibration_needs_receipt) ... ok\ntest_model_decision_cannot_be_authoritative (test_reference_contracts.ReferenceContracts.test_model_decision_cannot_be_authoritative) ... ok\ntest_non_idempotent_blind_retry_rejected (test_reference_contracts.ReferenceContracts.test_non_idempotent_blind_retry_rejected) ... ok\ntest_nonfinite_data_rejected (test_reference_contracts.ReferenceContracts.test_nonfinite_data_rejected) ... ok\ntest_optional_stopping_requires_method (test_reference_contracts.ReferenceContracts.test_optional_stopping_requires_method) ... ok\ntest_probability_vector_consistency (test_reference_contracts.ReferenceContracts.test_probability_vector_consistency) ... ok\ntest_promotion_does_not_ignore_novelty_scope (test_reference_contracts.ReferenceContracts.test_promotion_does_not_ignore_novelty_scope) ... ok\ntest_promotion_needs_real_qualifying_result (test_reference_contracts.ReferenceContracts.test_promotion_needs_real_qualifying_result) ... ok\ntest_promotion_requires_reproduction (test_reference_contracts.ReferenceContracts.test_promotion_requires_reproduction) ... ok\ntest_reversed_interval_rejected (test_reference_contracts.ReferenceContracts.test_reversed_interval_rejected) ... ok\ntest_task_cap_respects_mission (test_reference_contracts.ReferenceContracts.test_task_cap_respects_mission) ... ok\ntest_task_cycle_rejected (test_reference_contracts.ReferenceContracts.test_task_cycle_rejected) ... ok\ntest_test_ready_cannot_be_blocked (test_reference_contracts.ReferenceContracts.test_test_ready_cannot_be_blocked) ... ok\ntest_test_ready_needs_discriminator (test_reference_contracts.ReferenceContracts.test_test_ready_needs_discriminator) ... ok\ntest_unapproved_mission_not_dispatched (test_reference_contracts.ReferenceContracts.test_unapproved_mission_not_dispatched) ... ok\ntest_unknown_effect_not_dispatched (test_reference_contracts.ReferenceContracts.test_unknown_effect_not_dispatched) ... ok\ntest_unknown_prediction_rejected (test_reference_contracts.ReferenceContracts.test_unknown_prediction_rejected) ... ok\ntest_valid_result_requires_receipts (test_reference_contracts.ReferenceContracts.test_valid_result_requires_receipts) ... ok\n\n----------------------------------------------------------------------\nRan 28 tests in 0.032s\n\nOK\n"
+    },
+    {
+      "argv": [
+        "sha256sum",
+        "-c",
+        "MANIFEST.sha256"
+      ],
+      "exit_code": 0,
+      "stdout": "ACCEPTANCE_TESTS.md: OK\nAGENTS.md: OK\nHANDOFF.md: OK\nIMPLEMENTATION_PLAN.md: OK\nMASTER_SPEC.md: OK\nMASTER_SPEC.pdf: OK\nREADME.md: OK\nREVIEW_AND_RISKS.md: OK\nTRACEABILITY.md: OK\nacceptance-tests.json: OK\ndocs/DECISIONS.md: OK\nexamples/analysis-plan.txt: OK\nexamples/candidate-description.txt: OK\nexamples/evaluator-manifest.txt: OK\nexamples/fixture-source.txt: OK\nexamples/software-mission.json: OK\nreference/semantic_validator.py: OK\nrequirements-validation.txt: OK\nrequirements.json: OK\nschemas/README.md: OK\nschemas/contracts.schema.json: OK\ntests/test_reference_contracts.py: OK\ntools/verify_package.py: OK\nvalidation/REPORT.md: OK\nvalidation/environment.json: OK\nvalidation/package-check.json: OK\nvalidation/pdf-layout.json: OK\nvalidation/reference-tests.txt: OK\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/tmp/hephaestus-review-20260930-venv/bin/python",
+        "reviews/2026-09-30/probes.py"
+      ],
+      "exit_code": 0,
+      "stdout": "{\n  \"synthetic_adversarial_probes_only\": true,\n  \"results\": [\n    {\n      \"probe\": \"promotion_from_blocked_unqualified_draft_plan\",\n      \"schema_errors\": [],\n      \"semantic_errors\": []\n    },\n    {\n      \"probe\": \"dossier_attached_to_unrelated_mission\",\n      \"schema_errors\": [],\n      \"semantic_errors\": []\n    },\n    {\n      \"probe\": \"known_candidate_taxonomy\",\n      \"schema_errors\": [],\n      \"semantic_errors\": [\n        \"NOVELTY_UNRESOLVED_FOR_PROMOTION: DOS-PLANNED\"\n      ]\n    }\n  ]\n}\n",
+      "stderr": ""
+    }
+  ]
+}

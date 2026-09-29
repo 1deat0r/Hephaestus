@@ -1,0 +1,8 @@
+{
+  "pages": 33,
+  "bookmarked_sections": 31,
+  "source_links": 12,
+  "text_outside_page_bounds_flags": 0,
+  "rendering": "All 33 pages rendered with PyMuPDF after the Hephaestus rename; page 1 was visually inspected after title and project-identifier replacement. Sections, bookmarks, links, and page bounds remained intact.",
+  "limitations": "This validates document layout and the branding update, not invention-system behavior."
+}

@@ -1,0 +1,3 @@
+UNEXECUTED ANALYSIS SPECIFICATION FIXTURE.
+Compare paired repository-level context assembly time against exact dependency caching.
+A sample-size analysis and qualified analysis implementation are still required.

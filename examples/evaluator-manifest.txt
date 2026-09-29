@@ -1,0 +1,3 @@
+UNIMPLEMENTED EVALUATOR MANIFEST FIXTURE.
+A future protected evaluator will assess dependency coverage and end-to-end cost.
+This file is not an executable evaluator.

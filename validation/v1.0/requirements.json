@@ -1,0 +1,1028 @@
+{
+  "version": "1.0",
+  "requirements": [
+    {
+      "id": "R-001",
+      "statement": "Accept a broad authorized goal without requiring a seed hypothesis.",
+      "level": "MUST",
+      "spec_section": 1,
+      "owner": "Product",
+      "milestone": "M2",
+      "acceptance_tests": [
+        "AT-001"
+      ]
+    },
+    {
+      "id": "R-002",
+      "statement": "Distinguish evidence-qualified hypotheses from validated invention candidates.",
+      "level": "MUST",
+      "spec_section": 1,
+      "owner": "Product",
+      "milestone": "M2",
+      "acceptance_tests": [
+        "AT-002"
+      ]
+    },
+    {
+      "id": "R-003",
+      "statement": "Treat a valid informative negative result as a legitimate research outcome.",
+      "level": "MUST",
+      "spec_section": 1,
+      "owner": "Product",
+      "milestone": "M2",
+      "acceptance_tests": [
+        "AT-003"
+      ]
+    },
+    {
+      "id": "R-004",
+      "statement": "Keep the default execution scope computational and sandboxed.",
+      "level": "MUST",
+      "spec_section": 2,
+      "owner": "Domain scope",
+      "milestone": "M0",
+      "acceptance_tests": [
+        "AT-004"
+      ]
+    },
+    {
+      "id": "R-005",
+      "statement": "Run the core workflow without Jev, Tachyon, a graph database, or a GPU.",
+      "level": "MUST",
+      "spec_section": 2,
+      "owner": "Domain scope",
+      "milestone": "M0",
+      "acceptance_tests": [
+        "AT-005"
+      ]
+    },
+    {
+      "id": "R-006",
+      "statement": "Require domain-specific validation before enabling a new scientific domain.",
+      "level": "MUST",
+      "spec_section": 2,
+      "owner": "Domain scope",
+      "milestone": "M0",
+      "acceptance_tests": [
+        "AT-006"
+      ]
+    },
+    {
+      "id": "R-007",
+      "statement": "Keep observations, assumptions, model judgments, and derivations distinct.",
+      "level": "MUST",
+      "spec_section": 3,
+      "owner": "Scientific invariants",
+      "milestone": "M0",
+      "acceptance_tests": [
+        "AT-007"
+      ]
+    },
+    {
+      "id": "R-008",
+      "statement": "Keep mechanism support separate from an engineering target.",
+      "level": "MUST",
+      "spec_section": 3,
+      "owner": "Scientific invariants",
+      "milestone": "M0",
+      "acceptance_tests": [
+        "AT-008"
+      ]
+    },
+    {
+      "id": "R-009",
+      "statement": "Never interpret empty retrieval as proof of global novelty.",
+      "level": "MUST",
+      "spec_section": 3,
+      "owner": "Scientific invariants",
+      "milestone": "M0",
+      "acceptance_tests": [
+        "AT-009"
+      ]
+    },
+    {
+      "id": "R-010",
+      "statement": "Compile intent, constraints, budgets, permissions, confidentiality, and stop rules.",
+      "level": "MUST",
+      "spec_section": 4,
+      "owner": "Mission",
+      "milestone": "M2",
+      "acceptance_tests": [
+        "AT-010"
+      ]
+    },
+    {
+      "id": "R-011",
+      "statement": "Ask only for materially unresolved authorization or intent.",
+      "level": "MUST",
+      "spec_section": 4,
+      "owner": "Mission",
+      "milestone": "M2",
+      "acceptance_tests": [
+        "AT-011"
+      ]
+    },
+    {
+      "id": "R-012",
+      "statement": "Version goal changes and invalidate affected dependent work.",
+      "level": "MUST",
+      "spec_section": 4,
+      "owner": "Mission",
+      "milestone": "M2",
+      "acceptance_tests": [
+        "AT-012"
+      ]
+    },
+    {
+      "id": "R-013",
+      "statement": "Apply authoritative state changes through validated control-plane operations.",
+      "level": "MUST",
+      "spec_section": 5,
+      "owner": "Architecture",
+      "milestone": "M1",
+      "acceptance_tests": [
+        "AT-013"
+      ]
+    },
+    {
+      "id": "R-014",
+      "statement": "Keep evidence and artifacts outside ephemeral conversations.",
+      "level": "MUST",
+      "spec_section": 5,
+      "owner": "Architecture",
+      "milestone": "M1",
+      "acceptance_tests": [
+        "AT-014"
+      ]
+    },
+    {
+      "id": "R-015",
+      "statement": "Keep retrieval views rebuildable from authoritative records.",
+      "level": "MUST",
+      "spec_section": 5,
+      "owner": "Architecture",
+      "milestone": "M1",
+      "acceptance_tests": [
+        "AT-015"
+      ]
+    },
+    {
+      "id": "R-016",
+      "statement": "Bind critical claims to exact sources or reproducible data operations.",
+      "level": "MUST",
+      "spec_section": 6,
+      "owner": "Knowledge",
+      "milestone": "M2",
+      "acceptance_tests": [
+        "AT-016"
+      ]
+    },
+    {
+      "id": "R-017",
+      "statement": "Preserve source validity time, ingestion time, and corrections.",
+      "level": "MUST",
+      "spec_section": 6,
+      "owner": "Knowledge",
+      "milestone": "M2",
+      "acceptance_tests": [
+        "AT-017"
+      ]
+    },
+    {
+      "id": "R-018",
+      "statement": "Track shared origins instead of double-counting dependent evidence.",
+      "level": "MUST",
+      "spec_section": 6,
+      "owner": "Knowledge",
+      "milestone": "M2",
+      "acceptance_tests": [
+        "AT-018"
+      ]
+    },
+    {
+      "id": "R-019",
+      "statement": "Originate grounded opportunities from pressure points rather than supplied ideas.",
+      "level": "MUST",
+      "spec_section": 7,
+      "owner": "Discovery",
+      "milestone": "M2",
+      "acceptance_tests": [
+        "AT-019"
+      ]
+    },
+    {
+      "id": "R-020",
+      "statement": "Challenge measurement artifacts and already-solved problems.",
+      "level": "MUST",
+      "spec_section": 7,
+      "owner": "Discovery",
+      "milestone": "M2",
+      "acceptance_tests": [
+        "AT-020"
+      ]
+    },
+    {
+      "id": "R-021",
+      "statement": "Report opportunity validity independently from hypothesis polish.",
+      "level": "MUST",
+      "spec_section": 7,
+      "owner": "Discovery",
+      "milestone": "M2",
+      "acceptance_tests": [
+        "AT-021"
+      ]
+    },
+    {
+      "id": "R-022",
+      "statement": "Represent mechanisms with variables, relationships, boundaries, and failure modes.",
+      "level": "MUST",
+      "spec_section": 8,
+      "owner": "Mechanisms",
+      "milestone": "M2",
+      "acceptance_tests": [
+        "AT-022"
+      ]
+    },
+    {
+      "id": "R-023",
+      "statement": "Require structural mappings and broken-relation analysis for analogies.",
+      "level": "MUST",
+      "spec_section": 8,
+      "owner": "Mechanisms",
+      "milestone": "M2",
+      "acceptance_tests": [
+        "AT-023"
+      ]
+    },
+    {
+      "id": "R-024",
+      "statement": "Use only justified hard filters and audit heuristic rejections.",
+      "level": "MUST",
+      "spec_section": 8,
+      "owner": "Mechanisms",
+      "milestone": "M2",
+      "acceptance_tests": [
+        "AT-024"
+      ]
+    },
+    {
+      "id": "R-025",
+      "statement": "Require an operational discriminator before test-ready status.",
+      "level": "MUST",
+      "spec_section": 9,
+      "owner": "Hypothesis compilation",
+      "milestone": "M2",
+      "acceptance_tests": [
+        "AT-025"
+      ]
+    },
+    {
+      "id": "R-026",
+      "statement": "Record estimands, units, comparators, and threshold provenance.",
+      "level": "MUST",
+      "spec_section": 9,
+      "owner": "Hypothesis compilation",
+      "milestone": "M2",
+      "acceptance_tests": [
+        "AT-026"
+      ]
+    },
+    {
+      "id": "R-027",
+      "statement": "Version substantive hypothesis changes and reassess inherited evidence.",
+      "level": "MUST",
+      "spec_section": 9,
+      "owner": "Hypothesis compilation",
+      "milestone": "M2",
+      "acceptance_tests": [
+        "AT-027"
+      ]
+    },
+    {
+      "id": "R-028",
+      "statement": "Compare candidate claims against near-matching mechanisms and combinations.",
+      "level": "MUST",
+      "spec_section": 10,
+      "owner": "Prior art",
+      "milestone": "M2",
+      "acceptance_tests": [
+        "AT-028"
+      ]
+    },
+    {
+      "id": "R-029",
+      "statement": "Report search coverage, queries, dates, and inaccessible sources.",
+      "level": "MUST",
+      "spec_section": 10,
+      "owner": "Prior art",
+      "milestone": "M2",
+      "acceptance_tests": [
+        "AT-029"
+      ]
+    },
+    {
+      "id": "R-030",
+      "statement": "Enforce confidentiality for external prior-art queries.",
+      "level": "MUST",
+      "spec_section": 10,
+      "owner": "Prior art",
+      "milestone": "M2",
+      "acceptance_tests": [
+        "AT-030"
+      ]
+    },
+    {
+      "id": "R-031",
+      "statement": "Bound search expansion, depth, calls, and resource usage.",
+      "level": "MUST",
+      "spec_section": 11,
+      "owner": "Search",
+      "milestone": "M2",
+      "acceptance_tests": [
+        "AT-031"
+      ]
+    },
+    {
+      "id": "R-032",
+      "statement": "Keep a diverse multi-objective archive rather than a single universal score.",
+      "level": "MUST",
+      "spec_section": 11,
+      "owner": "Search",
+      "milestone": "M2",
+      "acceptance_tests": [
+        "AT-032"
+      ]
+    },
+    {
+      "id": "R-033",
+      "statement": "Do not fabricate probabilities for information-gain calculations.",
+      "level": "MUST",
+      "spec_section": 11,
+      "owner": "Search",
+      "milestone": "M2",
+      "acceptance_tests": [
+        "AT-033"
+      ]
+    },
+    {
+      "id": "R-034",
+      "statement": "Treat review votes as judgments rather than empirical validation.",
+      "level": "MUST",
+      "spec_section": 12,
+      "owner": "Review",
+      "milestone": "M3",
+      "acceptance_tests": [
+        "AT-034"
+      ]
+    },
+    {
+      "id": "R-035",
+      "statement": "Separate generator, analyzer, and promotion authority.",
+      "level": "MUST",
+      "spec_section": 12,
+      "owner": "Review",
+      "milestone": "M3",
+      "acceptance_tests": [
+        "AT-035"
+      ]
+    },
+    {
+      "id": "R-036",
+      "statement": "Retain concrete objections and their dispositions.",
+      "level": "MUST",
+      "spec_section": 12,
+      "owner": "Review",
+      "milestone": "M3",
+      "acceptance_tests": [
+        "AT-036"
+      ]
+    },
+    {
+      "id": "R-037",
+      "statement": "Register immutable experiment endpoints and analysis before confirmation.",
+      "level": "MUST",
+      "spec_section": 13,
+      "owner": "Experiment design",
+      "milestone": "M3",
+      "acceptance_tests": [
+        "AT-037"
+      ]
+    },
+    {
+      "id": "R-038",
+      "statement": "Test discrimination against relevant competing explanations.",
+      "level": "MUST",
+      "spec_section": 13,
+      "owner": "Experiment design",
+      "milestone": "M3",
+      "acceptance_tests": [
+        "AT-038"
+      ]
+    },
+    {
+      "id": "R-039",
+      "statement": "Report unavailable experiments as blockers rather than invented outcomes.",
+      "level": "MUST",
+      "spec_section": 13,
+      "owner": "Experiment design",
+      "milestone": "M3",
+      "acceptance_tests": [
+        "AT-039"
+      ]
+    },
+    {
+      "id": "R-040",
+      "statement": "Use a predeclared analysis and valid stopping rule.",
+      "level": "MUST",
+      "spec_section": 14,
+      "owner": "Statistics",
+      "milestone": "M3",
+      "acceptance_tests": [
+        "AT-040"
+      ]
+    },
+    {
+      "id": "R-041",
+      "statement": "Track multiple endpoints and related tests as a family.",
+      "level": "MUST",
+      "spec_section": 14,
+      "owner": "Statistics",
+      "milestone": "M3",
+      "acceptance_tests": [
+        "AT-041"
+      ]
+    },
+    {
+      "id": "R-042",
+      "statement": "Preserve inconclusive results and test noninferiority explicitly.",
+      "level": "MUST",
+      "spec_section": 14,
+      "owner": "Statistics",
+      "milestone": "M3",
+      "acceptance_tests": [
+        "AT-042"
+      ]
+    },
+    {
+      "id": "R-043",
+      "statement": "Verify composed artifacts against global invariants and interaction tests.",
+      "level": "MUST",
+      "spec_section": 15,
+      "owner": "Realization",
+      "milestone": "M3",
+      "acceptance_tests": [
+        "AT-043"
+      ]
+    },
+    {
+      "id": "R-044",
+      "statement": "Export a reproducible dossier including negative results and raw artifacts.",
+      "level": "MUST",
+      "spec_section": 15,
+      "owner": "Realization",
+      "milestone": "M3",
+      "acceptance_tests": [
+        "AT-044"
+      ]
+    },
+    {
+      "id": "R-045",
+      "statement": "Require separate authorization for adoption, publication, or manufacturing.",
+      "level": "MUST",
+      "spec_section": 15,
+      "owner": "Realization",
+      "milestone": "M3",
+      "acceptance_tests": [
+        "AT-045"
+      ]
+    },
+    {
+      "id": "R-046",
+      "statement": "Keep scientific, engineering, novelty, and execution statuses orthogonal.",
+      "level": "MUST",
+      "spec_section": 16,
+      "owner": "Evidence lifecycle",
+      "milestone": "M3",
+      "acceptance_tests": [
+        "AT-046"
+      ]
+    },
+    {
+      "id": "R-047",
+      "statement": "Propagate corrected or retracted evidence to dependent conclusions.",
+      "level": "MUST",
+      "spec_section": 16,
+      "owner": "Evidence lifecycle",
+      "milestone": "M3",
+      "acceptance_tests": [
+        "AT-047"
+      ]
+    },
+    {
+      "id": "R-048",
+      "statement": "Represent uncalibrated model confidence as judgment, not posterior belief.",
+      "level": "MUST",
+      "spec_section": 16,
+      "owner": "Evidence lifecycle",
+      "milestone": "M3",
+      "acceptance_tests": [
+        "AT-048"
+      ]
+    },
+    {
+      "id": "R-049",
+      "statement": "Compile bounded task contracts instead of creating unrestricted mini-agents.",
+      "level": "MUST",
+      "spec_section": 17,
+      "owner": "Compiled tasks",
+      "milestone": "M1",
+      "acceptance_tests": [
+        "AT-049"
+      ]
+    },
+    {
+      "id": "R-050",
+      "statement": "Use isolated outputs and verify parent assembly.",
+      "level": "MUST",
+      "spec_section": 17,
+      "owner": "Compiled tasks",
+      "milestone": "M1",
+      "acceptance_tests": [
+        "AT-050"
+      ]
+    },
+    {
+      "id": "R-051",
+      "statement": "Scope replay determinism to recorded responses and declared environments.",
+      "level": "MUST",
+      "spec_section": 17,
+      "owner": "Compiled tasks",
+      "milestone": "M1",
+      "acceptance_tests": [
+        "AT-051"
+      ]
+    },
+    {
+      "id": "R-052",
+      "statement": "Keep exact policy, arithmetic, and promotion gates deterministic.",
+      "level": "MUST",
+      "spec_section": 18,
+      "owner": "Routing",
+      "milestone": "M5",
+      "acceptance_tests": [
+        "AT-052"
+      ]
+    },
+    {
+      "id": "R-053",
+      "statement": "Evaluate optional semantic models for calibration and abstention.",
+      "level": "MUST",
+      "spec_section": 18,
+      "owner": "Routing",
+      "milestone": "M5",
+      "acceptance_tests": [
+        "AT-053"
+      ]
+    },
+    {
+      "id": "R-054",
+      "statement": "Invalidate cache reuse on relevant version or evidence changes.",
+      "level": "MUST",
+      "spec_section": 18,
+      "owner": "Routing",
+      "milestone": "M5",
+      "acceptance_tests": [
+        "AT-054"
+      ]
+    },
+    {
+      "id": "R-055",
+      "statement": "Reserve resources transactionally before concurrent dispatch.",
+      "level": "MUST",
+      "spec_section": 19,
+      "owner": "Recovery",
+      "milestone": "M1",
+      "acceptance_tests": [
+        "AT-055"
+      ]
+    },
+    {
+      "id": "R-056",
+      "statement": "Reconcile ambiguous external effects rather than blindly retry them.",
+      "level": "MUST",
+      "spec_section": 19,
+      "owner": "Recovery",
+      "milestone": "M1",
+      "acceptance_tests": [
+        "AT-056"
+      ]
+    },
+    {
+      "id": "R-057",
+      "statement": "Recover safely across dispatch and artifact commit boundaries.",
+      "level": "MUST",
+      "spec_section": 19,
+      "owner": "Recovery",
+      "milestone": "M1",
+      "acceptance_tests": [
+        "AT-057"
+      ]
+    },
+    {
+      "id": "R-058",
+      "statement": "Treat retrieved instructions and generated code as untrusted.",
+      "level": "MUST",
+      "spec_section": 20,
+      "owner": "Security",
+      "milestone": "M1",
+      "acceptance_tests": [
+        "AT-058"
+      ]
+    },
+    {
+      "id": "R-059",
+      "statement": "Prevent sandbox escape, secret leakage, and undeclared networking.",
+      "level": "MUST",
+      "spec_section": 20,
+      "owner": "Security",
+      "milestone": "M1",
+      "acceptance_tests": [
+        "AT-059"
+      ]
+    },
+    {
+      "id": "R-060",
+      "statement": "Bind approval to the exact operation, artifact, destination, and policy.",
+      "level": "MUST",
+      "spec_section": 20,
+      "owner": "Security",
+      "milestone": "M1",
+      "acceptance_tests": [
+        "AT-060"
+      ]
+    },
+    {
+      "id": "R-061",
+      "statement": "Validate structures and cross-record semantics independently.",
+      "level": "MUST",
+      "spec_section": 21,
+      "owner": "Contracts",
+      "milestone": "M0",
+      "acceptance_tests": [
+        "AT-061"
+      ]
+    },
+    {
+      "id": "R-062",
+      "statement": "Keep provider-specific types and behavior outside core interfaces.",
+      "level": "MUST",
+      "spec_section": 21,
+      "owner": "Contracts",
+      "milestone": "M0",
+      "acceptance_tests": [
+        "AT-062"
+      ]
+    },
+    {
+      "id": "R-063",
+      "statement": "Preserve explicit versions, references, and typed failure categories.",
+      "level": "MUST",
+      "spec_section": 21,
+      "owner": "Contracts",
+      "milestone": "M0",
+      "acceptance_tests": [
+        "AT-063"
+      ]
+    },
+    {
+      "id": "R-064",
+      "statement": "Keep the initial runtime a bounded local system with isolated workers.",
+      "level": "MUST",
+      "spec_section": 22,
+      "owner": "Implementation architecture",
+      "milestone": "M1",
+      "acceptance_tests": [
+        "AT-064"
+      ]
+    },
+    {
+      "id": "R-065",
+      "statement": "Pin dependency and tool versions used by an experiment.",
+      "level": "MUST",
+      "spec_section": 22,
+      "owner": "Implementation architecture",
+      "milestone": "M1",
+      "acceptance_tests": [
+        "AT-065"
+      ]
+    },
+    {
+      "id": "R-066",
+      "statement": "Inspect and contract-test any real Tachyon integration before claiming compatibility.",
+      "level": "MUST",
+      "spec_section": 22,
+      "owner": "Implementation architecture",
+      "milestone": "M1",
+      "acceptance_tests": [
+        "AT-066"
+      ]
+    },
+    {
+      "id": "R-067",
+      "statement": "Ground all UI progress and outcomes in persisted state.",
+      "level": "MUST",
+      "spec_section": 23,
+      "owner": "User interface",
+      "milestone": "M4",
+      "acceptance_tests": [
+        "AT-067"
+      ]
+    },
+    {
+      "id": "R-068",
+      "statement": "Provide pause, resume, cancellation, steering, and event-cursor recovery.",
+      "level": "MUST",
+      "spec_section": 23,
+      "owner": "User interface",
+      "milestone": "M4",
+      "acceptance_tests": [
+        "AT-068"
+      ]
+    },
+    {
+      "id": "R-069",
+      "statement": "Apply the same policy and authentication to gateway and local operations.",
+      "level": "MUST",
+      "spec_section": 23,
+      "owner": "User interface",
+      "milestone": "M4",
+      "acceptance_tests": [
+        "AT-069"
+      ]
+    },
+    {
+      "id": "R-070",
+      "statement": "Evaluate challengers under protected matched-budget tests before promotion.",
+      "level": "MUST",
+      "spec_section": 24,
+      "owner": "Self-improvement",
+      "milestone": "M6",
+      "acceptance_tests": [
+        "AT-070"
+      ]
+    },
+    {
+      "id": "R-071",
+      "statement": "Prevent self-improvement from expanding budgets, permissions, or protected gates.",
+      "level": "MUST",
+      "spec_section": 24,
+      "owner": "Self-improvement",
+      "milestone": "M6",
+      "acceptance_tests": [
+        "AT-071"
+      ]
+    },
+    {
+      "id": "R-072",
+      "statement": "Version deployed changes and support measured rollback.",
+      "level": "MUST",
+      "spec_section": 24,
+      "owner": "Self-improvement",
+      "milestone": "M6",
+      "acceptance_tests": [
+        "AT-072"
+      ]
+    },
+    {
+      "id": "R-073",
+      "statement": "Evaluate domain-only discovery, not just refinement of seeded ideas.",
+      "level": "MUST",
+      "spec_section": 25,
+      "owner": "Product evaluation",
+      "milestone": "M4",
+      "acceptance_tests": [
+        "AT-073"
+      ]
+    },
+    {
+      "id": "R-074",
+      "statement": "Compare against active-retrieval and structured-search baselines at matched budgets.",
+      "level": "MUST",
+      "spec_section": 25,
+      "owner": "Product evaluation",
+      "milestone": "M4",
+      "acceptance_tests": [
+        "AT-074"
+      ]
+    },
+    {
+      "id": "R-075",
+      "statement": "Separate judge scores, rediscovery, prospective novelty, and independent replication.",
+      "level": "MUST",
+      "spec_section": 25,
+      "owner": "Product evaluation",
+      "milestone": "M4",
+      "acceptance_tests": [
+        "AT-075"
+      ]
+    },
+    {
+      "id": "R-076",
+      "statement": "Label performance targets as provisional until measured.",
+      "level": "MUST",
+      "spec_section": 26,
+      "owner": "Acceptance",
+      "milestone": "M4",
+      "acceptance_tests": [
+        "AT-076"
+      ]
+    },
+    {
+      "id": "R-077",
+      "statement": "Block applicable release gates on critical unresolved failures.",
+      "level": "MUST",
+      "spec_section": 26,
+      "owner": "Acceptance",
+      "milestone": "M4",
+      "acceptance_tests": [
+        "AT-077"
+      ]
+    },
+    {
+      "id": "R-078",
+      "statement": "Report finite-suite uncertainty rather than universal reliability.",
+      "level": "MUST",
+      "spec_section": 26,
+      "owner": "Acceptance",
+      "milestone": "M4",
+      "acceptance_tests": [
+        "AT-078"
+      ]
+    },
+    {
+      "id": "R-079",
+      "statement": "Build contracts and durable execution before optional acceleration.",
+      "level": "MUST",
+      "spec_section": 27,
+      "owner": "Delivery sequence",
+      "milestone": "M0",
+      "acceptance_tests": [
+        "AT-079"
+      ]
+    },
+    {
+      "id": "R-080",
+      "statement": "Require end-to-end handling of positive, negative, inconclusive, invalid, and blocked outcomes.",
+      "level": "MUST",
+      "spec_section": 27,
+      "owner": "Delivery sequence",
+      "milestone": "M0",
+      "acceptance_tests": [
+        "AT-080"
+      ]
+    },
+    {
+      "id": "R-081",
+      "statement": "Give every normative requirement an owner, milestone, and acceptance test.",
+      "level": "MUST",
+      "spec_section": 27,
+      "owner": "Delivery sequence",
+      "milestone": "M0",
+      "acceptance_tests": [
+        "AT-081"
+      ]
+    },
+    {
+      "id": "R-082",
+      "statement": "Label illustrative mechanisms and target values as unmeasured.",
+      "level": "MUST",
+      "spec_section": 28,
+      "owner": "Worked example",
+      "milestone": "M3",
+      "acceptance_tests": [
+        "AT-082"
+      ]
+    },
+    {
+      "id": "R-083",
+      "statement": "Compare proposed context caching against a credible existing baseline.",
+      "level": "MUST",
+      "spec_section": 28,
+      "owner": "Worked example",
+      "milestone": "M3",
+      "acceptance_tests": [
+        "AT-083"
+      ]
+    },
+    {
+      "id": "R-084",
+      "statement": "Protect context oracles and account for correlated workloads.",
+      "level": "MUST",
+      "spec_section": 28,
+      "owner": "Worked example",
+      "milestone": "M3",
+      "acceptance_tests": [
+        "AT-084"
+      ]
+    },
+    {
+      "id": "R-085",
+      "statement": "Keep unresolved research questions visible and testable.",
+      "level": "MUST",
+      "spec_section": 29,
+      "owner": "Risks and review",
+      "milestone": "M0",
+      "acceptance_tests": [
+        "AT-085"
+      ]
+    },
+    {
+      "id": "R-086",
+      "statement": "Describe author-led review honestly rather than inventing independent reviewers.",
+      "level": "MUST",
+      "spec_section": 29,
+      "owner": "Risks and review",
+      "milestone": "M0",
+      "acceptance_tests": [
+        "AT-086"
+      ]
+    },
+    {
+      "id": "R-087",
+      "statement": "Require a recorded decision and impact analysis for architectural departures.",
+      "level": "MUST",
+      "spec_section": 29,
+      "owner": "Risks and review",
+      "milestone": "M0",
+      "acceptance_tests": [
+        "AT-087"
+      ]
+    },
+    {
+      "id": "R-088",
+      "statement": "Preserve verified source identity and correct prior conversational errors.",
+      "level": "MUST",
+      "spec_section": 30,
+      "owner": "Research grounding",
+      "milestone": "M0",
+      "acceptance_tests": [
+        "AT-088"
+      ]
+    },
+    {
+      "id": "R-089",
+      "statement": "Do not inherit research guarantees without their assumptions and methods.",
+      "level": "MUST",
+      "spec_section": 30,
+      "owner": "Research grounding",
+      "milestone": "M0",
+      "acceptance_tests": [
+        "AT-089"
+      ]
+    },
+    {
+      "id": "R-090",
+      "statement": "Keep the official Jev model and specific third-party implementations distinct.",
+      "level": "MUST",
+      "spec_section": 30,
+      "owner": "Research grounding",
+      "milestone": "M0",
+      "acceptance_tests": [
+        "AT-090"
+      ]
+    },
+    {
+      "id": "R-091",
+      "statement": "Complete a bounded mission with evidence rather than agent agreement.",
+      "level": "MUST",
+      "spec_section": 31,
+      "owner": "Readiness",
+      "milestone": "M4",
+      "acceptance_tests": [
+        "AT-091"
+      ]
+    },
+    {
+      "id": "R-092",
+      "statement": "Preserve all readiness levels without conflation.",
+      "level": "MUST",
+      "spec_section": 31,
+      "owner": "Readiness",
+      "milestone": "M4",
+      "acceptance_tests": [
+        "AT-092"
+      ]
+    },
+    {
+      "id": "R-093",
+      "statement": "Allow experimental release without claiming proven scientific superiority.",
+      "level": "MUST",
+      "spec_section": 31,
+      "owner": "Readiness",
+      "milestone": "M4",
+      "acceptance_tests": [
+        "AT-093"
+      ]
+    }
+  ]
+}

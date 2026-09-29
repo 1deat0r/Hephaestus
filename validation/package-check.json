@@ -1,0 +1,11 @@
+{
+  "status": "PASS",
+  "master_sections": 31,
+  "requirements": 119,
+  "runtime_acceptance_specs": 119,
+  "principal_record_schemas": 18,
+  "schema_valid_example_records": 13,
+  "semantic_validation_errors": 0,
+  "errors": [],
+  "limitations": "Package/reference checks only. No invention runtime, security boundary, scientific study, or runtime acceptance test was executed."
+}

@@ -1,0 +1,28 @@
+{
+  "pages": 30,
+  "bookmarked_sections": 35,
+  "expected_bookmarks": 35,
+  "source_links": 15,
+  "text_outside_page_bounds_flags": 0,
+  "flags": [],
+  "render_directory": "/tmp/hephaestus-pdf-v1.2-zj3t6p2e",
+  "rendering": "Every page rendered; visual inspection is reported separately.",
+  "source_documents": [
+    "MASTER_SPEC.md",
+    "docs/QUALIFICATION_CONTRACT.md",
+    "docs/CONTEXT_ASSEMBLY_CAMPAIGN.md",
+    "docs/RETRIEVAL_AND_MEMORY.md",
+    "docs/SELF_IMPROVEMENT.md"
+  ],
+  "checked_text_blocks": 368,
+  "missing_text_blocks": [],
+  "limitations": "Document rendering/integrity only; no runtime or scientific validation.",
+  "visual_inspection": {
+    "contact_sheet": "validation/pdf-contact-sheet.png",
+    "detailed_pages": [
+      29,
+      30
+    ],
+    "scope": "Contact-sheet overview and detailed inspection of the new self-improvement appendix; no runtime validation"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "python": "3.14.7 (main, Aug 10 2026, 07:46:56) [GCC 16.1.1 20260728]",
+  "platform": "Linux-7.2.5-3-omarchy-x86_64-with-glibc2.44",
+  "packages": {
+    "jsonschema": "4.26.0",
+    "reportlab": "5.0.1",
+    "pymupdf": "1.28.2",
+    "markdown-it-py": "4.2.0"
+  },
+  "environment": "Temporary isolated virtual environment"
+}

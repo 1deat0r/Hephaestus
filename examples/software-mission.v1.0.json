@@ -1,0 +1,579 @@
+{
+  "fixture_notice": "SYNTHETIC, UNEXECUTED SPECIFICATION EXAMPLE. No observations, spending authority, novelty, or performance are established.",
+  "records": [
+    {
+      "id": "MIS-CONTEXT",
+      "schema_version": "1.0",
+      "record_version": 1,
+      "created_at": "2026-09-30T04:15:00+13:00",
+      "data_origin": "synthetic_fixture",
+      "provenance": {
+        "actor_id": "SPEC-AUTHOR",
+        "method": "synthetic_fixture_not_observed",
+        "input_refs": [],
+        "artifact_hashes": []
+      },
+      "kind": "mission",
+      "objective": "Investigate more efficient correct context assembly from a broad goal.",
+      "beneficiary": "Coding-agent developers",
+      "domains": [
+        "software systems"
+      ],
+      "constraints": [
+        "No physical or production actions."
+      ],
+      "success_metrics": [
+        "Qualified hypotheses and valid discriminating experiments."
+      ],
+      "guardrails": [
+        "Do not omit evaluator-required context."
+      ],
+      "budget": {
+        "currency": "NZD",
+        "minor_units": 1000
+      },
+      "max_wall_seconds": 3600,
+      "authorization": {
+        "state": "draft",
+        "profile": "plan_only",
+        "allowed_capabilities": [
+          "read_fixture"
+        ],
+        "allowed_destinations": [],
+        "forbidden_actions": [
+          "external_spend",
+          "public_disclosure"
+        ],
+        "policy_version": "fixture-policy-1"
+      },
+      "confidentiality": "private",
+      "stop_conditions": [
+        "No actual authorization is granted by this fixture."
+      ],
+      "assumptions": [
+        "All values are examples, not observed results or approved spending."
+      ]
+    },
+    {
+      "id": "SRC-FIXTURE",
+      "schema_version": "1.0",
+      "record_version": 1,
+      "created_at": "2026-09-30T04:15:00+13:00",
+      "data_origin": "synthetic_fixture",
+      "provenance": {
+        "actor_id": "SPEC-AUTHOR",
+        "method": "synthetic_fixture_not_observed",
+        "input_refs": [],
+        "artifact_hashes": []
+      },
+      "kind": "source",
+      "locator": "examples/fixture-source.txt",
+      "title": "Synthetic context-assembly premise",
+      "source_category": "synthetic_fixture",
+      "retrieved_at": "2026-09-30T04:15:00+13:00",
+      "published_at": null,
+      "content_sha256": "2e1082d689343728d1718412e3796f055c5a55f2819e04da42ac5f802960d93f",
+      "parser_version": "plain-text-1",
+      "access_scope": "synthetic",
+      "limitations": [
+        "Not a real measurement or paper."
+      ]
+    },
+    {
+      "id": "EVD-ASSUMPTION",
+      "schema_version": "1.0",
+      "record_version": 1,
+      "created_at": "2026-09-30T04:15:00+13:00",
+      "data_origin": "synthetic_fixture",
+      "provenance": {
+        "actor_id": "SPEC-AUTHOR",
+        "method": "synthetic_fixture_not_observed",
+        "input_refs": [],
+        "artifact_hashes": []
+      },
+      "kind": "evidence",
+      "statement": "Assume repeated context construction is material for the hypothetical investigation.",
+      "evidence_type": "assumption",
+      "source_refs": [
+        {
+          "id": "SRC-FIXTURE",
+          "version": 1
+        }
+      ],
+      "source_spans": [
+        {
+          "source_ref": {
+            "id": "SRC-FIXTURE",
+            "version": 1
+          },
+          "locator": "line 2",
+          "quoted_text": "Assume, solely to demonstrate the record format, that context reconstruction repeats after small repository changes."
+        }
+      ],
+      "dependency_group": "SYNTHETIC-PREMISE",
+      "valid_from": null,
+      "valid_to": null,
+      "status": "active",
+      "confidence_method": null
+    },
+    {
+      "id": "OPP-CONTEXT",
+      "schema_version": "1.0",
+      "record_version": 1,
+      "created_at": "2026-09-30T04:15:00+13:00",
+      "data_origin": "synthetic_fixture",
+      "provenance": {
+        "actor_id": "SPEC-AUTHOR",
+        "method": "synthetic_fixture_not_observed",
+        "input_refs": [],
+        "artifact_hashes": []
+      },
+      "kind": "opportunity",
+      "mission_ref": {
+        "id": "MIS-CONTEXT",
+        "version": 1
+      },
+      "problem": "Repeated context construction may redo unchanged work.",
+      "beneficiary": "Coding-agent developers",
+      "context": "Hypothetical repository change workloads.",
+      "pressure_type": "bottleneck",
+      "evidence_refs": [
+        {
+          "id": "EVD-ASSUMPTION",
+          "version": 1
+        }
+      ],
+      "suspected_constraint": "Correctness may couple context reuse to conservative invalidation.",
+      "alternative_explanations": [
+        "Bookkeeping rather than reconstruction may dominate."
+      ],
+      "unknowns": [
+        "Whether any real bottleneck exists."
+      ],
+      "state": "discovered",
+      "value_basis": "Speculative premise requiring actual traces.",
+      "search_scope": "Not yet searched."
+    },
+    {
+      "id": "MEC-REFINE",
+      "schema_version": "1.0",
+      "record_version": 1,
+      "created_at": "2026-09-30T04:15:00+13:00",
+      "data_origin": "synthetic_fixture",
+      "provenance": {
+        "actor_id": "SPEC-AUTHOR",
+        "method": "synthetic_fixture_not_observed",
+        "input_refs": [],
+        "artifact_hashes": []
+      },
+      "kind": "mechanism",
+      "opportunity_ref": {
+        "id": "OPP-CONTEXT",
+        "version": 1
+      },
+      "description": "Selectively refine dependency tracking and fall back to full reconstruction when coverage is uncertain.",
+      "variables": [
+        {
+          "name": "reconstruction_time",
+          "unit": "ms",
+          "role": "outcome"
+        },
+        {
+          "name": "coverage",
+          "unit": "fraction",
+          "role": "guardrail"
+        }
+      ],
+      "relationships": [
+        "Refinement may reduce redundant work but adds bookkeeping."
+      ],
+      "prerequisites": [
+        "An operational dependency oracle."
+      ],
+      "boundaries": [
+        "Specified repository and change-pattern distribution."
+      ],
+      "failure_modes": [
+        "Unrecognized dependencies or excessive bookkeeping."
+      ],
+      "operator": "composition",
+      "parent_refs": [],
+      "evidence_refs": [
+        {
+          "id": "EVD-ASSUMPTION",
+          "version": 1
+        }
+      ],
+      "minimal_realization": "A future isolated software prototype.",
+      "analogy_mapping": null
+    },
+    {
+      "id": "HYP-CONTEXT",
+      "schema_version": "1.0",
+      "record_version": 1,
+      "created_at": "2026-09-30T04:15:00+13:00",
+      "data_origin": "synthetic_fixture",
+      "provenance": {
+        "actor_id": "SPEC-AUTHOR",
+        "method": "synthetic_fixture_not_observed",
+        "input_refs": [],
+        "artifact_hashes": []
+      },
+      "kind": "hypothesis",
+      "mission_ref": {
+        "id": "MIS-CONTEXT",
+        "version": 1
+      },
+      "opportunity_ref": {
+        "id": "OPP-CONTEXT",
+        "version": 1
+      },
+      "mechanism_ref": {
+        "id": "MEC-REFINE",
+        "version": 1
+      },
+      "statement": "Selective dependency refinement may reduce redundant reconstruction without missing required dependencies under the declared oracle.",
+      "context": "Specified coding-repository change workloads.",
+      "intervention": "Selective refinement with conservative fallback.",
+      "comparator": "Exact dependency caching and full reconstruction.",
+      "predictions": [
+        {
+          "id": "PRED-WORK",
+          "claim_type": "mechanistic",
+          "observable": "Redundant reconstruction work",
+          "estimand": "Paired repository-level difference in redundant work",
+          "unit": "operations",
+          "direction": "decrease",
+          "threshold": 0,
+          "threshold_basis": "Directional mechanism claim; measurement definition must be qualified.",
+          "scope": "Future declared workload distribution."
+        },
+        {
+          "id": "PRED-TIME",
+          "claim_type": "engineering",
+          "observable": "End-to-end time improvement",
+          "estimand": "Repository-level fractional reduction versus exact dependency caching",
+          "unit": "fraction",
+          "direction": "increase",
+          "threshold": 0.2,
+          "threshold_basis": "Illustrative product target, not a forecast or measured effect.",
+          "scope": "Future held-out repositories."
+        }
+      ],
+      "falsifiers": [
+        {
+          "prediction_id": "PRED-WORK",
+          "condition": "A valid qualified test finds no reduction, with precision sufficient for its declared decision rule.",
+          "measurement_method": "Paired analysis plus mechanism ablation.",
+          "interpretation_limit": "An inconclusive interval does not refute the mechanism."
+        },
+        {
+          "prediction_id": "PRED-TIME",
+          "condition": "A valid interval is wholly below the 0.20 target.",
+          "measurement_method": "Predeclared paired repository-level interval.",
+          "interpretation_limit": "Failure of the engineering target does not refute the mechanism."
+        }
+      ],
+      "alternatives": [
+        "Warm-cache effects or dropped work explain apparent speed."
+      ],
+      "boundary_conditions": [
+        "Trusted dependency oracle and recorded environments."
+      ],
+      "assumptions": [
+        "The presumed bottleneck exists; not yet measured."
+      ],
+      "evidence_refs": [
+        {
+          "id": "EVD-ASSUMPTION",
+          "version": 1
+        }
+      ],
+      "state": "compiled",
+      "testability": {
+        "status": "blocked",
+        "method": "Implement a protected oracle and qualified paired experiment.",
+        "blockers": [
+          "No implementation or empirical variance estimate."
+        ]
+      },
+      "scientific_conclusion": "not_assessed",
+      "engineering_target": "not_assessed",
+      "novelty_status": "unresolved",
+      "parent_refs": []
+    },
+    {
+      "id": "EXP-CONTEXT",
+      "schema_version": "1.0",
+      "record_version": 1,
+      "created_at": "2026-09-30T04:15:00+13:00",
+      "data_origin": "synthetic_fixture",
+      "provenance": {
+        "actor_id": "SPEC-AUTHOR",
+        "method": "synthetic_fixture_not_observed",
+        "input_refs": [],
+        "artifact_hashes": []
+      },
+      "kind": "experiment_plan",
+      "mission_ref": {
+        "id": "MIS-CONTEXT",
+        "version": 1
+      },
+      "hypothesis_ref": {
+        "id": "HYP-CONTEXT",
+        "version": 1
+      },
+      "prediction_ids": [
+        "PRED-WORK",
+        "PRED-TIME"
+      ],
+      "status": "draft",
+      "comparator": "Exact dependency caching; full reconstruction; no-refinement ablation.",
+      "intervention_artifact_sha256": "170dd5a680aca903287c3d62de10c2f90a12a2c61f2e74209026f8d34553690c",
+      "conditions": [
+        "Frozen future workload distribution."
+      ],
+      "controls": [
+        "Oracle coverage check and randomized run order."
+      ],
+      "discrimination": [
+        {
+          "alternative": "Dropped work or warm cache",
+          "predicted_difference": "Coverage or ablation behavior differs from a true reduction in redundant reconstruction.",
+          "diagnostic_observation": "Protected dependency coverage and no-refinement ablation."
+        }
+      ],
+      "analysis": {
+        "design": "fixed_sample",
+        "sampling_unit": "repository",
+        "primary_endpoints": [
+          "PRED-WORK",
+          "PRED-TIME"
+        ],
+        "method_id": "UNIMPLEMENTED_PAIRED_ANALYSIS",
+        "method_qualification": "not_qualified",
+        "confidence_level": 0.95,
+        "target_n": null,
+        "sample_size_rationale": "Must be chosen after a separate pilot or defensible bound.",
+        "stopping_rule": "No confirmatory execution permitted until sample size and method are fixed.",
+        "multiplicity_strategy": "Must be predeclared for both endpoints before confirmation.",
+        "data_partition": "exploratory",
+        "assumptions": [
+          "Future pairing and dependence assumptions must be checked."
+        ],
+        "anytime_valid_method": null,
+        "implementation_sha256": "b96f1cc011d8388150274bcc2b7a2d221b9da2a72fd73ead61e2a2af4e74ec9b"
+      },
+      "registration": {
+        "status": "draft",
+        "registered_at": null,
+        "payload_sha256": null
+      },
+      "protected_evaluator_sha256": "790064913d7668579224203b86fe4a2cb12d2775b0dda038a861c6c37f4d04f1",
+      "budget": {
+        "currency": "NZD",
+        "minor_units": 500
+      },
+      "required_capabilities": [
+        "protected_software_experiment"
+      ],
+      "blockers": [
+        "Prototype, evaluator, analysis, and authorization not implemented."
+      ]
+    },
+    {
+      "id": "RES-NOTRUN",
+      "schema_version": "1.0",
+      "record_version": 1,
+      "created_at": "2026-09-30T04:15:00+13:00",
+      "data_origin": "synthetic_fixture",
+      "provenance": {
+        "actor_id": "SPEC-AUTHOR",
+        "method": "synthetic_fixture_not_observed",
+        "input_refs": [],
+        "artifact_hashes": []
+      },
+      "kind": "experiment_result",
+      "experiment_plan_ref": {
+        "id": "EXP-CONTEXT",
+        "version": 1
+      },
+      "hypothesis_ref": {
+        "id": "HYP-CONTEXT",
+        "version": 1
+      },
+      "data_opened_at": null,
+      "execution_validity": "incomplete",
+      "scientific_conclusion": "not_assessed",
+      "engineering_target": "not_assessed",
+      "raw_artifact_hashes": [],
+      "analysis_artifact_sha256": null,
+      "findings": [],
+      "deviations": [],
+      "limitations": [
+        "No experiment was performed."
+      ],
+      "actual_cost": {
+        "currency": "NZD",
+        "minor_units": 0
+      }
+    },
+    {
+      "id": "TASK-PLAN",
+      "schema_version": "1.0",
+      "record_version": 1,
+      "created_at": "2026-09-30T04:15:00+13:00",
+      "data_origin": "synthetic_fixture",
+      "provenance": {
+        "actor_id": "SPEC-AUTHOR",
+        "method": "synthetic_fixture_not_observed",
+        "input_refs": [],
+        "artifact_hashes": []
+      },
+      "kind": "task",
+      "mission_ref": {
+        "id": "MIS-CONTEXT",
+        "version": 1
+      },
+      "purpose": "Plan a hypothetical context investigation; do not execute it.",
+      "input_refs": [
+        {
+          "id": "HYP-CONTEXT",
+          "version": 1
+        }
+      ],
+      "dependency_refs": [],
+      "read_paths": [
+        "examples/fixture-source.txt"
+      ],
+      "write_paths": [],
+      "required_capabilities": [
+        "read_fixture"
+      ],
+      "effect_class": "pure",
+      "retry_policy": "safe_retry",
+      "replay_strategy": "recompute_deterministic",
+      "output_contract": "A planning proposal only.",
+      "verification_rule": "Schema and selected semantic checks; not scientific validation.",
+      "max_wall_seconds": 60,
+      "max_attempts": 1,
+      "budget": {
+        "currency": "NZD",
+        "minor_units": 0
+      },
+      "state": "planned"
+    },
+    {
+      "id": "DEC-EXAMPLE",
+      "schema_version": "1.0",
+      "record_version": 1,
+      "created_at": "2026-09-30T04:15:00+13:00",
+      "data_origin": "synthetic_fixture",
+      "provenance": {
+        "actor_id": "SPEC-AUTHOR",
+        "method": "synthetic_fixture_not_observed",
+        "input_refs": [],
+        "artifact_hashes": []
+      },
+      "kind": "decision",
+      "task_ref": {
+        "id": "TASK-PLAN",
+        "version": 1
+      },
+      "provider_identity": "no_provider_called",
+      "question": "Is the candidate ready for confirmation?",
+      "options": [
+        "ready",
+        "blocked"
+      ],
+      "selected_option": null,
+      "probabilities": null,
+      "calibration_status": "uncalibrated",
+      "calibration_artifact_sha256": null,
+      "use": "advisory",
+      "authoritative": false,
+      "abstained": true
+    },
+    {
+      "id": "EVT-DRAFT",
+      "schema_version": "1.0",
+      "record_version": 1,
+      "created_at": "2026-09-30T04:15:00+13:00",
+      "data_origin": "synthetic_fixture",
+      "provenance": {
+        "actor_id": "SPEC-AUTHOR",
+        "method": "synthetic_fixture_not_observed",
+        "input_refs": [],
+        "artifact_hashes": []
+      },
+      "kind": "event",
+      "mission_ref": {
+        "id": "MIS-CONTEXT",
+        "version": 1
+      },
+      "sequence": 1,
+      "event_type": "synthetic.mission.draft",
+      "subject_ref": {
+        "id": "MIS-CONTEXT",
+        "version": 1
+      },
+      "operation_id": "SYNTHETIC-OP-001",
+      "policy_version": "fixture-policy-1",
+      "payload_sha256": "2e1082d689343728d1718412e3796f055c5a55f2819e04da42ac5f802960d93f",
+      "previous_event_sha256": null
+    },
+    {
+      "id": "DOS-PLANNED",
+      "schema_version": "1.0",
+      "record_version": 1,
+      "created_at": "2026-09-30T04:15:00+13:00",
+      "data_origin": "synthetic_fixture",
+      "provenance": {
+        "actor_id": "SPEC-AUTHOR",
+        "method": "synthetic_fixture_not_observed",
+        "input_refs": [],
+        "artifact_hashes": []
+      },
+      "kind": "dossier",
+      "mission_ref": {
+        "id": "MIS-CONTEXT",
+        "version": 1
+      },
+      "hypothesis_refs": [
+        {
+          "id": "HYP-CONTEXT",
+          "version": 1
+        }
+      ],
+      "result_refs": [
+        {
+          "id": "RES-NOTRUN",
+          "version": 1
+        }
+      ],
+      "artifact_hashes": [
+        "2e1082d689343728d1718412e3796f055c5a55f2819e04da42ac5f802960d93f",
+        "b96f1cc011d8388150274bcc2b7a2d221b9da2a72fd73ead61e2a2af4e74ec9b",
+        "790064913d7668579224203b86fe4a2cb12d2775b0dda038a861c6c37f4d04f1",
+        "170dd5a680aca903287c3d62de10c2f90a12a2c61f2e74209026f8d34553690c"
+      ],
+      "status": "planned",
+      "novelty_report": {
+        "status": "unresolved",
+        "search_scope": "No prior-art search for this illustrative candidate was run.",
+        "differences": "Not assessed.",
+        "limitations": [
+          "No novelty conclusion."
+        ]
+      },
+      "reproduction_status": "not_run",
+      "reproduction_artifact_sha256": null,
+      "unresolved_blockers": [
+        "No implemented prototype or experimental result."
+      ],
+      "limitations": [
+        "Synthetic unexecuted fixture; no authorization or performance claim."
+      ]
+    }
+  ]
+}

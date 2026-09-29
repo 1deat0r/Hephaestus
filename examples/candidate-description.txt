@@ -1,0 +1,3 @@
+UNIMPLEMENTED CANDIDATE DESCRIPTION FIXTURE.
+Selective dependency refinement with conservative full-reconstruction fallback.
+No correctness, novelty, or performance claim is established.

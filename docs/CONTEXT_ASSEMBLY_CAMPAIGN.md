@@ -1,0 +1,46 @@
+# First domain pack and prospective qualification campaign
+
+Version 1.2 · 30 September 2026 · Normative supplement to master sections 25–28. Requirements R-102–R-105 apply. This is a protocol to implement, not a measured result or an implemented evaluator.
+
+## Narrow executable domain
+
+The first domain is incremental assembly of coding context for **statically resolvable Python module dependencies**, rather than an undefined oracle for all semantic relevance. A domain-only mission asks the system to reduce correct context-assembly cost; workers receive authorized repositories, observations and tool contracts without a target mechanism. The harness still must originate its opportunities and hypotheses. The domain pack supplies measurement semantics and guardrails, not a desired solution.
+
+Eligible repositories have valid parseable Python modules, an explicit import-resolution manifest, reproducible local dependencies and license/access permission. Exact versions of repositories and change episodes are recorded. Required context is the conservative transitive closure under the declared import-resolution rules plus the changed roots. Relative imports, import cycles, package initializers, aliases, deletions and renames are included. Unsupported dynamic imports, generated modules or ambiguous resolution must trigger conservative full reconstruction or a typed unsupported-case outcome; they cannot silently omit dependencies. This operational oracle does not claim all information needed for arbitrary coding tasks.
+
+A protected reference oracle recomputes from the complete input snapshot with an independently maintained implementation. Hand-adjudicated fixtures, metamorphic tests and a second implementation qualify it before experiments. Record oracle disagreements, adjudication and scope limitations. Generator workers cannot read oracle internals, sealed workloads or future change episodes. The baseline authors cannot choose workloads after seeing candidate results.
+
+## Baselines and workload registration
+
+Baselines MUST include (1) full reconstruction for correctness and total-cost accounting; (2) a strongest available tuned exact dependency/content-hash caching implementation; (3) a single capable model with active retrieval and identical experiment tools; and (4) a bounded generate/review or structured-search harness. An ablation removes the candidate's claimed causal ingredient. A full-rebuild-only comparison cannot establish a useful incremental improvement.
+
+The campaign manifest MUST pin implementations, tuning allowance, model/version/tool access, corpus snapshots, hardware/OS, measurement instrumentation, and repository episode generator. Sample repositories independently from a documented eligible frame, stratify by size and dependency topology, and sample change episodes before confirmation. Train/tune, pilot, and confirmatory partitions are separated by repository; deliberate distribution-shift stress cases are reported separately. A curator prepares fresh future change episodes after candidates are frozen. Reused public repositories retain pretraining-contamination limitations; fresh episodes mitigate only some contamination.
+
+All harness arms get the same approved compute/retrieval/experiment envelope and standing local permissions. Baseline tuning and engineering time are recorded. Repeated model seeds/trajectories within one repository are not independent missions. Costs include acquisition, generation, failed/invalid/blocked runs, evaluator and reproduction work, and human intervention; record both provider charges and resource/human-time quantities rather than inventing a conversion price. Report paired repository-level comparisons and dependence assumptions.
+
+## Metrics and numerical decisions
+
+| Metric | Operational definition | Denominator and interpretation |
+|---|---|---|
+| Context correctness | Required oracle modules present with correct snapshot identity | All attempted eligible episodes; omissions and stale context are failures |
+| Opportunity validity | Independently confirmed material bottleneck or need | All proposed opportunities, with unresolved cases retained |
+| Qualified hypothesis yield | Distinct hypotheses passing named readiness gates | All generated hypotheses; similarity adjudication and lineage recorded |
+| Useful outcome yield | Independently reproduced prototype meeting the frozen correctness, latency and resource gates | All assigned missions, including failed/blocked/inconclusive; negative-result yield reported separately |
+| End-to-end cost/time | Total acquisition through confirmation/reproduction cost and elapsed time | Every assigned mission; zero qualified outcomes means cost-per-outcome is undefined, not zero |
+| Mechanism contribution | Predeclared candidate versus causal ablation/comparator observations | Repository-level units; separate from engineering attainment |
+| False promotion | False/confounded controlled cases incorrectly receiving a scoped validated label | All independently sampled controlled cases, stratified by failure type |
+| Reproduction | Successful clean-environment independent assessment | Every reproduction attempt, with environment/measurement dependencies visible |
+
+For the **initial engineering candidate**, the provisional target remains at least 20% end-to-end latency reduction relative to tuned exact caching, with zero observed context omissions/staleness, and peak memory no more than 10% above that baseline. The system measures initialization, invalidation, lookup, bookkeeping, fallback and amortization under the declared episode horizon. Both percentages are owner-reviewable provisional product choices, not empirical predictions or justified sample sizes. An interval crossing a target is inconclusive. No observed correctness failures still requires a reported reliability bound; it is not proof of perfect correctness. Formal correctness under the declared import model, where available, is separate evidence.
+
+The **primary campaign comparison** is the difference between arms in the fraction of all assigned missions yielding a useful qualified outcome. Superiority requires the predeclared multiplicity-adjusted lower confidence bound for the paired difference to exceed zero while correctness and validity guardrails pass. Report outcome yield and total cost side by side; cost per outcome is secondary, and negative-result usefulness is a separate measured output. A higher useful-outcome rate at a higher cost is not automatically economic superiority.
+
+M3 implements one fixed-sample method: paired repository-level comparisons, a bounded-outcome concentration interval for latency savings and binary mission-yield differences, with alpha allocations from a fixed Bonferroni family. Before runtime qualification, a statistician or protected method qualification must establish clipping/bounding policy, estimands, independence conditions, treatment of aborted runs and missing observations, and valid noninferiority analysis. Bounds/clipping are frozen before confirmation and clipped rates are reported; alternative robust or hierarchical methods require separate qualification. Failed or missing runs remain failures for useful-outcome yield; missing timing data cannot become a favorable latency estimate. Any unqualified assumptions block confirmation rather than invite model improvisation.
+
+The campaign manifest chooses n from a separate exploratory pilot or defensible variance/precision bounds and the smallest effect meaningful to the owner. It MUST include the calculation, alpha allocation, reference distribution, power/precision target and sensitivity assumptions. No runtime manifest with `n=null`, an unqualified method, or an unresolved oracle can enter confirmation. The package deliberately supplies no fabricated sample-size estimate.
+
+For the initial controlled false-promotion qualification, a provisional guardrail is a one-sided 95% upper rate bound no greater than 1% on a declared independent controlled-case distribution, with additional stratified stress checks. Under IID Bernoulli cases and zero failures, the exact bound is `1 - 0.05**(1/n)`; n=299 would satisfy the numerical criterion. This is a planning calculation, not a prescribed sample size for heterogeneous cases or a universal safety claim. Dependence, adaptive selection and distribution mismatch require a qualified alternative. Any evaluator-tampering failure blocks release regardless of aggregate rate.
+
+## Release dispositions and stopping
+
+M0/M1 engineering releases require applicable contract/isolation/recovery gates, not scientific superiority. M2 demonstrates domain-only discovery on sealed synthetic worlds. M3 handles all outcome classes with trusted artifacts and method-specific checks. M4 may be EXPERIMENTAL after engineering gates without demonstrated value. QUALIFIED_FOR_DECLARED_SCOPE requires the frozen campaign, protected oracle/method qualification, error and correctness guardrails, independent reproduction, and scope-specific security gates. A superiority claim additionally requires the primary comparison above. The campaign closes on its registered sample/resource/elapsed limits, not when a favorable result appears. No useful outcome is a valid campaign result.

@@ -1,0 +1,1850 @@
+{
+  "version": "1.1",
+  "requirements": [
+    {
+      "id": "R-001",
+      "statement": "Accept a broad authorized goal without requiring a seed hypothesis.",
+      "level": "MUST",
+      "spec_section": 1,
+      "owner": "Product",
+      "milestone": "M2",
+      "acceptance_tests": [
+        "AT-001"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M2",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-001",
+      "source_anchor": "MASTER_SPEC.md#section-1",
+      "enforcement_service": "Mission Compiler and Verification service"
+    },
+    {
+      "id": "R-002",
+      "statement": "Distinguish evidence-qualified hypotheses from validated invention candidates.",
+      "level": "MUST",
+      "spec_section": 1,
+      "owner": "Product",
+      "milestone": "M2",
+      "acceptance_tests": [
+        "AT-002"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M2",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-002",
+      "source_anchor": "MASTER_SPEC.md#section-1",
+      "enforcement_service": "Mission Compiler and Verification service"
+    },
+    {
+      "id": "R-003",
+      "statement": "Treat a valid informative negative result as a legitimate research outcome.",
+      "level": "MUST",
+      "spec_section": 1,
+      "owner": "Product",
+      "milestone": "M2",
+      "acceptance_tests": [
+        "AT-003"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M2",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-003",
+      "source_anchor": "MASTER_SPEC.md#section-1",
+      "enforcement_service": "Mission Compiler and Verification service"
+    },
+    {
+      "id": "R-004",
+      "statement": "Keep the default execution scope computational and sandboxed.",
+      "level": "MUST",
+      "spec_section": 2,
+      "owner": "Domain scope",
+      "milestone": "M1",
+      "acceptance_tests": [
+        "AT-004"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M1",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-004",
+      "source_anchor": "MASTER_SPEC.md#section-2",
+      "enforcement_service": "PolicyEngine and domain-pack verifier"
+    },
+    {
+      "id": "R-005",
+      "statement": "Run the core workflow without Jev, Tachyon, a graph database, or a GPU.",
+      "level": "MUST",
+      "spec_section": 2,
+      "owner": "Domain scope",
+      "milestone": "M3",
+      "acceptance_tests": [
+        "AT-005"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M3",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-005",
+      "source_anchor": "MASTER_SPEC.md#section-2",
+      "enforcement_service": "PolicyEngine and domain-pack verifier"
+    },
+    {
+      "id": "R-006",
+      "statement": "Require domain-specific validation before enabling a new scientific domain.",
+      "level": "MUST",
+      "spec_section": 2,
+      "owner": "Domain scope",
+      "milestone": "M6",
+      "acceptance_tests": [
+        "AT-006"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M6",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-006",
+      "source_anchor": "MASTER_SPEC.md#section-2",
+      "enforcement_service": "PolicyEngine and domain-pack verifier"
+    },
+    {
+      "id": "R-007",
+      "statement": "Keep observations, assumptions, model judgments, and derivations distinct.",
+      "level": "MUST",
+      "spec_section": 3,
+      "owner": "Scientific invariants",
+      "milestone": "M2",
+      "acceptance_tests": [
+        "AT-007"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M2",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-007",
+      "source_anchor": "MASTER_SPEC.md#section-3",
+      "enforcement_service": "Verification service"
+    },
+    {
+      "id": "R-008",
+      "statement": "Keep mechanism support separate from an engineering target.",
+      "level": "MUST",
+      "spec_section": 3,
+      "owner": "Scientific invariants",
+      "milestone": "M3",
+      "acceptance_tests": [
+        "AT-008"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M3",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-008",
+      "source_anchor": "MASTER_SPEC.md#section-3",
+      "enforcement_service": "Verification service"
+    },
+    {
+      "id": "R-009",
+      "statement": "Never interpret empty retrieval as proof of global novelty.",
+      "level": "MUST",
+      "spec_section": 3,
+      "owner": "Scientific invariants",
+      "milestone": "M2",
+      "acceptance_tests": [
+        "AT-009"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M2",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-009",
+      "source_anchor": "MASTER_SPEC.md#section-3",
+      "enforcement_service": "Verification service"
+    },
+    {
+      "id": "R-010",
+      "statement": "Compile intent, constraints, budgets, permissions, confidentiality, and stop rules.",
+      "level": "MUST",
+      "spec_section": 4,
+      "owner": "Mission",
+      "milestone": "M2",
+      "acceptance_tests": [
+        "AT-010"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M2",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-010",
+      "source_anchor": "MASTER_SPEC.md#section-4",
+      "enforcement_service": "Mission Compiler"
+    },
+    {
+      "id": "R-011",
+      "statement": "Ask only for materially unresolved authorization or intent.",
+      "level": "MUST",
+      "spec_section": 4,
+      "owner": "Mission",
+      "milestone": "M2",
+      "acceptance_tests": [
+        "AT-011"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M2",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-011",
+      "source_anchor": "MASTER_SPEC.md#section-4",
+      "enforcement_service": "Mission Compiler"
+    },
+    {
+      "id": "R-012",
+      "statement": "Version goal changes and invalidate affected dependent work.",
+      "level": "MUST",
+      "spec_section": 4,
+      "owner": "Mission",
+      "milestone": "M2",
+      "acceptance_tests": [
+        "AT-012"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M2",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-012",
+      "source_anchor": "MASTER_SPEC.md#section-4",
+      "enforcement_service": "Mission Compiler"
+    },
+    {
+      "id": "R-013",
+      "statement": "Apply authoritative state changes through validated control-plane operations.",
+      "level": "MUST",
+      "spec_section": 5,
+      "owner": "Architecture",
+      "milestone": "M1",
+      "acceptance_tests": [
+        "AT-013"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M1",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-013",
+      "source_anchor": "MASTER_SPEC.md#section-5",
+      "enforcement_service": "Control plane and Evidence ledger"
+    },
+    {
+      "id": "R-014",
+      "statement": "Keep evidence and artifacts outside ephemeral conversations.",
+      "level": "MUST",
+      "spec_section": 5,
+      "owner": "Architecture",
+      "milestone": "M1",
+      "acceptance_tests": [
+        "AT-014"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M1",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-014",
+      "source_anchor": "MASTER_SPEC.md#section-5",
+      "enforcement_service": "Control plane and Evidence ledger"
+    },
+    {
+      "id": "R-015",
+      "statement": "Keep retrieval views rebuildable from authoritative records.",
+      "level": "MUST",
+      "spec_section": 5,
+      "owner": "Architecture",
+      "milestone": "M1",
+      "acceptance_tests": [
+        "AT-015"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M1",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-015",
+      "source_anchor": "MASTER_SPEC.md#section-5",
+      "enforcement_service": "Control plane and Evidence ledger"
+    },
+    {
+      "id": "R-016",
+      "statement": "Bind critical claims to exact sources or reproducible data operations.",
+      "level": "MUST",
+      "spec_section": 6,
+      "owner": "Knowledge",
+      "milestone": "M2",
+      "acceptance_tests": [
+        "AT-016"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M2",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-016",
+      "source_anchor": "MASTER_SPEC.md#section-6",
+      "enforcement_service": "Knowledge services"
+    },
+    {
+      "id": "R-017",
+      "statement": "Preserve source validity time, ingestion time, and corrections.",
+      "level": "MUST",
+      "spec_section": 6,
+      "owner": "Knowledge",
+      "milestone": "M2",
+      "acceptance_tests": [
+        "AT-017"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M2",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-017",
+      "source_anchor": "MASTER_SPEC.md#section-6",
+      "enforcement_service": "Knowledge services"
+    },
+    {
+      "id": "R-018",
+      "statement": "Track shared origins instead of double-counting dependent evidence.",
+      "level": "MUST",
+      "spec_section": 6,
+      "owner": "Knowledge",
+      "milestone": "M2",
+      "acceptance_tests": [
+        "AT-018"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M2",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-018",
+      "source_anchor": "MASTER_SPEC.md#section-6",
+      "enforcement_service": "Knowledge services"
+    },
+    {
+      "id": "R-019",
+      "statement": "Originate grounded opportunities from pressure points rather than supplied ideas.",
+      "level": "MUST",
+      "spec_section": 7,
+      "owner": "Discovery",
+      "milestone": "M2",
+      "acceptance_tests": [
+        "AT-019"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M2",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-019",
+      "source_anchor": "MASTER_SPEC.md#section-7",
+      "enforcement_service": "Discovery Engine"
+    },
+    {
+      "id": "R-020",
+      "statement": "Challenge measurement artifacts and already-solved problems.",
+      "level": "MUST",
+      "spec_section": 7,
+      "owner": "Discovery",
+      "milestone": "M2",
+      "acceptance_tests": [
+        "AT-020"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M2",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-020",
+      "source_anchor": "MASTER_SPEC.md#section-7",
+      "enforcement_service": "Discovery Engine"
+    },
+    {
+      "id": "R-021",
+      "statement": "Report opportunity validity independently from hypothesis polish.",
+      "level": "MUST",
+      "spec_section": 7,
+      "owner": "Discovery",
+      "milestone": "M2",
+      "acceptance_tests": [
+        "AT-021"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M2",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-021",
+      "source_anchor": "MASTER_SPEC.md#section-7",
+      "enforcement_service": "Discovery Engine"
+    },
+    {
+      "id": "R-022",
+      "statement": "Represent mechanisms with variables, relationships, boundaries, and failure modes.",
+      "level": "MUST",
+      "spec_section": 8,
+      "owner": "Mechanisms",
+      "milestone": "M2",
+      "acceptance_tests": [
+        "AT-022"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M2",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-022",
+      "source_anchor": "MASTER_SPEC.md#section-8",
+      "enforcement_service": "Hypothesis Genesis Engine"
+    },
+    {
+      "id": "R-023",
+      "statement": "Require structural mappings and broken-relation analysis for analogies.",
+      "level": "MUST",
+      "spec_section": 8,
+      "owner": "Mechanisms",
+      "milestone": "M2",
+      "acceptance_tests": [
+        "AT-023"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M2",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-023",
+      "source_anchor": "MASTER_SPEC.md#section-8",
+      "enforcement_service": "Hypothesis Genesis Engine"
+    },
+    {
+      "id": "R-024",
+      "statement": "Use only justified hard filters and audit heuristic rejections.",
+      "level": "MUST",
+      "spec_section": 8,
+      "owner": "Mechanisms",
+      "milestone": "M2",
+      "acceptance_tests": [
+        "AT-024"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M2",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-024",
+      "source_anchor": "MASTER_SPEC.md#section-8",
+      "enforcement_service": "Hypothesis Genesis Engine"
+    },
+    {
+      "id": "R-025",
+      "statement": "Require an operational discriminator before test-ready status.",
+      "level": "MUST",
+      "spec_section": 9,
+      "owner": "Hypothesis compilation",
+      "milestone": "M2",
+      "acceptance_tests": [
+        "AT-025"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M2",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-025",
+      "source_anchor": "MASTER_SPEC.md#section-9",
+      "enforcement_service": "Hypothesis Compiler"
+    },
+    {
+      "id": "R-026",
+      "statement": "Record estimands, units, comparators, and threshold provenance.",
+      "level": "MUST",
+      "spec_section": 9,
+      "owner": "Hypothesis compilation",
+      "milestone": "M2",
+      "acceptance_tests": [
+        "AT-026"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M2",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-026",
+      "source_anchor": "MASTER_SPEC.md#section-9",
+      "enforcement_service": "Hypothesis Compiler"
+    },
+    {
+      "id": "R-027",
+      "statement": "Version substantive hypothesis changes and reassess inherited evidence.",
+      "level": "MUST",
+      "spec_section": 9,
+      "owner": "Hypothesis compilation",
+      "milestone": "M2",
+      "acceptance_tests": [
+        "AT-027"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M2",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-027",
+      "source_anchor": "MASTER_SPEC.md#section-9",
+      "enforcement_service": "Hypothesis Compiler"
+    },
+    {
+      "id": "R-028",
+      "statement": "Compare candidate claims against near-matching mechanisms and combinations.",
+      "level": "MUST",
+      "spec_section": 10,
+      "owner": "Prior art",
+      "milestone": "M2",
+      "acceptance_tests": [
+        "AT-028"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M2",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-028",
+      "source_anchor": "MASTER_SPEC.md#section-10",
+      "enforcement_service": "Prior-art and disclosure verifier"
+    },
+    {
+      "id": "R-029",
+      "statement": "Report search coverage, queries, dates, and inaccessible sources.",
+      "level": "MUST",
+      "spec_section": 10,
+      "owner": "Prior art",
+      "milestone": "M2",
+      "acceptance_tests": [
+        "AT-029"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M2",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-029",
+      "source_anchor": "MASTER_SPEC.md#section-10",
+      "enforcement_service": "Prior-art and disclosure verifier"
+    },
+    {
+      "id": "R-030",
+      "statement": "Enforce confidentiality for external prior-art queries.",
+      "level": "MUST",
+      "spec_section": 10,
+      "owner": "Prior art",
+      "milestone": "M2",
+      "acceptance_tests": [
+        "AT-030"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M2",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-030",
+      "source_anchor": "MASTER_SPEC.md#section-10",
+      "enforcement_service": "Prior-art and disclosure verifier"
+    },
+    {
+      "id": "R-031",
+      "statement": "Bound search expansion, depth, calls, and resource usage.",
+      "level": "MUST",
+      "spec_section": 11,
+      "owner": "Search",
+      "milestone": "M2",
+      "acceptance_tests": [
+        "AT-031"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M2",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-031",
+      "source_anchor": "MASTER_SPEC.md#section-11",
+      "enforcement_service": "Portfolio scheduler"
+    },
+    {
+      "id": "R-032",
+      "statement": "Keep a diverse multi-objective archive rather than a single universal score.",
+      "level": "MUST",
+      "spec_section": 11,
+      "owner": "Search",
+      "milestone": "M2",
+      "acceptance_tests": [
+        "AT-032"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M2",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-032",
+      "source_anchor": "MASTER_SPEC.md#section-11",
+      "enforcement_service": "Portfolio scheduler"
+    },
+    {
+      "id": "R-033",
+      "statement": "Do not fabricate probabilities for information-gain calculations.",
+      "level": "MUST",
+      "spec_section": 11,
+      "owner": "Search",
+      "milestone": "M2",
+      "acceptance_tests": [
+        "AT-033"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M2",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-033",
+      "source_anchor": "MASTER_SPEC.md#section-11",
+      "enforcement_service": "Portfolio scheduler"
+    },
+    {
+      "id": "R-034",
+      "statement": "Treat review votes as judgments rather than empirical validation.",
+      "level": "MUST",
+      "spec_section": 12,
+      "owner": "Review",
+      "milestone": "M3",
+      "acceptance_tests": [
+        "AT-034"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M3",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-034",
+      "source_anchor": "MASTER_SPEC.md#section-12",
+      "enforcement_service": "Review and Verification services"
+    },
+    {
+      "id": "R-035",
+      "statement": "Separate generator, analyzer, and promotion authority.",
+      "level": "MUST",
+      "spec_section": 12,
+      "owner": "Review",
+      "milestone": "M3",
+      "acceptance_tests": [
+        "AT-035"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M3",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-035",
+      "source_anchor": "MASTER_SPEC.md#section-12",
+      "enforcement_service": "Review and Verification services"
+    },
+    {
+      "id": "R-036",
+      "statement": "Retain concrete objections and their dispositions.",
+      "level": "MUST",
+      "spec_section": 12,
+      "owner": "Review",
+      "milestone": "M3",
+      "acceptance_tests": [
+        "AT-036"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M3",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-036",
+      "source_anchor": "MASTER_SPEC.md#section-12",
+      "enforcement_service": "Review and Verification services"
+    },
+    {
+      "id": "R-037",
+      "statement": "Register immutable experiment endpoints and analysis before confirmation.",
+      "level": "MUST",
+      "spec_section": 13,
+      "owner": "Experiment design",
+      "milestone": "M3",
+      "acceptance_tests": [
+        "AT-037"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M3",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-037",
+      "source_anchor": "MASTER_SPEC.md#section-13",
+      "enforcement_service": "Experiment Compiler"
+    },
+    {
+      "id": "R-038",
+      "statement": "Test discrimination against relevant competing explanations.",
+      "level": "MUST",
+      "spec_section": 13,
+      "owner": "Experiment design",
+      "milestone": "M3",
+      "acceptance_tests": [
+        "AT-038"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M3",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-038",
+      "source_anchor": "MASTER_SPEC.md#section-13",
+      "enforcement_service": "Experiment Compiler"
+    },
+    {
+      "id": "R-039",
+      "statement": "Report unavailable experiments as blockers rather than invented outcomes.",
+      "level": "MUST",
+      "spec_section": 13,
+      "owner": "Experiment design",
+      "milestone": "M3",
+      "acceptance_tests": [
+        "AT-039"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M3",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-039",
+      "source_anchor": "MASTER_SPEC.md#section-13",
+      "enforcement_service": "Experiment Compiler"
+    },
+    {
+      "id": "R-040",
+      "statement": "Use a predeclared analysis and valid stopping rule.",
+      "level": "MUST",
+      "spec_section": 14,
+      "owner": "Statistics",
+      "milestone": "M3",
+      "acceptance_tests": [
+        "AT-040"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M3",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-040",
+      "source_anchor": "MASTER_SPEC.md#section-14",
+      "enforcement_service": "AnalysisProvider and protected method registry"
+    },
+    {
+      "id": "R-041",
+      "statement": "Track multiple endpoints and related tests as a family.",
+      "level": "MUST",
+      "spec_section": 14,
+      "owner": "Statistics",
+      "milestone": "M3",
+      "acceptance_tests": [
+        "AT-041"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M3",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-041",
+      "source_anchor": "MASTER_SPEC.md#section-14",
+      "enforcement_service": "AnalysisProvider and protected method registry"
+    },
+    {
+      "id": "R-042",
+      "statement": "Preserve inconclusive results and test noninferiority explicitly.",
+      "level": "MUST",
+      "spec_section": 14,
+      "owner": "Statistics",
+      "milestone": "M3",
+      "acceptance_tests": [
+        "AT-042"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M3",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-042",
+      "source_anchor": "MASTER_SPEC.md#section-14",
+      "enforcement_service": "AnalysisProvider and protected method registry"
+    },
+    {
+      "id": "R-043",
+      "statement": "Verify composed artifacts against global invariants and interaction tests.",
+      "level": "MUST",
+      "spec_section": 15,
+      "owner": "Realization",
+      "milestone": "M3",
+      "acceptance_tests": [
+        "AT-043"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M3",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-043",
+      "source_anchor": "MASTER_SPEC.md#section-15",
+      "enforcement_service": "Invention Engine and dossier exporter"
+    },
+    {
+      "id": "R-044",
+      "statement": "Export a reproducible dossier including negative results and raw artifacts.",
+      "level": "MUST",
+      "spec_section": 15,
+      "owner": "Realization",
+      "milestone": "M3",
+      "acceptance_tests": [
+        "AT-044"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M3",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-044",
+      "source_anchor": "MASTER_SPEC.md#section-15",
+      "enforcement_service": "Invention Engine and dossier exporter"
+    },
+    {
+      "id": "R-045",
+      "statement": "Require separate authorization for adoption, publication, or manufacturing.",
+      "level": "MUST",
+      "spec_section": 15,
+      "owner": "Realization",
+      "milestone": "M3",
+      "acceptance_tests": [
+        "AT-045"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M3",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-045",
+      "source_anchor": "MASTER_SPEC.md#section-15",
+      "enforcement_service": "Invention Engine and dossier exporter"
+    },
+    {
+      "id": "R-046",
+      "statement": "Keep scientific, engineering, novelty, and execution statuses orthogonal.",
+      "level": "MUST",
+      "spec_section": 16,
+      "owner": "Evidence lifecycle",
+      "milestone": "M3",
+      "acceptance_tests": [
+        "AT-046"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M3",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-046",
+      "source_anchor": "MASTER_SPEC.md#section-16",
+      "enforcement_service": "Promotion service and Evidence ledger"
+    },
+    {
+      "id": "R-047",
+      "statement": "Propagate corrected or retracted evidence to dependent conclusions.",
+      "level": "MUST",
+      "spec_section": 16,
+      "owner": "Evidence lifecycle",
+      "milestone": "M3",
+      "acceptance_tests": [
+        "AT-047"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M3",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-047",
+      "source_anchor": "MASTER_SPEC.md#section-16",
+      "enforcement_service": "Promotion service and Evidence ledger"
+    },
+    {
+      "id": "R-048",
+      "statement": "Represent uncalibrated model confidence as judgment, not posterior belief.",
+      "level": "MUST",
+      "spec_section": 16,
+      "owner": "Evidence lifecycle",
+      "milestone": "M3",
+      "acceptance_tests": [
+        "AT-048"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M3",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-048",
+      "source_anchor": "MASTER_SPEC.md#section-16",
+      "enforcement_service": "Promotion service and Evidence ledger"
+    },
+    {
+      "id": "R-049",
+      "statement": "Compile bounded task contracts instead of creating unrestricted mini-agents.",
+      "level": "MUST",
+      "spec_section": 17,
+      "owner": "Compiled tasks",
+      "milestone": "M1",
+      "acceptance_tests": [
+        "AT-049"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M1",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-049",
+      "source_anchor": "MASTER_SPEC.md#section-17",
+      "enforcement_service": "Task compiler and deterministic reducer"
+    },
+    {
+      "id": "R-050",
+      "statement": "Use isolated outputs and verify parent assembly.",
+      "level": "MUST",
+      "spec_section": 17,
+      "owner": "Compiled tasks",
+      "milestone": "M1",
+      "acceptance_tests": [
+        "AT-050"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M1",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-050",
+      "source_anchor": "MASTER_SPEC.md#section-17",
+      "enforcement_service": "Task compiler and deterministic reducer"
+    },
+    {
+      "id": "R-051",
+      "statement": "Scope replay determinism to recorded responses and declared environments.",
+      "level": "MUST",
+      "spec_section": 17,
+      "owner": "Compiled tasks",
+      "milestone": "M1",
+      "acceptance_tests": [
+        "AT-051"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M1",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-051",
+      "source_anchor": "MASTER_SPEC.md#section-17",
+      "enforcement_service": "Task compiler and deterministic reducer"
+    },
+    {
+      "id": "R-052",
+      "statement": "Keep exact policy, arithmetic, and promotion gates deterministic.",
+      "level": "MUST",
+      "spec_section": 18,
+      "owner": "Routing",
+      "milestone": "M5",
+      "acceptance_tests": [
+        "AT-052"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M5",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-052",
+      "source_anchor": "MASTER_SPEC.md#section-18",
+      "enforcement_service": "Provider router and Context Compiler"
+    },
+    {
+      "id": "R-053",
+      "statement": "Evaluate optional semantic models for calibration and abstention.",
+      "level": "MUST",
+      "spec_section": 18,
+      "owner": "Routing",
+      "milestone": "M5",
+      "acceptance_tests": [
+        "AT-053"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M5",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-053",
+      "source_anchor": "MASTER_SPEC.md#section-18",
+      "enforcement_service": "Provider router and Context Compiler"
+    },
+    {
+      "id": "R-054",
+      "statement": "Invalidate cache reuse on relevant version or evidence changes.",
+      "level": "MUST",
+      "spec_section": 18,
+      "owner": "Routing",
+      "milestone": "M5",
+      "acceptance_tests": [
+        "AT-054"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M5",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-054",
+      "source_anchor": "MASTER_SPEC.md#section-18",
+      "enforcement_service": "Provider router and Context Compiler"
+    },
+    {
+      "id": "R-055",
+      "statement": "Reserve resources transactionally before concurrent dispatch.",
+      "level": "MUST",
+      "spec_section": 19,
+      "owner": "Recovery",
+      "milestone": "M1",
+      "acceptance_tests": [
+        "AT-055"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M1",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-055",
+      "source_anchor": "MASTER_SPEC.md#section-19",
+      "enforcement_service": "Scheduler and BudgetLedger"
+    },
+    {
+      "id": "R-056",
+      "statement": "Reconcile ambiguous external effects rather than blindly retry them.",
+      "level": "MUST",
+      "spec_section": 19,
+      "owner": "Recovery",
+      "milestone": "M1",
+      "acceptance_tests": [
+        "AT-056"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M1",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-056",
+      "source_anchor": "MASTER_SPEC.md#section-19",
+      "enforcement_service": "Scheduler and BudgetLedger"
+    },
+    {
+      "id": "R-057",
+      "statement": "Recover safely across dispatch and artifact commit boundaries.",
+      "level": "MUST",
+      "spec_section": 19,
+      "owner": "Recovery",
+      "milestone": "M1",
+      "acceptance_tests": [
+        "AT-057"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M1",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-057",
+      "source_anchor": "MASTER_SPEC.md#section-19",
+      "enforcement_service": "Scheduler and BudgetLedger"
+    },
+    {
+      "id": "R-058",
+      "statement": "Treat retrieved instructions and generated code as untrusted.",
+      "level": "MUST",
+      "spec_section": 20,
+      "owner": "Security",
+      "milestone": "M1",
+      "acceptance_tests": [
+        "AT-058"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M1",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-058",
+      "source_anchor": "MASTER_SPEC.md#section-20",
+      "enforcement_service": "PolicyEngine, SandboxProvider and protected monitor"
+    },
+    {
+      "id": "R-059",
+      "statement": "Prevent sandbox escape, secret leakage, and undeclared networking.",
+      "level": "MUST",
+      "spec_section": 20,
+      "owner": "Security",
+      "milestone": "M1",
+      "acceptance_tests": [
+        "AT-059"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M1",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-059",
+      "source_anchor": "MASTER_SPEC.md#section-20",
+      "enforcement_service": "PolicyEngine, SandboxProvider and protected monitor"
+    },
+    {
+      "id": "R-060",
+      "statement": "Bind approval to the exact operation, artifact, destination, and policy.",
+      "level": "MUST",
+      "spec_section": 20,
+      "owner": "Security",
+      "milestone": "M1",
+      "acceptance_tests": [
+        "AT-060"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M1",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-060",
+      "source_anchor": "MASTER_SPEC.md#section-20",
+      "enforcement_service": "PolicyEngine, SandboxProvider and protected monitor"
+    },
+    {
+      "id": "R-061",
+      "statement": "Validate structures and cross-record semantics independently.",
+      "level": "MUST",
+      "spec_section": 21,
+      "owner": "Contracts",
+      "milestone": "M0",
+      "acceptance_tests": [
+        "AT-061"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M0",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-061",
+      "source_anchor": "MASTER_SPEC.md#section-21",
+      "enforcement_service": "Domain contract and adapter verifier"
+    },
+    {
+      "id": "R-062",
+      "statement": "Keep provider-specific types and behavior outside core interfaces.",
+      "level": "MUST",
+      "spec_section": 21,
+      "owner": "Contracts",
+      "milestone": "M0",
+      "acceptance_tests": [
+        "AT-062"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M0",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-062",
+      "source_anchor": "MASTER_SPEC.md#section-21",
+      "enforcement_service": "Domain contract and adapter verifier"
+    },
+    {
+      "id": "R-063",
+      "statement": "Preserve explicit versions, references, and typed failure categories.",
+      "level": "MUST",
+      "spec_section": 21,
+      "owner": "Contracts",
+      "milestone": "M0",
+      "acceptance_tests": [
+        "AT-063"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M0",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-063",
+      "source_anchor": "MASTER_SPEC.md#section-21",
+      "enforcement_service": "Domain contract and adapter verifier"
+    },
+    {
+      "id": "R-064",
+      "statement": "Keep the initial runtime a bounded local system with isolated workers.",
+      "level": "MUST",
+      "spec_section": 22,
+      "owner": "Implementation architecture",
+      "milestone": "M1",
+      "acceptance_tests": [
+        "AT-064"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M1",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-064",
+      "source_anchor": "MASTER_SPEC.md#section-22",
+      "enforcement_service": "ExecutionBackend and release verifier"
+    },
+    {
+      "id": "R-065",
+      "statement": "Pin dependency and tool versions used by an experiment.",
+      "level": "MUST",
+      "spec_section": 22,
+      "owner": "Implementation architecture",
+      "milestone": "M1",
+      "acceptance_tests": [
+        "AT-065"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M1",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-065",
+      "source_anchor": "MASTER_SPEC.md#section-22",
+      "enforcement_service": "ExecutionBackend and release verifier"
+    },
+    {
+      "id": "R-066",
+      "statement": "Inspect and contract-test any real Tachyon integration before claiming compatibility.",
+      "level": "MUST",
+      "spec_section": 22,
+      "owner": "Implementation architecture",
+      "milestone": "M1",
+      "acceptance_tests": [
+        "AT-066"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M1",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-066",
+      "source_anchor": "MASTER_SPEC.md#section-22",
+      "enforcement_service": "ExecutionBackend and release verifier"
+    },
+    {
+      "id": "R-067",
+      "statement": "Ground all UI progress and outcomes in persisted state.",
+      "level": "MUST",
+      "spec_section": 23,
+      "owner": "User interface",
+      "milestone": "M4",
+      "acceptance_tests": [
+        "AT-067"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M4",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-067",
+      "source_anchor": "MASTER_SPEC.md#section-23",
+      "enforcement_service": "Gateway and CLI projections"
+    },
+    {
+      "id": "R-068",
+      "statement": "Provide pause, resume, cancellation, steering, and event-cursor recovery.",
+      "level": "MUST",
+      "spec_section": 23,
+      "owner": "User interface",
+      "milestone": "M4",
+      "acceptance_tests": [
+        "AT-068"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M4",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-068",
+      "source_anchor": "MASTER_SPEC.md#section-23",
+      "enforcement_service": "Gateway and CLI projections"
+    },
+    {
+      "id": "R-069",
+      "statement": "Apply the same policy and authentication to gateway and local operations.",
+      "level": "MUST",
+      "spec_section": 23,
+      "owner": "User interface",
+      "milestone": "M4",
+      "acceptance_tests": [
+        "AT-069"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M4",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-069",
+      "source_anchor": "MASTER_SPEC.md#section-23",
+      "enforcement_service": "Gateway and CLI projections"
+    },
+    {
+      "id": "R-070",
+      "statement": "Evaluate challengers under protected matched-budget tests before promotion.",
+      "level": "MUST",
+      "spec_section": 24,
+      "owner": "Self-improvement",
+      "milestone": "M6",
+      "acceptance_tests": [
+        "AT-070"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M6",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-070",
+      "source_anchor": "MASTER_SPEC.md#section-24",
+      "enforcement_service": "Protected champion/challenger evaluator"
+    },
+    {
+      "id": "R-071",
+      "statement": "Prevent self-improvement from expanding budgets, permissions, or protected gates.",
+      "level": "MUST",
+      "spec_section": 24,
+      "owner": "Self-improvement",
+      "milestone": "M6",
+      "acceptance_tests": [
+        "AT-071"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M6",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-071",
+      "source_anchor": "MASTER_SPEC.md#section-24",
+      "enforcement_service": "Protected champion/challenger evaluator"
+    },
+    {
+      "id": "R-072",
+      "statement": "Version deployed changes and support measured rollback.",
+      "level": "MUST",
+      "spec_section": 24,
+      "owner": "Self-improvement",
+      "milestone": "M6",
+      "acceptance_tests": [
+        "AT-072"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M6",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-072",
+      "source_anchor": "MASTER_SPEC.md#section-24",
+      "enforcement_service": "Protected champion/challenger evaluator"
+    },
+    {
+      "id": "R-073",
+      "statement": "Evaluate domain-only discovery, not just refinement of seeded ideas.",
+      "level": "MUST",
+      "spec_section": 25,
+      "owner": "Product evaluation",
+      "milestone": "M4",
+      "acceptance_tests": [
+        "AT-073"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M4",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-073",
+      "source_anchor": "MASTER_SPEC.md#section-25",
+      "enforcement_service": "Protected campaign evaluator"
+    },
+    {
+      "id": "R-074",
+      "statement": "Compare against active-retrieval and structured-search baselines at matched budgets.",
+      "level": "MUST",
+      "spec_section": 25,
+      "owner": "Product evaluation",
+      "milestone": "M4",
+      "acceptance_tests": [
+        "AT-074"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M4",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-074",
+      "source_anchor": "MASTER_SPEC.md#section-25",
+      "enforcement_service": "Protected campaign evaluator"
+    },
+    {
+      "id": "R-075",
+      "statement": "Separate judge scores, rediscovery, prospective novelty, and independent replication.",
+      "level": "MUST",
+      "spec_section": 25,
+      "owner": "Product evaluation",
+      "milestone": "M4",
+      "acceptance_tests": [
+        "AT-075"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M4",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-075",
+      "source_anchor": "MASTER_SPEC.md#section-25",
+      "enforcement_service": "Protected campaign evaluator"
+    },
+    {
+      "id": "R-076",
+      "statement": "Label performance targets as provisional until measured.",
+      "level": "MUST",
+      "spec_section": 26,
+      "owner": "Acceptance",
+      "milestone": "M4",
+      "acceptance_tests": [
+        "AT-076"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M4",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-076",
+      "source_anchor": "MASTER_SPEC.md#section-26",
+      "enforcement_service": "Protected release verifier"
+    },
+    {
+      "id": "R-077",
+      "statement": "Block applicable release gates on critical unresolved failures.",
+      "level": "MUST",
+      "spec_section": 26,
+      "owner": "Acceptance",
+      "milestone": "M4",
+      "acceptance_tests": [
+        "AT-077"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M4",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-077",
+      "source_anchor": "MASTER_SPEC.md#section-26",
+      "enforcement_service": "Protected release verifier"
+    },
+    {
+      "id": "R-078",
+      "statement": "Report finite-suite uncertainty rather than universal reliability.",
+      "level": "MUST",
+      "spec_section": 26,
+      "owner": "Acceptance",
+      "milestone": "M4",
+      "acceptance_tests": [
+        "AT-078"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M4",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-078",
+      "source_anchor": "MASTER_SPEC.md#section-26",
+      "enforcement_service": "Protected release verifier"
+    },
+    {
+      "id": "R-079",
+      "statement": "Build contracts and durable execution before optional acceleration.",
+      "level": "MUST",
+      "spec_section": 27,
+      "owner": "Delivery sequence",
+      "milestone": "M0",
+      "acceptance_tests": [
+        "AT-079"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M0",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-079",
+      "source_anchor": "MASTER_SPEC.md#section-27",
+      "enforcement_service": "Milestone release verifier"
+    },
+    {
+      "id": "R-080",
+      "statement": "Require end-to-end handling of positive, negative, inconclusive, invalid, and blocked outcomes.",
+      "level": "MUST",
+      "spec_section": 27,
+      "owner": "Delivery sequence",
+      "milestone": "M3",
+      "acceptance_tests": [
+        "AT-080"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M3",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-080",
+      "source_anchor": "MASTER_SPEC.md#section-27",
+      "enforcement_service": "Milestone release verifier"
+    },
+    {
+      "id": "R-081",
+      "statement": "Give every normative requirement an owner, milestone, and acceptance test.",
+      "level": "MUST",
+      "spec_section": 27,
+      "owner": "Delivery sequence",
+      "milestone": "M0",
+      "acceptance_tests": [
+        "AT-081"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M0",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-081",
+      "source_anchor": "MASTER_SPEC.md#section-27",
+      "enforcement_service": "Milestone release verifier"
+    },
+    {
+      "id": "R-082",
+      "statement": "Label illustrative mechanisms and target values as unmeasured.",
+      "level": "MUST",
+      "spec_section": 28,
+      "owner": "Worked example",
+      "milestone": "M3",
+      "acceptance_tests": [
+        "AT-082"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M3",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-082",
+      "source_anchor": "MASTER_SPEC.md#section-28",
+      "enforcement_service": "Protected context oracle and evaluator"
+    },
+    {
+      "id": "R-083",
+      "statement": "Compare proposed context caching against a credible existing baseline.",
+      "level": "MUST",
+      "spec_section": 28,
+      "owner": "Worked example",
+      "milestone": "M3",
+      "acceptance_tests": [
+        "AT-083"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M3",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-083",
+      "source_anchor": "MASTER_SPEC.md#section-28",
+      "enforcement_service": "Protected context oracle and evaluator"
+    },
+    {
+      "id": "R-084",
+      "statement": "Protect context oracles and account for correlated workloads.",
+      "level": "MUST",
+      "spec_section": 28,
+      "owner": "Worked example",
+      "milestone": "M3",
+      "acceptance_tests": [
+        "AT-084"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M3",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-084",
+      "source_anchor": "MASTER_SPEC.md#section-28",
+      "enforcement_service": "Protected context oracle and evaluator"
+    },
+    {
+      "id": "R-085",
+      "statement": "Keep unresolved research questions visible and testable.",
+      "level": "MUST",
+      "spec_section": 29,
+      "owner": "Risks and review",
+      "milestone": "M0",
+      "acceptance_tests": [
+        "AT-085"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M0",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-085",
+      "source_anchor": "MASTER_SPEC.md#section-29",
+      "enforcement_service": "Decision and risk register verifier"
+    },
+    {
+      "id": "R-086",
+      "statement": "Describe author-led review honestly rather than inventing independent reviewers.",
+      "level": "MUST",
+      "spec_section": 29,
+      "owner": "Risks and review",
+      "milestone": "M0",
+      "acceptance_tests": [
+        "AT-086"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M0",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-086",
+      "source_anchor": "MASTER_SPEC.md#section-29",
+      "enforcement_service": "Decision and risk register verifier"
+    },
+    {
+      "id": "R-087",
+      "statement": "Require a recorded decision and impact analysis for architectural departures.",
+      "level": "MUST",
+      "spec_section": 29,
+      "owner": "Risks and review",
+      "milestone": "M0",
+      "acceptance_tests": [
+        "AT-087"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M0",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-087",
+      "source_anchor": "MASTER_SPEC.md#section-29",
+      "enforcement_service": "Decision and risk register verifier"
+    },
+    {
+      "id": "R-088",
+      "statement": "Preserve verified source identity and correct prior conversational errors.",
+      "level": "MUST",
+      "spec_section": 30,
+      "owner": "Research grounding",
+      "milestone": "M0",
+      "acceptance_tests": [
+        "AT-088"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M0",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-088",
+      "source_anchor": "MASTER_SPEC.md#section-30",
+      "enforcement_service": "Source provenance verifier"
+    },
+    {
+      "id": "R-089",
+      "statement": "Do not inherit research guarantees without their assumptions and methods.",
+      "level": "MUST",
+      "spec_section": 30,
+      "owner": "Research grounding",
+      "milestone": "M0",
+      "acceptance_tests": [
+        "AT-089"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M0",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-089",
+      "source_anchor": "MASTER_SPEC.md#section-30",
+      "enforcement_service": "Source provenance verifier"
+    },
+    {
+      "id": "R-090",
+      "statement": "Keep the official Jev model and specific third-party implementations distinct.",
+      "level": "MUST",
+      "spec_section": 30,
+      "owner": "Research grounding",
+      "milestone": "M0",
+      "acceptance_tests": [
+        "AT-090"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M0",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-090",
+      "source_anchor": "MASTER_SPEC.md#section-30",
+      "enforcement_service": "Source provenance verifier"
+    },
+    {
+      "id": "R-091",
+      "statement": "Complete a bounded mission with evidence rather than agent agreement.",
+      "level": "MUST",
+      "spec_section": 31,
+      "owner": "Readiness",
+      "milestone": "M4",
+      "acceptance_tests": [
+        "AT-091"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M4",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-091",
+      "source_anchor": "MASTER_SPEC.md#section-31",
+      "enforcement_service": "Mission completion and Promotion service"
+    },
+    {
+      "id": "R-092",
+      "statement": "Preserve all readiness levels without conflation.",
+      "level": "MUST",
+      "spec_section": 31,
+      "owner": "Readiness",
+      "milestone": "M4",
+      "acceptance_tests": [
+        "AT-092"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M4",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-092",
+      "source_anchor": "MASTER_SPEC.md#section-31",
+      "enforcement_service": "Mission completion and Promotion service"
+    },
+    {
+      "id": "R-093",
+      "statement": "Allow experimental release without claiming proven scientific superiority.",
+      "level": "MUST",
+      "spec_section": 31,
+      "owner": "Readiness",
+      "milestone": "M4",
+      "acceptance_tests": [
+        "AT-093"
+      ],
+      "contract_milestone": "M0",
+      "runtime_milestone": "M4",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-093",
+      "source_anchor": "MASTER_SPEC.md#section-31",
+      "enforcement_service": "Mission completion and Promotion service"
+    },
+    {
+      "id": "R-094",
+      "statement": "Require protected version-bound execution, analysis, reproduction and promotion receipts plus verified artifact bytes.",
+      "level": "MUST",
+      "spec_section": 16,
+      "owner": "Verification",
+      "milestone": "M3",
+      "acceptance_tests": [
+        "AT-094"
+      ],
+      "supplement": "docs/QUALIFICATION_CONTRACT.md",
+      "contract_milestone": "M0",
+      "runtime_milestone": "M3",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-094",
+      "source_anchor": "MASTER_SPEC.md#section-16",
+      "enforcement_service": "Promotion service and Evidence ledger"
+    },
+    {
+      "id": "R-095",
+      "statement": "Obtain receipt, grant, method and artifact trust from a protected context rather than candidate-supplied assertions.",
+      "level": "MUST",
+      "spec_section": 21,
+      "owner": "Policy",
+      "milestone": "M1",
+      "acceptance_tests": [
+        "AT-095"
+      ],
+      "supplement": "docs/QUALIFICATION_CONTRACT.md",
+      "contract_milestone": "M0",
+      "runtime_milestone": "M1",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-095",
+      "source_anchor": "MASTER_SPEC.md#section-21",
+      "enforcement_service": "Domain contract and adapter verifier"
+    },
+    {
+      "id": "R-096",
+      "statement": "Require complete primary endpoint, control, unit and guardrail coverage before scoped qualification.",
+      "level": "MUST",
+      "spec_section": 13,
+      "owner": "Experiments",
+      "milestone": "M3",
+      "acceptance_tests": [
+        "AT-096"
+      ],
+      "supplement": "docs/QUALIFICATION_CONTRACT.md",
+      "contract_milestone": "M0",
+      "runtime_milestone": "M3",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-096",
+      "source_anchor": "MASTER_SPEC.md#section-13",
+      "enforcement_service": "Experiment Compiler"
+    },
+    {
+      "id": "R-097",
+      "statement": "Enforce coherent version-bound mission, opportunity, mechanism, hypothesis, plan, result and dossier lineage.",
+      "level": "MUST",
+      "spec_section": 16,
+      "owner": "Verification",
+      "milestone": "M3",
+      "acceptance_tests": [
+        "AT-097"
+      ],
+      "supplement": "docs/QUALIFICATION_CONTRACT.md",
+      "contract_milestone": "M0",
+      "runtime_milestone": "M3",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-097",
+      "source_anchor": "MASTER_SPEC.md#section-16",
+      "enforcement_service": "Promotion service and Evidence ledger"
+    },
+    {
+      "id": "R-098",
+      "statement": "Invalidate current labels and reuse on stale, retracted, quarantined or materially changed dependencies.",
+      "level": "MUST",
+      "spec_section": 16,
+      "owner": "Knowledge",
+      "milestone": "M3",
+      "acceptance_tests": [
+        "AT-098"
+      ],
+      "supplement": "docs/QUALIFICATION_CONTRACT.md",
+      "contract_milestone": "M0",
+      "runtime_milestone": "M3",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-098",
+      "source_anchor": "MASTER_SPEC.md#section-16",
+      "enforcement_service": "Promotion service and Evidence ledger"
+    },
+    {
+      "id": "R-099",
+      "statement": "Recheck exact scoped grants, expiry, revocation, destination, cost and policy immediately before dispatch and effects.",
+      "level": "MUST",
+      "spec_section": 20,
+      "owner": "Policy",
+      "milestone": "M1",
+      "acceptance_tests": [
+        "AT-099"
+      ],
+      "supplement": "docs/QUALIFICATION_CONTRACT.md",
+      "contract_milestone": "M0",
+      "runtime_milestone": "M1",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-099",
+      "source_anchor": "MASTER_SPEC.md#section-20",
+      "enforcement_service": "PolicyEngine, SandboxProvider and protected monitor"
+    },
+    {
+      "id": "R-100",
+      "statement": "Persist typed experiment families with selection lineage, method qualification and explicit error allocation.",
+      "level": "MUST",
+      "spec_section": 14,
+      "owner": "Statistics",
+      "milestone": "M3",
+      "acceptance_tests": [
+        "AT-100"
+      ],
+      "supplement": "docs/QUALIFICATION_CONTRACT.md",
+      "contract_milestone": "M0",
+      "runtime_milestone": "M3",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-100",
+      "source_anchor": "MASTER_SPEC.md#section-14",
+      "enforcement_service": "AnalysisProvider and protected method registry"
+    },
+    {
+      "id": "R-101",
+      "statement": "Track authenticated sealed-data access and feedback across campaigns; prevent holdout exposure resets.",
+      "level": "MUST",
+      "spec_section": 14,
+      "owner": "Statistics",
+      "milestone": "M3",
+      "acceptance_tests": [
+        "AT-101"
+      ],
+      "supplement": "docs/QUALIFICATION_CONTRACT.md",
+      "contract_milestone": "M0",
+      "runtime_milestone": "M3",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-101",
+      "source_anchor": "MASTER_SPEC.md#section-14",
+      "enforcement_service": "AnalysisProvider and protected method registry"
+    },
+    {
+      "id": "R-102",
+      "statement": "Define the first domain and independently qualify its bounded context-correctness oracle.",
+      "level": "MUST",
+      "spec_section": 25,
+      "owner": "Evaluation",
+      "milestone": "M3",
+      "acceptance_tests": [
+        "AT-102"
+      ],
+      "supplement": "docs/CONTEXT_ASSEMBLY_CAMPAIGN.md",
+      "contract_milestone": "M0",
+      "runtime_milestone": "M3",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-102",
+      "source_anchor": "MASTER_SPEC.md#section-25",
+      "enforcement_service": "Protected campaign evaluator"
+    },
+    {
+      "id": "R-103",
+      "statement": "Preregister mission sampling, tuned baselines, metric denominators and all failure/human/resource costs.",
+      "level": "MUST",
+      "spec_section": 25,
+      "owner": "Evaluation",
+      "milestone": "M4",
+      "acceptance_tests": [
+        "AT-103"
+      ],
+      "supplement": "docs/CONTEXT_ASSEMBLY_CAMPAIGN.md",
+      "contract_milestone": "M0",
+      "runtime_milestone": "M4",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-103",
+      "source_anchor": "MASTER_SPEC.md#section-25",
+      "enforcement_service": "Protected campaign evaluator"
+    },
+    {
+      "id": "R-104",
+      "statement": "Require scoped error, correctness, precision/power and noninferiority guardrails before qualification.",
+      "level": "MUST",
+      "spec_section": 26,
+      "owner": "Statistics",
+      "milestone": "M4",
+      "acceptance_tests": [
+        "AT-104"
+      ],
+      "supplement": "docs/CONTEXT_ASSEMBLY_CAMPAIGN.md",
+      "contract_milestone": "M0",
+      "runtime_milestone": "M4",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-104",
+      "source_anchor": "MASTER_SPEC.md#section-26",
+      "enforcement_service": "Protected release verifier"
+    },
+    {
+      "id": "R-105",
+      "statement": "Separate useful positive outcome yield, useful negative-result yield, originality and economics.",
+      "level": "MUST",
+      "spec_section": 25,
+      "owner": "Evaluation",
+      "milestone": "M4",
+      "acceptance_tests": [
+        "AT-105"
+      ],
+      "supplement": "docs/CONTEXT_ASSEMBLY_CAMPAIGN.md",
+      "contract_milestone": "M0",
+      "runtime_milestone": "M4",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-105",
+      "source_anchor": "MASTER_SPEC.md#section-25",
+      "enforcement_service": "Protected campaign evaluator"
+    },
+    {
+      "id": "R-106",
+      "statement": "Qualify deep and wide retrieval, counterevidence and near-match detection on adjudicated scoped fixtures.",
+      "level": "MUST",
+      "spec_section": 6,
+      "owner": "Knowledge",
+      "milestone": "M2",
+      "acceptance_tests": [
+        "AT-106"
+      ],
+      "supplement": "docs/RETRIEVAL_AND_MEMORY.md",
+      "contract_milestone": "M0",
+      "runtime_milestone": "M2",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-106",
+      "source_anchor": "MASTER_SPEC.md#section-6",
+      "enforcement_service": "Knowledge services"
+    },
+    {
+      "id": "R-107",
+      "statement": "Verify source spans against captured bytes and recorded parser transformations, not mutable locators.",
+      "level": "MUST",
+      "spec_section": 6,
+      "owner": "Knowledge",
+      "milestone": "M2",
+      "acceptance_tests": [
+        "AT-107"
+      ],
+      "supplement": "docs/RETRIEVAL_AND_MEMORY.md",
+      "contract_milestone": "M0",
+      "runtime_milestone": "M2",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-107",
+      "source_anchor": "MASTER_SPEC.md#section-6",
+      "enforcement_service": "Knowledge services"
+    },
+    {
+      "id": "R-108",
+      "statement": "Preserve trust origin through summaries, caches, graph edges and cross-session memory.",
+      "level": "MUST",
+      "spec_section": 20,
+      "owner": "Security",
+      "milestone": "M1",
+      "acceptance_tests": [
+        "AT-108"
+      ],
+      "supplement": "docs/RETRIEVAL_AND_MEMORY.md",
+      "contract_milestone": "M0",
+      "runtime_milestone": "M1",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-108",
+      "source_anchor": "MASTER_SPEC.md#section-20",
+      "enforcement_service": "PolicyEngine, SandboxProvider and protected monitor"
+    },
+    {
+      "id": "R-109",
+      "statement": "Protect behavioral-memory writes and propagate quarantine to dependent current artifacts and labels.",
+      "level": "MUST",
+      "spec_section": 20,
+      "owner": "Security",
+      "milestone": "M3",
+      "acceptance_tests": [
+        "AT-109"
+      ],
+      "supplement": "docs/RETRIEVAL_AND_MEMORY.md",
+      "contract_milestone": "M0",
+      "runtime_milestone": "M3",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-109",
+      "source_anchor": "MASTER_SPEC.md#section-20",
+      "enforcement_service": "PolicyEngine, SandboxProvider and protected monitor"
+    },
+    {
+      "id": "R-110",
+      "statement": "Attest effective sandbox, network, descriptor and resource boundaries before each dispatch.",
+      "level": "MUST",
+      "spec_section": 20,
+      "owner": "Security",
+      "milestone": "M1",
+      "acceptance_tests": [
+        "AT-110"
+      ],
+      "supplement": "docs/RETRIEVAL_AND_MEMORY.md",
+      "contract_milestone": "M0",
+      "runtime_milestone": "M1",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-110",
+      "source_anchor": "MASTER_SPEC.md#section-20",
+      "enforcement_service": "PolicyEngine, SandboxProvider and protected monitor"
+    },
+    {
+      "id": "R-111",
+      "statement": "Monitor containment violations, stop safely and preserve events during revocation and cancellation races.",
+      "level": "MUST",
+      "spec_section": 20,
+      "owner": "Security",
+      "milestone": "M1",
+      "acceptance_tests": [
+        "AT-111"
+      ],
+      "supplement": "docs/RETRIEVAL_AND_MEMORY.md",
+      "contract_milestone": "M0",
+      "runtime_milestone": "M1",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-111",
+      "source_anchor": "MASTER_SPEC.md#section-20",
+      "enforcement_service": "PolicyEngine, SandboxProvider and protected monitor"
+    },
+    {
+      "id": "R-112",
+      "statement": "Keep validated solutions and rediscoveries distinct from scoped invention candidates with assessed differences.",
+      "level": "MUST",
+      "spec_section": 16,
+      "owner": "Product",
+      "milestone": "M3",
+      "acceptance_tests": [
+        "AT-112"
+      ],
+      "supplement": "docs/QUALIFICATION_CONTRACT.md",
+      "contract_milestone": "M0",
+      "runtime_milestone": "M3",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-112",
+      "source_anchor": "MASTER_SPEC.md#section-16",
+      "enforcement_service": "Promotion service and Evidence ledger"
+    },
+    {
+      "id": "R-113",
+      "statement": "Maintain reciprocal clause/test mappings and explicit contract versus runtime release gates.",
+      "level": "MUST",
+      "spec_section": 26,
+      "owner": "Delivery",
+      "milestone": "M0",
+      "acceptance_tests": [
+        "AT-113"
+      ],
+      "supplement": "docs/OBLIGATIONS.md",
+      "contract_milestone": "M0",
+      "runtime_milestone": "M0",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-113",
+      "source_anchor": "MASTER_SPEC.md#section-26",
+      "enforcement_service": "Protected release verifier"
+    },
+    {
+      "id": "R-114",
+      "statement": "Enforce explicit state transitions and schema/policy migration with immutable historical identities.",
+      "level": "MUST",
+      "spec_section": 21,
+      "owner": "Domain",
+      "milestone": "M1",
+      "acceptance_tests": [
+        "AT-114"
+      ],
+      "supplement": "docs/QUALIFICATION_CONTRACT.md",
+      "contract_milestone": "M0",
+      "runtime_milestone": "M1",
+      "clause_anchor": "docs/OBLIGATIONS.md#r-114",
+      "source_anchor": "MASTER_SPEC.md#section-21",
+      "enforcement_service": "Domain contract and adapter verifier"
+    }
+  ]
+}

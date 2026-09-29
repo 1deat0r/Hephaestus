@@ -1,0 +1,38 @@
+{
+  "version": "1.1",
+  "notice": "Hash-profile vectors, not scientific records or receipts",
+  "vectors": [
+    {
+      "name": "unicode_integer_float_profile",
+      "payload": {
+        "text": "Δ invention",
+        "z": [
+          -0.0,
+          1.25
+        ],
+        "a": 1,
+        "status": "draft",
+        "registration": null
+      },
+      "kind": "plan",
+      "expected_sha256": "8bd80603f15df7947e94a315a63371482882aa98b52c40f13e6d6e4d31e722d6"
+    },
+    {
+      "name": "receipt_reference_exclusion",
+      "payload": {
+        "text": "synthetic only",
+        "execution_receipt_ref": {
+          "id": "OLD",
+          "version": 1
+        },
+        "findings": [
+          {
+            "estimate": 0.2
+          }
+        ]
+      },
+      "kind": "subject",
+      "expected_sha256": "a818afcdffc348587920899342c37282c8980a52535ce44833a4b5eae94e63ee"
+    }
+  ]
+}

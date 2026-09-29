@@ -1,0 +1,14 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+*.egg-info/
+
+# Rust
+target/
+
+# Editors / OS
+.idea/
+.vscode/
+*.swp
+.DS_Store

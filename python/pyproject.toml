@@ -1,0 +1,13 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hephaestus-workers"
+version = "0.1.0"
+description = "Isolated Python scientific workers for the Hephaestus runtime (skeleton, T-001)"
+requires-python = ">=3.14"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["hephaestus_workers*"]

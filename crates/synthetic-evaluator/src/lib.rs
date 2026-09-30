@@ -17,13 +17,15 @@
 
 use serde::{Deserialize, Serialize};
 
+mod corpus;
 mod evaluate;
 mod rng;
 
+pub use corpus::{CorpusEntry, Probe, load_corpus, observation_receipt};
 pub use evaluate::{AMBIGUITY_BAND, Assessment, PARAM_TOL, Verdict, evaluate};
 
 /// Scenario classes the fixture corpus must cover (IMPLEMENTATION_PLAN T-003).
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum Scenario {
     TrueMechanism,

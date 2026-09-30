@@ -1,0 +1,55 @@
+{
+ "id": "world-changed-boundary",
+ "world": {
+  "id": "world-changed-boundary",
+  "scenario": "changed_boundary",
+  "domain": [
+   10,
+   100
+  ],
+  "noise_sigma": 0.3,
+  "seed": 9,
+  "truth_form": "inverse",
+  "truth_a": 20.0,
+  "truth_b": 500.0,
+  "causal_effect_of_input": true,
+  "regimes": [
+   {
+    "break_at": 55.0,
+    "form": "linear",
+    "a": 30.0,
+    "b": 0.2
+   }
+  ]
+ },
+ "observation_receipt_sha256": "377cf4a57fb0aef333f5f0599a3ac0c48ab052fba056708b90452bc7226cc7d7",
+ "probes": [
+  {
+   "label": "holds in first regime only",
+   "candidate": {
+    "form": "inverse",
+    "a": 20.0,
+    "b": 500.0
+   },
+   "expected": "out_of_scope"
+  },
+  {
+   "label": "holds in second regime only",
+   "candidate": {
+    "form": "linear",
+    "a": 30.0,
+    "b": 0.2
+   },
+   "expected": "out_of_scope"
+  },
+  {
+   "label": "matches no regime",
+   "candidate": {
+    "form": "constant",
+    "a": 40.0,
+    "b": 0.0
+   },
+   "expected": "rejected"
+  }
+ ]
+}

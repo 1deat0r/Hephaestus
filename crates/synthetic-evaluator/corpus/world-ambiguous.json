@@ -1,0 +1,38 @@
+{
+ "id": "world-ambiguous",
+ "world": {
+  "id": "world-ambiguous",
+  "scenario": "ambiguous_evidence",
+  "domain": [
+   20,
+   30
+  ],
+  "noise_sigma": 0.6,
+  "seed": 5,
+  "truth_form": "linear",
+  "truth_a": 10.0,
+  "truth_b": 0.1,
+  "causal_effect_of_input": true
+ },
+ "observation_receipt_sha256": "86536b864a62d47a20d8bc8351bd90333e2dfa745d636ba3237280de6b8dc97b",
+ "probes": [
+  {
+   "label": "true generator",
+   "candidate": {
+    "form": "linear",
+    "a": 10.0,
+    "b": 0.1
+   },
+   "expected": "confirmed"
+  },
+  {
+   "label": "observationally equivalent inverse",
+   "candidate": {
+    "form": "inverse",
+    "a": 15.0,
+    "b": -60.0
+   },
+   "expected": "inconclusive"
+  }
+ ]
+}

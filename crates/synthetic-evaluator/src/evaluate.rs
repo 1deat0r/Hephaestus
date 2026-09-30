@@ -29,7 +29,8 @@ pub const PARAM_TOL: f64 = 1e-3;
 /// it and ambiguous mechanisms fall inside it.
 pub const AMBIGUITY_BAND: f64 = 0.35;
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
+#[serde(rename_all = "snake_case")]
 pub enum Verdict {
     Confirmed,
     Rejected,

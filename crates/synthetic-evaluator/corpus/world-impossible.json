@@ -1,0 +1,41 @@
+{
+ "id": "world-impossible",
+ "world": {
+  "id": "world-impossible",
+  "scenario": "impossible_constraint",
+  "domain": [
+   10,
+   100
+  ],
+  "noise_sigma": 0.2,
+  "seed": 3,
+  "truth_form": "constant",
+  "truth_a": 12.0,
+  "truth_b": 0.0,
+  "causal_effect_of_input": true,
+  "requirement": {
+   "output_max": 10.0
+  }
+ },
+ "observation_receipt_sha256": "dd0067700ea2dda844a5bfbb8127d5b825e510e843be0f4ad16e17058880dc35",
+ "probes": [
+  {
+   "label": "exact truth against impossible target",
+   "candidate": {
+    "form": "constant",
+    "a": 12.0,
+    "b": 0.0
+   },
+   "expected": "infeasible"
+  },
+  {
+   "label": "self-infeasible candidate",
+   "candidate": {
+    "form": "linear",
+    "a": 13.0,
+    "b": 0.1
+   },
+   "expected": "infeasible"
+  }
+ ]
+}

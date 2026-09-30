@@ -1,0 +1,38 @@
+{
+ "id": "world-confounder",
+ "world": {
+  "id": "world-confounder",
+  "scenario": "confounder",
+  "domain": [
+   10,
+   100
+  ],
+  "noise_sigma": 0.4,
+  "seed": 11,
+  "truth_form": "linear",
+  "truth_a": 10.0,
+  "truth_b": 0.05,
+  "causal_effect_of_input": false
+ },
+ "observation_receipt_sha256": "768cfadb2d77730d64ade065b4a5ef588c0f28571a3aa7d6aff22039385b9d8b",
+ "probes": [
+  {
+   "label": "causal claim that is the fitted curve",
+   "candidate": {
+    "form": "linear",
+    "a": 10.0,
+    "b": 0.05
+   },
+   "expected": "rejected"
+  },
+  {
+   "label": "alternative causal claim",
+   "candidate": {
+    "form": "inverse",
+    "a": 8.0,
+    "b": 30.0
+   },
+   "expected": "rejected"
+  }
+ ]
+}

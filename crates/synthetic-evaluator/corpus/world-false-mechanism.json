@@ -1,0 +1,38 @@
+{
+ "id": "world-false-mechanism",
+ "world": {
+  "id": "world-false-mechanism",
+  "scenario": "false_mechanism",
+  "domain": [
+   10,
+   100
+  ],
+  "noise_sigma": 0.3,
+  "seed": 7,
+  "truth_form": "linear",
+  "truth_a": 20.0,
+  "truth_b": 0.4,
+  "causal_effect_of_input": true
+ },
+ "observation_receipt_sha256": "1fc4c953428527a550262d9e37c0f80f2fc6f3fb35581d233c36841bd75ae8d1",
+ "probes": [
+  {
+   "label": "true generator",
+   "candidate": {
+    "form": "linear",
+    "a": 20.0,
+    "b": 0.4
+   },
+   "expected": "confirmed"
+  },
+  {
+   "label": "tempting inverse with good endpoint fit",
+   "candidate": {
+    "form": "inverse",
+    "a": 64.0,
+    "b": -400.0
+   },
+   "expected": "rejected"
+  }
+ ]
+}

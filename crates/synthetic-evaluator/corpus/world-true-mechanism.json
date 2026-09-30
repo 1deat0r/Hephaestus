@@ -1,0 +1,47 @@
+{
+ "id": "world-true-mechanism",
+ "world": {
+  "id": "world-true-mechanism",
+  "scenario": "true_mechanism",
+  "domain": [
+   10,
+   100
+  ],
+  "noise_sigma": 0.3,
+  "seed": 42,
+  "truth_form": "inverse",
+  "truth_a": 20.0,
+  "truth_b": 500.0,
+  "causal_effect_of_input": true
+ },
+ "observation_receipt_sha256": "d54ee5d951a6f0ecd10dcc6151ece20f6b2053c19ce6992c507eeb91414658f2",
+ "probes": [
+  {
+   "label": "exact hidden mechanism",
+   "candidate": {
+    "form": "inverse",
+    "a": 20.0,
+    "b": 500.0
+   },
+   "expected": "confirmed"
+  },
+  {
+   "label": "right form, drifted parameter",
+   "candidate": {
+    "form": "inverse",
+    "a": 25.0,
+    "b": 500.0
+   },
+   "expected": "rejected"
+  },
+  {
+   "label": "wrong form lookalike",
+   "candidate": {
+    "form": "linear",
+    "a": 30.0,
+    "b": 0.4
+   },
+   "expected": "rejected"
+  }
+ ]
+}

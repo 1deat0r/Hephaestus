@@ -109,12 +109,14 @@ fn anchor_present(root: &Path, target: &str) -> bool {
 }
 
 /// Validate the mappings. Returns reason-coded errors; an empty vec means
-/// the package's traceability holds.
+/// the package's traceability holds. With `check_rendered`, the three
+/// generated documents must also match a fresh render (drift fails).
 pub fn validate_traceability(
     requirements: &[Requirement],
     tests: &[AcceptanceCase],
     scopes: &ReleaseScopes,
     root: &Path,
+    check_rendered: bool,
 ) -> Vec<String> {
     let mut errors: Vec<String> = Vec::new();
 
@@ -183,6 +185,142 @@ pub fn validate_traceability(
 
     errors.extend(validate_scopes(requirements, scopes));
 
+    if check_rendered && errors.is_empty() {
+        errors.extend(generated_document_drift(requirements, tests, root));
+    }
+
+    errors
+}
+
+/// Render the three generated documents exactly as
+/// `tools/render_contract_docs.py` does (path, text).
+pub fn render_documents(
+    requirements: &[Requirement],
+    tests: &[AcceptanceCase],
+) -> Vec<(String, String)> {
+    let mut obligations = vec![
+        "# Normative obligation matrix".to_string(),
+        String::new(),
+        "Version 1.2 · 30 September 2026".to_string(),
+        String::new(),
+        "Each stable obligation below is normative and maps to its source section, enforcement owner and positive/negative runtime acceptance cases. Contract readiness is M0; runtime behavior is due at the stated milestone. This matrix is not evidence of implementation, scientific adequacy or exhaustive prose interpretation. Supplementary clauses refine the cited sources; unresolved conflicts block affected work.".to_string(),
+        String::new(),
+    ];
+    let mut trace = vec![
+        "# Requirements traceability".to_string(),
+        String::new(),
+        "Version 1.2 · 30 September 2026".to_string(),
+        String::new(),
+        "All entries are future obligations. Contract readiness and runtime acceptance are distinct. Exact clauses and cases are in `docs/OBLIGATIONS.md`.".to_string(),
+        String::new(),
+        "| Requirement | Section | Owner | Contract | Runtime | Acceptance |".to_string(),
+        "|---|---:|---|---|---|---|".to_string(),
+    ];
+    let by_id: std::collections::HashMap<&str, &AcceptanceCase> =
+        tests.iter().map(|t| (t.id.as_str(), t)).collect();
+
+    for r in requirements {
+        obligations.push(format!("<a id=\"{}\"></a>", r.id.to_lowercase()));
+        obligations.push(String::new());
+        obligations.push(format!("## {}", r.id));
+        obligations.push(String::new());
+        obligations.push(r.statement.clone());
+        obligations.push(String::new());
+        let supplement = match &r.supplement {
+            Some(sup) => format!(" Supplement: [{sup}](../{sup})."),
+            None => String::new(),
+        };
+        obligations.push(format!(
+            "**Source:** [{}](../{}).{}",
+            r.source_anchor, r.source_anchor, supplement
+        ));
+        obligations.push(String::new());
+        obligations.push(format!(
+            "**Enforcement:** {}. **Contract:** {}. **Runtime:** {}. **Acceptance:** {}.",
+            r.enforcement_service,
+            r.contract_milestone,
+            r.runtime_milestone,
+            r.acceptance_tests.join(", ")
+        ));
+        obligations.push(String::new());
+        for tid in &r.acceptance_tests {
+            let t = by_id[tid.as_str()];
+            obligations.push(format!("**Positive case:** {}", t.positive_case));
+            obligations.push(String::new());
+            obligations.push(format!("**Negative case:** {}", t.negative_case));
+            obligations.push(String::new());
+            obligations.push(format!("**Required outcome:** {}", t.expected));
+            obligations.push(String::new());
+        }
+        trace.push(format!(
+            "| {} | {} | {} | {} | {} | {} |",
+            r.id,
+            r.spec_section,
+            r.owner,
+            r.contract_milestone,
+            r.runtime_milestone,
+            r.acceptance_tests.join(", ")
+        ));
+    }
+
+    let mut acceptance = vec![
+        "# Acceptance tests".to_string(),
+        String::new(),
+        "Version 1.2 · 30 September 2026".to_string(),
+        String::new(),
+        format!(
+            "These {} runtime acceptance specifications have NOT RUN: the application is not included. A pass requires code/environment/input identities, commands, raw outputs and protected verification receipts. Reference metadata checks are reported separately.",
+            tests.len()
+        ),
+        String::new(),
+    ];
+    for t in tests {
+        acceptance.push(format!("## {} · {}", t.id, t.requirement_ids.join(", ")));
+        acceptance.push(String::new());
+        acceptance.push(t.title.clone());
+        acceptance.push(String::new());
+        acceptance.push(format!("**Setup:** {}", t.setup));
+        acceptance.push(String::new());
+        acceptance.push(format!("**Positive case:** {}", t.positive_case));
+        acceptance.push(String::new());
+        acceptance.push(format!("**Negative case:** {}", t.negative_case));
+        acceptance.push(String::new());
+        acceptance.push(format!("**Action:** {}", t.action));
+        acceptance.push(String::new());
+        acceptance.push(format!("**Required outcome:** {}", t.expected));
+        acceptance.push(String::new());
+        acceptance.push("**Status:** NOT RUN — runtime not included.".to_string());
+        acceptance.push(String::new());
+    }
+
+    let join = |lines: &[String]| {
+        let mut text = lines.join("\n");
+        text.push('\n');
+        text
+    };
+    vec![
+        ("docs/OBLIGATIONS.md".to_string(), join(&obligations)),
+        ("TRACEABILITY.md".to_string(), join(&trace)),
+        ("ACCEPTANCE_TESTS.md".to_string(), join(&acceptance)),
+    ]
+}
+
+/// Fail on any generated document that is missing or differs from a fresh
+/// render of the current mappings.
+pub fn generated_document_drift(
+    requirements: &[Requirement],
+    tests: &[AcceptanceCase],
+    root: &Path,
+) -> Vec<String> {
+    let mut errors = Vec::new();
+    for (path, text) in render_documents(requirements, tests) {
+        let matches = std::fs::read_to_string(root.join(&path))
+            .map(|existing| existing == text)
+            .unwrap_or(false);
+        if !matches {
+            errors.push(format!("GENERATED_DOCUMENT_DRIFT: {path}"));
+        }
+    }
     errors
 }
 

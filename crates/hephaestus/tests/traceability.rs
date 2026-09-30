@@ -25,7 +25,7 @@ fn errors(
     tests: &[AcceptanceCase],
     scopes: &hephaestus::traceability::ReleaseScopes,
 ) -> Vec<String> {
-    validate_traceability(reqs, tests, scopes, &root())
+    validate_traceability(reqs, tests, scopes, &root(), true)
 }
 
 fn rejects(errors: &[String], code: &str) {
@@ -158,4 +158,21 @@ fn missing_supplement_denied() {
         .expect("package has supplemented requirements");
     reqs[idx].supplement = Some("docs/NOT_A_SUPPLEMENT.md".to_string());
     rejects(&errors(&reqs, &tests, &scopes), "MISSING_SUPPLEMENT");
+}
+
+#[test]
+fn generated_text_drift_detected() {
+    let (mut reqs, tests, scopes) = package();
+    reqs[0].statement = "Silently changed meaning.".to_string();
+    rejects(&errors(&reqs, &tests, &scopes), "GENERATED_DOCUMENT_DRIFT");
+}
+
+#[test]
+fn rendered_documents_match_the_committed_files() {
+    let (reqs, tests, _scopes) = package();
+    for (path, text) in hephaestus::traceability::render_documents(&reqs, &tests) {
+        let existing = std::fs::read_to_string(root().join(&path))
+            .unwrap_or_else(|e| panic!("{path} readable: {e}"));
+        assert_eq!(existing, text, "drift in {path}");
+    }
 }

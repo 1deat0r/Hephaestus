@@ -67,7 +67,14 @@ Two-axis review, **3 passes of 3 budget** (parallel sub-agents, rules 1–10 pro
 2. **Composition contract:** the engine takes the *resolved* grant; binding a record's `grant_ref` is the caller/contract-layer's job; trusting-context construction is the protected layer's job and cannot yet be gated end-to-end (no model/runtime boundary in-repo) — spec Further Notes.
 3. **Deliberate tightening** vs pre-extraction T-004: malformed cost records with absent currency now deny (they could previously pass `Null == Null`) — deny-direction, documented, tested, decision row 09:45.
 4. **Credential exclusion is structural** (fixed shapes + exact key-set pins + goldens), not an end-to-end redaction test — no model context exists yet.
-5. **Retro (report-only, skipped):** (a) add `manifest-check` to `make ci-fast` so the pre-commit tier catches untracked→tracked gate gaps earlier — *gate-criteria change = architectural decision, wants a human call* (the commit-msg hook says as much); (b) LOG timestamps should be minted from `date -u`, not estimated — run-2 rows drifted ~60 min ahead (noted at run-3 bootstrap; run 3 re-anchored); (c) `writing-for-agents` not loaded for this retro body (degradation: structured report rows, not agent-facing prose); (d) an EXEC line (run-3 Phase 3) was omitted and backfilled — append-only LOG preserved, no rows rewritten.
+5. **Post-push CI catches (fixed in the follow-up commit):** (i) Phase 6
+   never ran the repo's remote-only `docs` job (`RUSTDOCFLAGS=-D warnings
+   cargo doc`) — an intra-doc link in the new module doc failed rustdoc;
+   (ii) `report-2026-09-30T07:45:00Z.md` was created by the Phase-8
+   rotation *after* the last green gate run, so it was tracked-but-
+   uncovered at commit time. Both fixed, and `cargo doc` now joins the
+   local verify set — the gap is recorded here rather than hidden.
+6. **Retro (report-only, skipped):** (a) add `manifest-check` to `make ci-fast` so the pre-commit tier catches untracked→tracked gate gaps earlier — *gate-criteria change = architectural decision, wants a human call* (the commit-msg hook says as much); (b) LOG timestamps should be minted from `date -u`, not estimated — run-2 rows drifted ~60 min ahead (noted at run-3 bootstrap; run 3 re-anchored); (c) `writing-for-agents` not loaded for this retro body (degradation: structured report rows, not agent-facing prose); (d) an EXEC line (run-3 Phase 3) was omitted and backfilled — append-only LOG preserved, no rows rewritten.
 6. **Accepted judgement-call smells:** `ref_pair(...).unwrap_or(("", -1))` sentinel (fail-closed for all real inputs); same-process determinism guards retained as nondeterminism tripwires alongside the goldens.
 7. **Nothing committed** — say "commit and push" to land all 19 staged paths (a commit touching `tools/runtime_allowlist.txt`/`gate_seal.sha256` must cite **ADR-024** per `.githooks/commit-msg`; AGENTS.md wants R-IDs/Checks/Limitations in the body).
 

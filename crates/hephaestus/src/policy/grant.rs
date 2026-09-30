@@ -1,7 +1,8 @@
 //! Typed capability grants (T-007).
 //!
 //! A grant binds one operation, its capability scope, destination, artifact
-//! identity, policy version, validity window, and approved cost. [`mint`] is
+//! identity, policy version, validity window, and approved cost.
+//! [`CapabilityGrant::mint`] is
 //! the standing local authority (AT-099): it validates inputs against the
 //! `authorization_grant` contract and a non-empty window, and yields an
 //! approved grant. Grants convert losslessly to and from the contract so the

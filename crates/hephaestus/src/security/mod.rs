@@ -6,3 +6,4 @@
 pub mod approval;
 pub mod artifact;
 pub mod digest;
+pub mod trust;

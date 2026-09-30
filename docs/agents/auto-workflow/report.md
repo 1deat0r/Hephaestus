@@ -68,7 +68,7 @@ Two-axis code-review (parallel sub-agents, rules 1–10 propagated), **3 passes 
 4. **AT-057's "retries only permitted operations"** deferred to T-011 (spec Out of Scope).
 5. **Accepted judgement-call smells:** hex `String` digests at the store seam; test temp-dir boilerplate (a Drop guard judged not worth test-only machinery); "ticket" in test headers = tracker vocabulary (`issue-tracker.md`), not glossary drift.
 6. **Decision log contradictions:** historical rows calling GLOSSARY manifest-frozen are superseded by a correction row (rows left unedited as an honest log).
-7. **Commit permission:** everything is **uncommitted** — say "commit and push" to land it under the project's standing rules (the commit-msg hook will require an ADR-024 citation for `ci.yml`/gate files; `AGENTS.md:11` R-IDs/Checks/Limitations apply).
+7. **Commit permission:** resolved — user said "commit and push"; landed as `e5de152` (ci job, ADR-024 cited, hooks green), `47e4760` (T-006 with R-IDs/Checks/Limitations), `d63d553` (agent docs) and pushed to `origin/main` (1194f49..d63d553). Working tree clean.
 8. **Retro (report-only, skipped):** (a) reviewers should quote current file bodies when confirming a remediation (would have caught the silently-failed replace in pass 2 instead of pass 3) — lives in skill files outside the repo, rule 6(c); (b) goal derivation still can't see `IMPLEMENTATION_PLAN.md` mechanically — same external-file limitation; (c) `writing-for-agents` style skill skipped for the retro body (degradation: output is structured report rows, not agent-facing prose).
 
 ## Decision log

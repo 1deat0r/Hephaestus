@@ -5,13 +5,13 @@
 PY := .venv/bin/python
 CARGO := cargo
 
-.PHONY: ci ci-fast fmt fmt-check clippy test-rust test-py verify test-package gen-check hooks hooks-check setup clean
+.PHONY: ci ci-fast fmt fmt-check clippy test-rust test-py verify test-package gen-check conflict-staged conflict-tree hooks hooks-check setup clean
 
 ## Run every environment-independent gate (mirrors CI; the single gate registry).
-ci: fmt-check clippy test-rust test-py ci-fast hooks-check
+ci: fmt-check clippy test-rust test-py conflict-tree ci-fast hooks-check
 
 ## Fast spec/doc freshness gates (.githooks/pre-commit runs exactly these).
-ci-fast: gen-check verify test-package
+ci-fast: gen-check verify test-package conflict-staged
 
 fmt:
 	$(CARGO) fmt --all
@@ -39,6 +39,26 @@ verify:
 
 test-package:
 	$(PY) -m unittest discover -s tests
+
+## Staged conflict markers + whitespace (pre-commit index context; ADR-024).
+## git grep rc: 0=markers found (fail), 1=clean, >=2=error — case explicitly.
+conflict-staged:
+	@git diff --cached --check
+	@git grep --cached -nE '^<{7} ' >/dev/null 2>&1; rc=$$?; \
+	case $$rc in \
+	0) echo "conflict-staged: FAIL — conflict markers staged:" >&2; git grep --cached -nE '^<{7} ' >&2; exit 1 ;; \
+	1) ;; \
+	*) echo "conflict-staged: git grep error (rc=$$rc)" >&2; exit $$rc ;; \
+	esac
+
+## Committed-tree conflict markers (backs up ci-fast against --no-verify; ADR-024).
+conflict-tree:
+	@git grep -nE '^<{7} ' -- . >/dev/null 2>&1; rc=$$?; \
+	case $$rc in \
+	0) echo "conflict-tree: FAIL — conflict markers in tracked files:" >&2; git grep -nE '^<{7} ' -- . >&2; exit 1 ;; \
+	1) ;; \
+	*) echo "conflict-tree: git grep error (rc=$$rc)" >&2; exit $$rc ;; \
+	esac
 
 ## One-time per clone: wire the committed git hooks.
 hooks:

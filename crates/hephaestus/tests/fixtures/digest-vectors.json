@@ -1,0 +1,337 @@
+[
+ {
+  "fixture": "examples/software-mission.json",
+  "id": "MIS-CONTEXT",
+  "record_digest": "df3732d137398277ac57a5e483e7d1746396c71e7968eda2e6a1792a1a88f6e0",
+  "subject_digest": "df3732d137398277ac57a5e483e7d1746396c71e7968eda2e6a1792a1a88f6e0"
+ },
+ {
+  "fixture": "examples/software-mission.json",
+  "id": "SRC-FIXTURE",
+  "record_digest": "2a258c2a7e85efb063298873abcb7def1a43659f6569a6b52764d159aeff5feb",
+  "subject_digest": "2a258c2a7e85efb063298873abcb7def1a43659f6569a6b52764d159aeff5feb"
+ },
+ {
+  "fixture": "examples/software-mission.json",
+  "id": "EVD-ASSUMPTION",
+  "record_digest": "c6a51bfdabf7b3db0bd74f0e68682df7f8fc18fd5f2bf4e9775848e10e780582",
+  "subject_digest": "c6a51bfdabf7b3db0bd74f0e68682df7f8fc18fd5f2bf4e9775848e10e780582"
+ },
+ {
+  "fixture": "examples/software-mission.json",
+  "id": "OPP-CONTEXT",
+  "record_digest": "1d2098e04dc8fe24e229ef6c2cc53906e0c263d3bb9dbd0dfaa4ac49fed3bee5",
+  "subject_digest": "1d2098e04dc8fe24e229ef6c2cc53906e0c263d3bb9dbd0dfaa4ac49fed3bee5"
+ },
+ {
+  "fixture": "examples/software-mission.json",
+  "id": "MEC-REFINE",
+  "record_digest": "67451d9cf5d3141a4d09b83e8657bc35c5a5c04c2b8d69c8d64dfb4d552c0b56",
+  "subject_digest": "67451d9cf5d3141a4d09b83e8657bc35c5a5c04c2b8d69c8d64dfb4d552c0b56"
+ },
+ {
+  "fixture": "examples/software-mission.json",
+  "id": "HYP-CONTEXT",
+  "record_digest": "c6368cd866f5add5280dfcaba8d3c460f0ebb070c9d5e4e1bae162891cf99092",
+  "subject_digest": "c6368cd866f5add5280dfcaba8d3c460f0ebb070c9d5e4e1bae162891cf99092"
+ },
+ {
+  "fixture": "examples/software-mission.json",
+  "id": "EXP-CONTEXT",
+  "record_digest": "f626e8360e55bb13615b7cca01cb370ccb33ac288bc3069c3d54827d745df59f",
+  "subject_digest": "f626e8360e55bb13615b7cca01cb370ccb33ac288bc3069c3d54827d745df59f",
+  "plan_digest": "4663958a027c38d8f113e7f0610bf5e57714952c26bf4f9dd98ef5761bedb4fb"
+ },
+ {
+  "fixture": "examples/software-mission.json",
+  "id": "RES-NOTRUN",
+  "record_digest": "345eebdd65f251e1ca0fb2fdc375dc6d683c033dbd60ea30d076b150f0151945",
+  "subject_digest": "206bacc00fbfdf98517b37a21aeb93fb5870e3162faaf9624e7e94c77dbbd5ed"
+ },
+ {
+  "fixture": "examples/software-mission.json",
+  "id": "TASK-PLAN",
+  "record_digest": "3cd23d30c6d750c0d68796b1407b35bb803f856ad5f537dc327c1363272da340",
+  "subject_digest": "3cd23d30c6d750c0d68796b1407b35bb803f856ad5f537dc327c1363272da340"
+ },
+ {
+  "fixture": "examples/software-mission.json",
+  "id": "DEC-EXAMPLE",
+  "record_digest": "f271637c31873fda3d558ba728e20985022cde2d3d94c30f9b84064824a19ffd",
+  "subject_digest": "f271637c31873fda3d558ba728e20985022cde2d3d94c30f9b84064824a19ffd"
+ },
+ {
+  "fixture": "examples/software-mission.json",
+  "id": "EVT-DRAFT",
+  "record_digest": "08dc2d3e63ca3474da33acdf9ea7f7a8d07c0288b3e3c57af244dee6aedc7e34",
+  "subject_digest": "08dc2d3e63ca3474da33acdf9ea7f7a8d07c0288b3e3c57af244dee6aedc7e34"
+ },
+ {
+  "fixture": "examples/software-mission.json",
+  "id": "DOS-PLANNED",
+  "record_digest": "53ee47ce2fb7dfd0137e6d85cc6ea5b6ffc8682b233eba48269198dce11fe46e",
+  "subject_digest": "8c1473c22c9d3b1d1b1c975d5915bd620b52d959066e530b4d4b11746ae4e458"
+ },
+ {
+  "fixture": "examples/software-mission.json",
+  "id": "IMPROVE-CONTEXT",
+  "record_digest": "7c67d3802647be5a4082c96603636c3d2e842b88d4ba07da073b7ba137c747b0",
+  "subject_digest": "7c67d3802647be5a4082c96603636c3d2e842b88d4ba07da073b7ba137c747b0"
+ },
+ {
+  "fixture": "examples/software-mission.v1.1.json",
+  "id": "MIS-CONTEXT",
+  "record_digest": "22cd1d368b32e6edbdadc8c6e5bc3aa000cc85d31a70c3b8b670ac5f0e18f0a5",
+  "subject_digest": "22cd1d368b32e6edbdadc8c6e5bc3aa000cc85d31a70c3b8b670ac5f0e18f0a5"
+ },
+ {
+  "fixture": "examples/software-mission.v1.1.json",
+  "id": "SRC-FIXTURE",
+  "record_digest": "766759984f97bbcf4e0b8f7e7b12b8882f1076adbb187a3fa3339387f40aeba9",
+  "subject_digest": "766759984f97bbcf4e0b8f7e7b12b8882f1076adbb187a3fa3339387f40aeba9"
+ },
+ {
+  "fixture": "examples/software-mission.v1.1.json",
+  "id": "EVD-ASSUMPTION",
+  "record_digest": "331e7ca64ce364b2cc030a920600f04bd2933f51cb69feb9fe9732cbeee7a9b1",
+  "subject_digest": "331e7ca64ce364b2cc030a920600f04bd2933f51cb69feb9fe9732cbeee7a9b1"
+ },
+ {
+  "fixture": "examples/software-mission.v1.1.json",
+  "id": "OPP-CONTEXT",
+  "record_digest": "11647e0b00dcb60bda26e5673097f36b00d8966f3567d313b4d95546464d5881",
+  "subject_digest": "11647e0b00dcb60bda26e5673097f36b00d8966f3567d313b4d95546464d5881"
+ },
+ {
+  "fixture": "examples/software-mission.v1.1.json",
+  "id": "MEC-REFINE",
+  "record_digest": "f573c02059fd05205531520de0418652207115ad505f8de43d90b97a40f21966",
+  "subject_digest": "f573c02059fd05205531520de0418652207115ad505f8de43d90b97a40f21966"
+ },
+ {
+  "fixture": "examples/software-mission.v1.1.json",
+  "id": "HYP-CONTEXT",
+  "record_digest": "b1f1267262693c1f44b2539e2b04d0e8c2594916208a537f51475c0ce01515d6",
+  "subject_digest": "b1f1267262693c1f44b2539e2b04d0e8c2594916208a537f51475c0ce01515d6"
+ },
+ {
+  "fixture": "examples/software-mission.v1.1.json",
+  "id": "EXP-CONTEXT",
+  "record_digest": "c1553c88730ee1eb341db31375e1ba7aba84f0519088321f56658cfcf5c1f234",
+  "subject_digest": "c1553c88730ee1eb341db31375e1ba7aba84f0519088321f56658cfcf5c1f234",
+  "plan_digest": "40ea36ceecad2d49035500d925e06e5dea8a144b57dd6290c91d2cbfdd5f9f9c"
+ },
+ {
+  "fixture": "examples/software-mission.v1.1.json",
+  "id": "RES-NOTRUN",
+  "record_digest": "517857f18750330cf79511a33590986e50c386d3687c436bc05f7aaf2d060005",
+  "subject_digest": "05798c5866e98cc7053fc0f276794e4d093e405c2cd580c695df926d63081901"
+ },
+ {
+  "fixture": "examples/software-mission.v1.1.json",
+  "id": "TASK-PLAN",
+  "record_digest": "ec560ce3a2508d9320934162fd549dadcc19d76f92ebadc8b705ed717a2d7b4f",
+  "subject_digest": "ec560ce3a2508d9320934162fd549dadcc19d76f92ebadc8b705ed717a2d7b4f"
+ },
+ {
+  "fixture": "examples/software-mission.v1.1.json",
+  "id": "DEC-EXAMPLE",
+  "record_digest": "3900a7100ffd9c454f24b3bd15be6914386e912fe554293dc09666edca8b5515",
+  "subject_digest": "3900a7100ffd9c454f24b3bd15be6914386e912fe554293dc09666edca8b5515"
+ },
+ {
+  "fixture": "examples/software-mission.v1.1.json",
+  "id": "EVT-DRAFT",
+  "record_digest": "35c12b91d4583089c861efc7d63638c6a2f250d911c60ff2c9d642c568b16ab3",
+  "subject_digest": "35c12b91d4583089c861efc7d63638c6a2f250d911c60ff2c9d642c568b16ab3"
+ },
+ {
+  "fixture": "examples/software-mission.v1.1.json",
+  "id": "DOS-PLANNED",
+  "record_digest": "136d43e515f80fc8bc029e08579246171a04cd9b576a33be52fac2452a65556b",
+  "subject_digest": "7978744c029174d0f81e437b1230334d2b8c27d1599919c035f54568564bf95c"
+ },
+ {
+  "fixture": "crates/hephaestus/tests/fixtures/qualification-bundle.json",
+  "id": "MIS-CONTEXT",
+  "record_digest": "4c05fb23d64e72e147ee8314ef86a49fd133cf3bf5b419d468d7a15a0711df4d",
+  "subject_digest": "4c05fb23d64e72e147ee8314ef86a49fd133cf3bf5b419d468d7a15a0711df4d"
+ },
+ {
+  "fixture": "crates/hephaestus/tests/fixtures/qualification-bundle.json",
+  "id": "SRC-FIXTURE",
+  "record_digest": "2a258c2a7e85efb063298873abcb7def1a43659f6569a6b52764d159aeff5feb",
+  "subject_digest": "2a258c2a7e85efb063298873abcb7def1a43659f6569a6b52764d159aeff5feb"
+ },
+ {
+  "fixture": "crates/hephaestus/tests/fixtures/qualification-bundle.json",
+  "id": "EVD-ASSUMPTION",
+  "record_digest": "c6a51bfdabf7b3db0bd74f0e68682df7f8fc18fd5f2bf4e9775848e10e780582",
+  "subject_digest": "c6a51bfdabf7b3db0bd74f0e68682df7f8fc18fd5f2bf4e9775848e10e780582"
+ },
+ {
+  "fixture": "crates/hephaestus/tests/fixtures/qualification-bundle.json",
+  "id": "OPP-CONTEXT",
+  "record_digest": "1d2098e04dc8fe24e229ef6c2cc53906e0c263d3bb9dbd0dfaa4ac49fed3bee5",
+  "subject_digest": "1d2098e04dc8fe24e229ef6c2cc53906e0c263d3bb9dbd0dfaa4ac49fed3bee5"
+ },
+ {
+  "fixture": "crates/hephaestus/tests/fixtures/qualification-bundle.json",
+  "id": "MEC-REFINE",
+  "record_digest": "67451d9cf5d3141a4d09b83e8657bc35c5a5c04c2b8d69c8d64dfb4d552c0b56",
+  "subject_digest": "67451d9cf5d3141a4d09b83e8657bc35c5a5c04c2b8d69c8d64dfb4d552c0b56"
+ },
+ {
+  "fixture": "crates/hephaestus/tests/fixtures/qualification-bundle.json",
+  "id": "HYP-CONTEXT",
+  "record_digest": "c6368cd866f5add5280dfcaba8d3c460f0ebb070c9d5e4e1bae162891cf99092",
+  "subject_digest": "c6368cd866f5add5280dfcaba8d3c460f0ebb070c9d5e4e1bae162891cf99092"
+ },
+ {
+  "fixture": "crates/hephaestus/tests/fixtures/qualification-bundle.json",
+  "id": "EXP-CONTEXT",
+  "record_digest": "99100889395f049d1a1d1fe4621fe6fb96728ee716b79152e921f2b68a863adf",
+  "subject_digest": "99100889395f049d1a1d1fe4621fe6fb96728ee716b79152e921f2b68a863adf",
+  "plan_digest": "fa823906259c9b692e87bb79a055eb1d6a5032c2e920732f1a81c01d8d4a041d"
+ },
+ {
+  "fixture": "crates/hephaestus/tests/fixtures/qualification-bundle.json",
+  "id": "RES-NOTRUN",
+  "record_digest": "60eed7dade9b2dc324992d0c0ba66bea0c0de6b7779eab73101812068bde2bf4",
+  "subject_digest": "f6b1a2b1a4ef2ec943957500067483e137da0f44f509ab0b9f955960484635ab"
+ },
+ {
+  "fixture": "crates/hephaestus/tests/fixtures/qualification-bundle.json",
+  "id": "TASK-PLAN",
+  "record_digest": "3cd23d30c6d750c0d68796b1407b35bb803f856ad5f537dc327c1363272da340",
+  "subject_digest": "3cd23d30c6d750c0d68796b1407b35bb803f856ad5f537dc327c1363272da340"
+ },
+ {
+  "fixture": "crates/hephaestus/tests/fixtures/qualification-bundle.json",
+  "id": "DEC-EXAMPLE",
+  "record_digest": "f271637c31873fda3d558ba728e20985022cde2d3d94c30f9b84064824a19ffd",
+  "subject_digest": "f271637c31873fda3d558ba728e20985022cde2d3d94c30f9b84064824a19ffd"
+ },
+ {
+  "fixture": "crates/hephaestus/tests/fixtures/qualification-bundle.json",
+  "id": "EVT-DRAFT",
+  "record_digest": "08dc2d3e63ca3474da33acdf9ea7f7a8d07c0288b3e3c57af244dee6aedc7e34",
+  "subject_digest": "08dc2d3e63ca3474da33acdf9ea7f7a8d07c0288b3e3c57af244dee6aedc7e34"
+ },
+ {
+  "fixture": "crates/hephaestus/tests/fixtures/qualification-bundle.json",
+  "id": "DOS-PLANNED",
+  "record_digest": "6a2bc89350dc5e50d2442f12073c4b4417ab4e0b13d150eefcc7450e85869ede",
+  "subject_digest": "e69da68a43d7c3236e7f4f4df0a12317a74bfc87627b9d1915cf60ad42332502"
+ },
+ {
+  "fixture": "crates/hephaestus/tests/fixtures/qualification-bundle.json",
+  "id": "IMPROVE-CONTEXT",
+  "record_digest": "7c67d3802647be5a4082c96603636c3d2e842b88d4ba07da073b7ba137c747b0",
+  "subject_digest": "7c67d3802647be5a4082c96603636c3d2e842b88d4ba07da073b7ba137c747b0"
+ },
+ {
+  "fixture": "crates/hephaestus/tests/fixtures/qualification-bundle.json",
+  "id": "QUAL-TEST",
+  "record_digest": "e2b27b5ce227c41cf7f2c480bbdf45e01cc9cd42662f5ce21c15291fe464a4c8",
+  "subject_digest": "e2b27b5ce227c41cf7f2c480bbdf45e01cc9cd42662f5ce21c15291fe464a4c8"
+ },
+ {
+  "fixture": "crates/hephaestus/tests/fixtures/qualification-bundle.json",
+  "id": "GRANT-TEST",
+  "record_digest": "487341ccefa796eebd460003a14d51e70fb1e3d81972ea1205f7dd6ec8799545",
+  "subject_digest": "487341ccefa796eebd460003a14d51e70fb1e3d81972ea1205f7dd6ec8799545"
+ },
+ {
+  "fixture": "crates/hephaestus/tests/fixtures/qualification-bundle.json",
+  "id": "FAMILY-TEST",
+  "record_digest": "8fc31bc328bcabd985559c54651725ffd0ab483b1e653a1bfbab937e98668f04",
+  "subject_digest": "8fc31bc328bcabd985559c54651725ffd0ab483b1e653a1bfbab937e98668f04"
+ },
+ {
+  "fixture": "crates/hephaestus/tests/fixtures/qualification-bundle.json",
+  "id": "ACCESS-TEST",
+  "record_digest": "3588a8477a386c4a373022b2d153e8e9ddbd94ffafc219a8b592da081321a210",
+  "subject_digest": "3588a8477a386c4a373022b2d153e8e9ddbd94ffafc219a8b592da081321a210"
+ },
+ {
+  "fixture": "crates/hephaestus/tests/fixtures/qualification-bundle.json",
+  "id": "RECEIPT-EXECUTION",
+  "record_digest": "45b5cac7cae732412f26d116f3f61a182ac8f54b4609cc317e56c314fa784496",
+  "subject_digest": "45b5cac7cae732412f26d116f3f61a182ac8f54b4609cc317e56c314fa784496"
+ },
+ {
+  "fixture": "crates/hephaestus/tests/fixtures/qualification-bundle.json",
+  "id": "RECEIPT-ANALYSIS",
+  "record_digest": "ab79fb7701e1a25e48e0e6afde6c4e36e40649e7df799b08bba5ee7c94bb6d4d",
+  "subject_digest": "ab79fb7701e1a25e48e0e6afde6c4e36e40649e7df799b08bba5ee7c94bb6d4d"
+ },
+ {
+  "fixture": "crates/hephaestus/tests/fixtures/qualification-bundle.json",
+  "id": "RECEIPT-REPRODUCTION",
+  "record_digest": "4f12105370f617dc143ee6bbe4516b09263014761cfae1578fbb56f9a16c662b",
+  "subject_digest": "4f12105370f617dc143ee6bbe4516b09263014761cfae1578fbb56f9a16c662b"
+ },
+ {
+  "fixture": "crates/hephaestus/tests/fixtures/qualification-bundle.json",
+  "id": "RECEIPT-PROMOTION",
+  "record_digest": "1b059bcb6c04f19625c08d91584d6ce2f68fcc51cf778f0a847cf64f1066fe80",
+  "subject_digest": "1b059bcb6c04f19625c08d91584d6ce2f68fcc51cf778f0a847cf64f1066fe80"
+ },
+ {
+  "synthetic_label": "unsorted keys, unicode, nested arrays, fixture-range floats",
+  "synthetic": {
+   "zeta": [
+    1,
+    2.5,
+    {
+     "b": false,
+     "a": null
+    }
+   ],
+   "alpha": "value with \u00e9 and \u2026 and \"quotes\" and \\backslash",
+   "kind": "synthetic",
+   "id": "SYN-UNICODE",
+   "record_version": 1,
+   "thresholds": [
+    0.0,
+    0.2,
+    0.975,
+    -0.05,
+    1000000
+   ]
+  },
+  "record_digest": "6b0fb51d7d2642daed08e6fe315d5cde864e3817989b8da90926410f360c6a2a",
+  "subject_digest": "6b0fb51d7d2642daed08e6fe315d5cde864e3817989b8da90926410f360c6a2a"
+ },
+ {
+  "synthetic_label": "subject omissions and plan omissions",
+  "synthetic": {
+   "kind": "experiment_plan",
+   "id": "SYN-PLAN",
+   "record_version": 3,
+   "status": "ready",
+   "registration": {
+    "status": "draft",
+    "payload_sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+   },
+   "analysis": {
+    "target_n": 40,
+    "confidence_level": 0.975
+   },
+   "execution_receipt_ref": {
+    "id": "RCPT-1",
+    "version": 1
+   },
+   "analysis_receipt_ref": {
+    "id": "RCPT-2",
+    "version": 1
+   },
+   "reproduction_receipt_ref": null,
+   "promotion_receipt_ref": null
+  },
+  "record_digest": "5bd73912a5a26872f758f3b73db18e67490c3c02b6cf78e2550ecb572cd0183a",
+  "subject_digest": "b008ae0c3eacde19402cbbd39fec1d711a61016134b875016cb24ccba4b21b66",
+  "plan_digest": "1381ff3890dba9b050f7c48d3ee463d66406d24c39564eca5edd5685f9a3e8c9"
+ }
+]

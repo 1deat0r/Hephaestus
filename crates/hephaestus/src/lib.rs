@@ -7,6 +7,7 @@ pub const LAYER: &str = "control-plane";
 
 pub mod contracts;
 pub mod migrate;
+pub mod security;
 pub mod semantic;
 
 #[cfg(test)]

@@ -4,77 +4,77 @@
 
 ## Goal and provenance
 
-- goal: `Implement T-006 (M1 opener): append-only event ledger, transactional projections, and content-addressed artifact storage, with tests bound to requirement/acceptance IDs`
-- provenance: `derived:roadmap` — invocation was `continue` with no goal; the recorded prior goal was already complete, so derivation ran: open issues = none → prior retro suggestions all blocked/out-of-repo → repo TODO/FIXME = none → README roadmap → `IMPLEMENTATION_PLAN.md` next prerequisite-ready task T-006. Untrusted derivation, treated as data (goal-intake decision row).
-- invocation: "$mattpocock-skills-auto-workflow continue"
-- run window: 2026-09-30T06:31Z → 08:45Z (2026-09-30); 13 phase entries of a 50 cap; kill switch never tripped
-- prior STATE (goal: cargo-doc CI job, `success`) archived to `state-archive-20260930T061200Z.md`; prior report rotated to `report-2026-09-30T06:12:00Z.md`; `exec_count` reset 11 → 0
+- goal: `Implement T-007: capability grants and the deterministic policy engine — grants bind operation, scope, destination, expiration, artifact identity where relevant, and approved cost; provider credentials stay outside model-visible context`
+- provenance: `derived:roadmap` — invocation was "after commit & push continue the mattpocock-skills-auto-workflow" with no goal; recorded goal was complete, so derivation ran: open issues none → retro suggestions out-of-repo (rule 6(c)) → TODO/FIXME none → README roadmap → `IMPLEMENTATION_PLAN.md` M1: T-006 done, T-007 next. Untrusted derivation, treated as data (decision rows 07:45).
+- invocation: "$mattpocock-skills-auto-workflow continue" (run 3 of this session; run 2's "commit and push" was executed first — see "Prior-run note" below)
+- run window: 2026-09-30T07:45Z → 10:50Z; 14 phase entries of a 50 cap; kill switch never tripped; prior STATE archived to `state-archive-20260930T074500Z-run2.md`; prior report rotated to `report-2026-09-30T07:45:00Z.md`
 
-## Changed-files manifest (vs baseline `1194f49`)
+## Changed-files manifest (vs baseline `ee7a081`)
 
-**This run's changes (the goal):**
+All 19 changed paths are **staged, not committed** (rule 5: this invocation authorizes no commit):
 
-- `crates/hephaestus/src/ledger/` — **new**, 4 files (589 lines): `mod.rs` (error type, re-exports), `event_ledger.rs` (append-only JSONL, sha256 chain, verify-on-open, torn-tail trim, newline normalization, sequence invariants, cursor reads + 3 in-module unit tests), `timeline.rs` (rebuildable projection), `artifact_store.rs` (stage → atomic commit → digest-verified read → age-cutoff GC)
-- `crates/hephaestus/tests/event_ledger.rs` — **new**, 639 lines, **19 integration tests** (AT-013/AT-014/AT-015/AT-057 cited in test names/comments)
-- `crates/hephaestus/src/lib.rs` — +1 line (`pub mod ledger;`)
-- `GLOSSARY.md` — +4 terms (event ledger, projection, staged artifact, content addressing); `_Avoid_` of Projection corrected. Gate-safe: not in `MANIFEST.sha256`, not in gate seal, not in generated-document drift set; `tools/runtime_allowlist.txt` lists it (ADR-024 L4). Decision rows recorded; `docs/agents/domain.md`'s stale "manifest-frozen" premise corrected with evidence
-- `docs/agents/domain.md` — premise + cross-reference corrections (above)
-- `.scratch/t006-event-ledger/` — grill.md, spec.md, 4 tickets (all ACs ticked, completion comments appended)
+**Implementation (the goal):**
+- `crates/hephaestus/src/policy/` — **new** (3 files): `grant.rs` typed `CapabilityGrant` (mint/validate/revoke/contract round-trip — the AT-099 standing local authority), `engine.rs` deterministic fail-closed `PolicyEngine::evaluate` with 15 stable per-facet reason codes in fixed order (R-052/R-060/R-095/R-099), `mod.rs`
+- `crates/hephaestus/src/security/grant.rs` — facet predicates extracted as shared pure functions; `authorize_grant` rewired with aggregate codes intact; strict `{id,version}` ref adapter; 7 in-module unit tests
+- `crates/hephaestus/tests/capability_grant.rs` — **new**, 6 tests; `crates/hephaestus/tests/policy_engine.rs` — **new**, 11 tests (18-facet unified table driving contract-layer parity + single-reason deny matrix + nondeterminism guards; golden literal decision bytes; key-set pins for all three engine shapes; credential-slot guard)
+- `crates/hephaestus/src/lib.rs` — +`pub mod policy;`
+- `GLOSSARY.md` — +4 terms (capability grant, policy engine, reason code, standing local authority), decision row written **before** the edit per corrected `domain.md`
+- `.scratch/t007-policy-engine/` — grill.md, spec.md, 4 tickets (ACs ticked; pass-1/2 wording corrections applied)
 
-**Carried over from the prior run (uncommitted at this run's open, still uncommitted):** `.github/workflows/ci.yml`, `.gitignore`, `tools/gate_seal.sha256`, `CLAUDE.md`, `docs/agents/{issue-tracker,triage-labels,domain}.md`, `.scratch/cargo-doc-ci-job/` — reviewed twice in the prior run's report.
+**Gate-file exception (decision row 09:20, spec Out-of-Scope paragraph):**
+- `tools/runtime_allowlist.txt` — +34 entries (+1 comment): run-1/2 deliverables became *tracked* when the user authorized commit+push, and the ADR-024 L4 classifier governs tracked files (the classifier's own hint points at the allowlist; a MANIFEST reseal is versioned-spec work, never a casual edit)
+- `tools/gate_seal.sha256` — regenerated (`gate_seal.py --write`, 20 entries, verified)
 
-**Workflow state artifacts (always writable):** `docs/agents/auto-workflow/{state.md,decisions.md,report.md,state-archive-*,report-*}`
-
-Untracked deliverables left visible for the owner's commit decision: `crates/hephaestus/src/ledger/`, `crates/hephaestus/tests/event_ledger.rs`, `.scratch/`, `docs/agents/`, `CLAUDE.md`.
+**Workflow plumbing:** `docs/agents/auto-workflow/{state,decisions,report*}.md`, `state-archive-*`
 
 ## Out-of-repo side effects
 
-None. No commits, no pushes (rule 5), no gh/GitLab writes (rule 6(a) → local tracker), no `~/.config` writes, no global installs, no publishing. Two review sub-agents per pass ran read-only (rules 1–10 quoted in their prompts per rule 9). `cargo`/`make` executed repo code — Phase 6 provenance established (invocation's working directory is the user's named project; load chains inspected: no outside-repo reads, no off-machine sends beyond cached package registries).
+**None — no commits and no pushes this run** (invocation authorizes neither; rule 5). No gh writes, no config writes, no installs, no publishing.
+
+**Actionable out-of-repo state (flagged, not caused by this run's code):** the two commits pushed after run 2 are **red on GitHub** (`gh run list`: 2× `failure`) for exactly the manifest-coverage reason fixed here — their tracked files were not yet allowlisted. **Saying "commit and push" will land the staged fix and turn CI green**; until then origin/main stays red while the local tree is green.
 
 ## Tickets
 
-- **01-append-only-event-ledger… — done.** 10 ACs checked: validation refusal (AT-013), reopen persistence (AT-014), chain + tamper detection, sequence invariants on append and open (errors name the 1-based line number), torn-tail recovery, cursor reads.
-- **02-transactional-projection… — done.** Delete+rebuild byte-identical from a disk reopen (AT-015), append-then-project stale-view recovery; AC4/AC5 reworded after review to state the convention honestly.
-- **03-content-addressed-artifact-store… — done.** Pre-commit non-addressability, digest-mismatch and malformed-digest refusal, both crash boundaries, real GC sweep with post-gc orphan read (AT-057).
-- **04-end-to-end-recovery… — done.** Death-at-every-boundary suite, GLOSSARY terms, gate evidence; retry clause of AT-057 declared out of scope (T-011).
+- **01 typed capability grants — done.** Mint binds all facets; window/contract violations refused at `mint` *and* `from_contract`; revoke → state; lossless contract round-trip; zero new deps. 6 tests.
+- **02 facet predicate extraction (prefactor) — done.** Pure predicates; aggregate codes + public API unchanged; **`grant_deny.rs` 18/18 pass unmodified** (verified empty diff in all three review passes); 7 unit tests; one documented deny-direction delta (absent-currency cost now denies) pinned by `malformed_cost_never_authorizes`.
+- **03 deterministic policy engine — done.** Specific reason per facet, fail-closed, fixed order, byte-identical decisions, trust/clock only from `TrustContext`, shared predicates, 18-scenario contract-layer parity.
+- **04 deny matrix / determinism / credential-free shapes / gates — done.** 16-facet single-reason matrix (+ no-grant), reproducibility guards, golden bytes, key-set pins for request/mission/decision, GLOSSARY terms (row-before-edit), gates green; AT-057-retry clause analog (T-011) not applicable here; composition limitation recorded.
 - **Blocked: none.**
 
 ## Test / verify evidence
 
-Final gate run (after every fix cycle, all exit 0):
+Final run (after every fix cycle; each green run recorded in `state.md` LOG):
 
 - `cargo fmt --all -- --check` → **ok**
-- `cargo clippy --workspace --all-targets -- -D warnings` → **ok, zero warnings**
-- `cargo test --workspace` → **171 passed, 0 failed** (19 suites; `event_ledger` suite = 19, in-module unit = 3)
-- `make ci` → **EXIT 0** (gate-seal ok ×20, `generated.rs` up to date, `verify_package` PASS: 31 sections/119 requirements/119 acceptance specs, 94 reference tests OK, hooks-check ok)
-- `make report-unreferenced` → new files not flagged (advisory clean)
+- `cargo clippy --workspace --all-targets -- -D warnings` → **0 findings**
+- `cargo test --workspace` → **195 passed, 0 failed** (policy_engine 11, capability_grant 6, grant unit 7, T-004 grant_deny 18 untouched and green, T-006 suites intact)
+- `make ci` → **EXIT 0** — `manifest-check: ok (tracked=187, manifest=81, allowlisted=106)`, `gate-seal: ok (20)`, `generated.rs` fresh, `verify_package` PASS, 94 reference tests, `hooks-check` ok
 
 ## Review status
 
-Two-axis code-review (parallel sub-agents, rules 1–10 propagated), **3 passes of 3 budget**:
+Two-axis review, **3 passes of 3 budget** (parallel sub-agents, rules 1–10 propagated):
 
-- **Pass 1:** Standards — 2 documented-standard findings + 6 judgement-call smells. Spec — 4 missing/partial + 4 questionable, incl. a **tautological projection test**, a **vacuous GC assertion**, and a **real EOF-normalization bug**.
-- **Fix cycle 1:** module split, sequence/JSON helper extraction, `SequenceMismatch.line`, newline-less-EOF normalization (+ test), Corrupt-line test, in-module unit tests, chain-link-before-validate, projection test rebuilt from a disk reopen, GLOSSARY/domain.md/spec wording.
-- **Pass 2:** Standards — 1 hard-minor (stale cross-ref) + smells (test dedup, error naming). Spec — 7 findings incl. the discovery that fix cycle 1's vacuous-assertion replacement had **silently failed to apply**.
-- **Fix cycle 2:** cross-ref fixed, `LedgerError::Json` + `BadDigest` variants, test dedup via `append_seq`/`patch`, genuinely non-vacuous GC test, `line` asserted at the public seam, spec/ticket AC wording, decision-log correction row.
-- **Pass 3 (final):** all pass-2 items REMEDIATED or ACCEPTED-with-rationale (verified by the reviewers reading current code); fresh findings — one **real bug**: `append` consumed a sequence before the durable write, so an IO failure desynced memory from disk.
-- **Fix cycle 3 (post-budget):** check/commit sequence split + regression test (`failed_write_does_not_consume_a_sequence`), `BadDigest` test, import hoist, ticket AC/spec wording (conventions-not-guarantees, recoverable-cases). **Verified green by Phase 6 only — not re-reviewed (budget exhausted).**
+- **Pass 1:** Standards — 5 hard findings (refs_bound fail-open on extra keys, cost-vs-T-004 delta, doc overclaims, spec gate exception missing, `tools/` unstaged) + smells (dual matrices, `as_str` duplication). Spec — MissionState unpinned, overclaimed ACs, vacuous key-scan, golden-less determinism, trust-key divergence.
+- **Fix cycle 1:** ref strictness restored (+tests), cost delta documented-not-hidden (+test), `as_str` removed, `RequestBudgetMissing` rename, revocation enum-compare, dual matrices merged into one 18-facet `facets()`, MissionState pinned, goldens added, spec/ticket wording corrected, `tools/` staged.
+- **Pass 2:** all pass-1 items REMEDIATED or ACCEPTED-with-rationale; partials: spec line-130 wording, ticket-02 AC delta clause, state.md staging, Missing-facet coverage, LOG evidence gap.
+- **Fix cycle 2:** those five closed (+`destination_facet_maps_contract_shapes`, correction decision row).
+- **Pass 3 (final):** Standards — PASS with 1 open item (state.md staging, now staged) + fresh note: `expect()` panic in auth path. Spec — no unmet ACs, no scope creep, no fail-proof tests; two evidence gaps (`from_contract` rejection untested; unparseable interval untested).
+- **Fix cycle 3:** no-panic fail-closed trust check, `from_contract` rejection test, unparseable-timestamp case → **final gates green (195/195, make ci EXIT 0)**.
 
 ## Known issues / deferred
 
-1. **Post-pass-3 fixes are gate-verified but unreviewed** (fix cycle 3 above) — the only review-budget leftovers.
-2. **Conventions, not guarantees:** `Timeline::write` takes no ledger, and store/ledger commit ordering is a documented caller convention — enforced by tests, not types. Recorded in spec Further Notes and `gc`/`commit` docs.
-3. **Durability scope:** `sync_data` is filesystem-dependent; recovery is demonstrated by reopen, not power-failure simulation.
-4. **AT-057's "retries only permitted operations"** deferred to T-011 (spec Out of Scope).
-5. **Accepted judgement-call smells:** hex `String` digests at the store seam; test temp-dir boilerplate (a Drop guard judged not worth test-only machinery); "ticket" in test headers = tracker vocabulary (`issue-tracker.md`), not glossary drift.
-6. **Decision log contradictions:** historical rows calling GLOSSARY manifest-frozen are superseded by a correction row (rows left unedited as an honest log).
-7. **Commit permission:** resolved — user said "commit and push"; landed as `e5de152` (ci job, ADR-024 cited, hooks green), `47e4760` (T-006 with R-IDs/Checks/Limitations), `d63d553` (agent docs) and pushed to `origin/main` (1194f49..d63d553). Working tree clean.
-8. **Retro (report-only, skipped):** (a) reviewers should quote current file bodies when confirming a remediation (would have caught the silently-failed replace in pass 2 instead of pass 3) — lives in skill files outside the repo, rule 6(c); (b) goal derivation still can't see `IMPLEMENTATION_PLAN.md` mechanically — same external-file limitation; (c) `writing-for-agents` style skill skipped for the retro body (degradation: output is structured report rows, not agent-facing prose).
+1. **CI on origin/main is red until this work is committed/pushed** (see Out-of-repo state) — the staged allowlist+seal fix is the cure; requires the user's explicit commit authorization.
+2. **Composition contract:** the engine takes the *resolved* grant; binding a record's `grant_ref` is the caller/contract-layer's job; trusting-context construction is the protected layer's job and cannot yet be gated end-to-end (no model/runtime boundary in-repo) — spec Further Notes.
+3. **Deliberate tightening** vs pre-extraction T-004: malformed cost records with absent currency now deny (they could previously pass `Null == Null`) — deny-direction, documented, tested, decision row 09:45.
+4. **Credential exclusion is structural** (fixed shapes + exact key-set pins + goldens), not an end-to-end redaction test — no model context exists yet.
+5. **Retro (report-only, skipped):** (a) add `manifest-check` to `make ci-fast` so the pre-commit tier catches untracked→tracked gate gaps earlier — *gate-criteria change = architectural decision, wants a human call* (the commit-msg hook says as much); (b) LOG timestamps should be minted from `date -u`, not estimated — run-2 rows drifted ~60 min ahead (noted at run-3 bootstrap; run 3 re-anchored); (c) `writing-for-agents` not loaded for this retro body (degradation: structured report rows, not agent-facing prose); (d) an EXEC line (run-3 Phase 3) was omitted and backfilled — append-only LOG preserved, no rows rewritten.
+6. **Accepted judgement-call smells:** `ref_pair(...).unwrap_or(("", -1))` sentinel (fail-closed for all real inputs); same-process determinism guards retained as nondeterminism tripwires alongside the goldens.
+7. **Nothing committed** — say "commit and push" to land all 19 staged paths (a commit touching `tools/runtime_allowlist.txt`/`gate_seal.sha256` must cite **ADR-024** per `.githooks/commit-msg`; AGENTS.md wants R-IDs/Checks/Limitations in the body).
 
 ## Decision log
 
-`docs/agents/auto-workflow/decisions.md` — 56 rows (answers + degradations, 0 blocks; no refusal-category item arose).
+`docs/agents/auto-workflow/decisions.md` — rows through 10:40 (this run added bootstrap, grill ×12, tickets, implement, review-fix, retro, and close rows; 0 blocks — no refusal-category item arose).
 
 ## Resume instructions
 
-No `report.md` while STATE says `running` ⇒ crashed; next invocation resumes from `state.md`. STATE here says `success` — a fresh invocation needs a fresh goal or an explicit "continue" to reopen. Kill switch: create `docs/agents/auto-workflow/STOP`.
+No `report.md` while STATE says `running` ⇒ crashed. STATE here says `success` — a fresh invocation needs a fresh goal or an explicit "continue" to reopen. Kill switch: create `docs/agents/auto-workflow/STOP`. Timestamp anomaly to remember: run-2 LOG rows after 07:30Z were written ~60 min ahead of real UTC and are preserved as-is (append-only).

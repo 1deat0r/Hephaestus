@@ -1,18 +1,18 @@
 ## STATE
 status: success
 origin: session
-goal: Implement T-007: capability grants and the deterministic policy engine — grants bind operation, scope, destination, expiration, artifact identity where relevant, and approved cost; provider credentials stay outside model-visible context
+goal: Implement T-006 (M1 opener): append-only event ledger, transactional projections, and content-addressed artifact storage, with tests bound to requirement/acceptance IDs
 goal_source: derived:roadmap
 phase: 8
-fixed_point: ee7a08130090080256da8078dcbf3e934b84f8dd
-spec: none
-baseline: ee7a08130090080256da8078dcbf3e934b84f8dd + (clean porcelain at new open)
-tickets: 01=done, 02=done, 03=done, 04=done
-edges: 1->3, 2->3, 3->4
-attempts: 01=1, 02=1, 03=1, 04=3
-exec_count: 14
+fixed_point: 1194f49917512681ba01451a2257ee0f76250af7
+spec: .scratch/t006-event-ledger/spec.md
+baseline: 1194f49917512681ba01451a2257ee0f76250af7 + (porcelain at new open: M .github/workflows/ci.yml, M .gitignore, M tools/gate_seal.sha256, ?? .scratch/, ?? CLAUDE.md, ?? docs/agents/ — includes prior run's uncommitted work)
+tickets: 01=done, 02=done, 03=done, 04=ready
+edges: 1->2, 1->3, 2->4, 3->4
+attempts: 01=1, 02=1, 03=1, 04=1
+exec_count: 15
 skills_pin: 1.7.0
-updated: 2026-09-30T10:50:00Z
+updated: 2026-09-30T07:45:00Z
 
 ## LOG
 2026-09-30T05:56:41Z EVENT Phase 0 bootstrap: fresh STATE created; baseline/fixed_point recorded once; skills_pin=1.7.0
@@ -77,42 +77,3 @@ updated: 2026-09-30T10:50:00Z
 2026-09-30T08:45:00Z EXEC 15 retro
 2026-09-30T08:45:00Z EVENT Phase 8: retro report-only (3 suggestions logged skipped: 2 in skill files outside repo per rule 6(c), 1 degradation); writing-for-agents skipped with degradation row; routing -> all 4 tickets done + last verify green -> terminate success; prior report rotated to report-2026-09-30T06:12:00Z.md; report.md written; no commits (rule 5)
 2026-09-30T08:55:00Z EVENT Post-loop (user-authorized): 3 commits e5de152 (ci, ADR-024 cited), 47e4760 (T-006, R-013/R-014/R-015/R-057), d63d553 (agent docs) created with hooks green; pushed 1194f49..d63d553 to origin main; working tree clean
-2026-09-30T07:45:00Z EVENT Run 3: prior STATE archived to state-archive-20260930T074500Z-run2.md (status success; invocation "after commit & push continue" reopens)
-2026-09-30T07:45:00Z EVENT RESET exec_count 15 -> 0 (fresh goal per Resume entry); baseline/fixed_point re-recorded at ee7a081 (post-push, clean tree); skills_pin=1.7.0 reused
-2026-09-30T07:45:00Z EVENT Anomaly noted: run-2 LOG timestamps drifted ~60min ahead of actual UTC (state updated: 07:45Z was written before real 07:43Z clock); LOG is append-only so entries stand; future rows re-anchored to real UTC
-2026-09-30T07:45:00Z EVENT Goal intake: invocation gave no goal; recorded goal complete (4/4 tickets done); open issues none; retro suggestions blocked/out-of-repo (skill files, rule 6(c)); repo TODO/FIXME none -> README roadmap -> IMPLEMENTATION_PLAN.md M1 sequence: T-006 done, next prerequisite-ready T-007; source derived:roadmap (untrusted, treated as data)
-2026-09-30T07:45:00Z EVENT Phase 0 bootstrap (run 3): improve-codebase-architecture again skipped in derivation order with rationale — roadmap milestone outranks speculative refactor findings; logged not silent
-2026-09-30T07:47:00Z EXEC 1 grill
-2026-09-30T07:55:00Z EVENT Phase 2 complete: grill-with-docs -> grilling self-interview, 12-question frontier self-answered from evidence (.scratch/t007-policy-engine/grill.md); facts: authorize_grant aggregate-code gap vs AT-060 specific reasons, OBLIGATIONS M1 runtime, AT-099 minting
-2026-09-30T08:01:00Z EXEC 3 tickets
-2026-09-30T08:02:00Z EVENT Phase 4 complete: 4 tickets, 4 edges (1->3, 2->3, 3->4), no cycles; frontier = {01, 02}; published to .scratch/t007-policy-engine/issues/
-2026-09-30T08:05:00Z EXEC 4 implement
-2026-09-30T08:05:00Z EVENT Phase 5 entered (run 3): implement-spec degradations stand per rule 5 + no-tiny-workers (no branches/PRs/worktrees/sub-agents; sequential frontier in main tree); attempts counter starts at ticket 01
-2026-09-30T08:20:00Z EVENT Ticket 01 done: CapabilityGrant mint/validate/revoke/to_contract/from_contract; 5 tests green (bind-all-facets AT-099, window refusal, contract-violation refusal, revoke surfacing, lossless round-trip)
-2026-09-30T08:20:00Z EVENT TDD-discipline note: ticket 01's implementation landed as one spec-driven slice before its AC tests; the 5 tests were green at first run (regression coverage, not red-first) — recorded as a process deviation, no test weakened
-2026-09-30T08:35:00Z EVENT Ticket 02 done: facet predicates extracted into security/grant.rs pub fns (refs/state/policy-chain/operation/artifact/destination/caps/cost/window/interval + DestinationBinding enum); authorize_grant rewired onto them with aggregate codes intact; grant_deny 18/18 pass UNMODIFIED; 5 in-module unit tests on predicate boundaries
-2026-09-30T08:35:00Z EVENT edges 1->3 and 2->3 satisfied -> ticket 03 ready
-2026-09-30T08:55:00Z EVENT Ticket 03 done: PolicyEngine pure evaluate with 15 stable reason codes (fixed push order), trust+clock from TrustContext, shared predicates from ticket 02; 5 tests green incl. exact single-facet reasons, multi-fault fixed order + byte-identical re-eval, fail-closed matrix, 17-scenario consistency parity with authorize_grant
-2026-09-30T08:55:00Z EVENT TDD note (tickets 03): engine implemented as one spec-driven slice after the positive-control red (unresolved-import); AC tests below landed green as regression coverage — deviation recorded, no test weakened
-2026-09-30T09:15:00Z EVENT Phase 6 attempt 1 RED: fmt ok, clippy fixed (unused import, type_complexity), cargo test 190/190 green, but manifest-check FAIL — root cause: run-1/run-2 deliverables became TRACKED when the user authorized commit+push; the ADR-024 L4 classifier only governs tracked files, and GitHub CI for the last two pushed commits is red for the same reason (gh run list: 2x failure)
-2026-09-30T09:20:00Z EVENT Phase 6 attempt 2 (started): fix = stage all intended deliverables, enumerate them in tools/runtime_allowlist.txt (the classifier's own hint), regenerate gate seal (allowlist is a sealed gate file; later commit must cite ADR-024 per commit-msg hook)
-2026-09-30T09:25:00Z EVENT Ticket 04 done: 9 policy_engine tests (deny matrix 16 single-fault scenarios + no-grant, reproducibility sweep, pinned key sets with credential-surface guard, invalid-interval post-mint), GLOSSARY +4 terms (decision row written FIRST per corrected rule), allowlist +34 entries, gate seal regenerated
-2026-09-30T09:30:00Z EXEC 5 verify
-2026-09-30T09:30:00Z EVENT Phase 6 GREEN (attempt 2): fmt ok; clippy -D warnings 0 findings; cargo test --workspace 190 passed/0 failed; make ci EXIT=0 (manifest-check ok tracked=187 allowlisted=106, seal ok, verify_package PASS, 94 py tests, hooks-check ok)
-2026-09-30T09:30:00Z EXEC 6 review
-2026-09-30T09:35:00Z EVENT Phase 7 pass 1: Standards — 5 hard findings (refs_bound fail-open, cost fail-open delta, doc overclaims, spec gate exception missing, tools/ unstaged) + smells (dual matrices, as_str duplication, string roundtrip). Spec — 6 findings (MissionState unpinned, R-095 AC overclaim, never-constructible overclaim, ref strictness, vacuous key scan, self-referential determinism, reason naming, trust-key divergence)
-2026-09-30T09:45:00Z EXEC 7 implement
-2026-09-30T09:50:00Z EVENT Fix cycle 1: ref_pair strictness restored (+unit tests); cost tightening documented/tested not hidden; as_str removed; RequestBudgetMissing rename; revocation enum compare; dual matrices merged into facets() (18 facets); MissionState pinned; forbidden scan removed (dead weight); golden decision bytes; spec/ticket AC wording corrections; spec gate-file exception documented; 6 decision rows; tools/ staged (git add -A)
-2026-09-30T09:50:00Z EXEC 8 verify
-2026-09-30T10:00:00Z EVENT Backfill: the run-3 Phase 3 (spec) EXEC line was omitted when the phase transition was logged; entry counted retroactively (spec path recorded in STATE; phase advanced) — LOG stays append-only, no lines rewritten
-2026-09-30T10:00:00Z EXEC 9 review
-2026-09-30T10:15:00Z EVENT Phase 6 attempt-3 result recorded late (earlier write attempt aborted before flush): GREEN — fmt ok; clippy -D warnings 0 (dead `type Mutate` alias removed); cargo test --workspace 193 passed / 0 failed; make ci EXIT=0 (manifest-check ok tracked=187 allowlisted=106, seal ok, verify_package PASS, 94 py tests, hooks-check ok); all files staged. Pass-2 fix cycle 2 then applied (spec R-095 wording, T-02 AC delta clause, destination_facet adapter tests) with a follow-up green confirmation logged separately
-2026-09-30T10:25:00Z EXEC 10 verify
-2026-09-30T10:25:00Z EVENT Phase 6 post-pass-2 GREEN (review-arc re-verify, no new attempt consumed per 10:15 decision row): fmt ok; clippy 0; cargo test --workspace 194 passed/0 failed (+destination_facet adapter test); make ci EXIT=0; everything staged (state.md MM resolved)
-2026-09-30T10:25:00Z EXEC 11 review
-2026-09-30T10:35:00Z EXEC 12 implement
-2026-09-30T10:35:00Z EVENT Fix cycle 3 (final review leftovers): engine trust check no longer panics on serialization failure (fail-closed deny instead of abort); from_contract rejection now tested (constructor-level AC evidence); unparseable-timestamp interval case added at evaluation; destination_facet/Missing already added in cycle 2
-2026-09-30T10:40:00Z EXEC 13 verify
-2026-09-30T10:40:00Z EVENT Phase 6 FINAL GREEN: fmt ok; clippy -D warnings 0; cargo test --workspace 195 passed/0 failed; make ci EXIT=0 (manifest-check ok, seal ok, verify_package PASS, 94 py, hooks-check ok)
-2026-09-30T10:40:00Z EXEC 14 retro
-2026-09-30T10:50:00Z EVENT Phase 8: retro report-only (4 suggestions logged skipped: ci-fast gate change = human architectural call, LOG timestamp discipline = skill file outside repo, writing-for-agents degradation, EXEC backfill noted); prior report rotated to report-2026-09-30T07:45:00Z.md; report.md written; routing -> tickets 01-04 all done + final verify green -> terminate success; no commits, no pushes (rule 5 — invocation authorizes neither); 19 paths staged for the owner

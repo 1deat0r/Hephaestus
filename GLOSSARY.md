@@ -39,3 +39,19 @@ _Avoid_: temp file (too broad), pending artifact
 **Content addressing**:
 Naming an object by the sha256 of its bytes, so the name attests the content and reads can re-verify them.
 _Avoid_: hashing, checksum (weaker claim)
+
+**Capability grant**:
+An approved, revocable authorization binding one operation — capability scope, destination, artifact identity, policy version, validity window, and approved cost — issued by the standing local authority and evaluated before dispatch.
+_Avoid_: permission (too broad), token (implies bearer)
+
+**Policy engine**:
+The deterministic, fail-closed decision function that answers allow/deny for an operation from enumerated facts and protected trust — never from a model or a credential.
+_Avoid_: rules engine (implies configurable policy), gate (a check, not a decision)
+
+**Reason code**:
+A stable, per-facet denial string (or enum) emitted by the policy engine, in fixed order, so a denial says exactly which binding broke.
+_Avoid_: error message (unstable prose), log line
+
+**Standing local authority**:
+The bootstrap issuer allowed to mint capability grants without a per-use prompt; it authorizes grant *use* through the policy engine, not its own recursion.
+_Avoid_: root trust (overclaims), admin

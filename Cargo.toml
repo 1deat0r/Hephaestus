@@ -1,5 +1,5 @@
 [workspace]
-members = ["crates/hephaestus"]
+members = ["crates/hephaestus", "crates/synthetic-evaluator"]
 resolver = "2"
 
 [workspace.package]

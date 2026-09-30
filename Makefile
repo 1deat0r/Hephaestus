@@ -5,10 +5,10 @@
 PY := .venv/bin/python
 CARGO := cargo
 
-.PHONY: ci ci-fast fmt fmt-check clippy test-rust test-py verify test-package gen-check conflict-staged conflict-tree manifest-check md-links hooks hooks-check setup clean
+.PHONY: ci ci-fast fmt fmt-check clippy test-rust test-py verify test-package gen-check conflict-staged conflict-tree manifest-check md-links readme-fences hooks hooks-check setup clean
 
 ## Run every environment-independent gate (mirrors CI; the single gate registry).
-ci: fmt-check clippy test-rust test-py conflict-tree manifest-check md-links ci-fast hooks-check
+ci: fmt-check clippy test-rust test-py conflict-tree manifest-check md-links readme-fences ci-fast hooks-check
 
 ## Fast spec/doc freshness gates (.githooks/pre-commit runs exactly these).
 ci-fast: gen-check verify test-package conflict-staged
@@ -67,6 +67,10 @@ manifest-check:
 ## Offline internal markdown links/anchors (ADR-024 L3 slice; shrink-only baseline).
 md-links:
 	$(PY) tools/check_md_links.py
+
+## README ```sh fences must parse against known make targets/tools (ADR-024 L3).
+readme-fences:
+	$(PY) tools/check_readme_fences.py
 
 ## One-time per clone: wire the committed git hooks.
 hooks:

@@ -60,6 +60,7 @@ rust-toolchain.toml
 tests/test_digest_vectors.py
 tools/check_manifest_coverage.py
 tools/check_md_links.py
+tools/check_readme_fences.py
 tools/gen_digest_vectors.py
 tools/generate_contracts_rs.py
 tools/md_links_baseline.txt

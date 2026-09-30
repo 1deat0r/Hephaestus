@@ -154,10 +154,10 @@ pub fn validate_traceability(
                 errors.push(format!("MISSING_CLAUSE_ANCHOR: {}", r.id));
             }
         }
-        if let Some(supplement) = &r.supplement {
-            if !root.join(supplement).is_file() {
-                errors.push(format!("MISSING_SUPPLEMENT: {}", r.id));
-            }
+        if let Some(supplement) = &r.supplement
+            && !root.join(supplement).is_file()
+        {
+            errors.push(format!("MISSING_SUPPLEMENT: {}", r.id));
         }
     }
 

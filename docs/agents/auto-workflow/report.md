@@ -31,7 +31,7 @@ All 19 changed paths are **staged, not committed** (rule 5: this invocation auth
 
 **None — no commits and no pushes this run** (invocation authorizes neither; rule 5). No gh writes, no config writes, no installs, no publishing.
 
-**Actionable out-of-repo state (flagged, not caused by this run's code):** the two commits pushed after run 2 are **red on GitHub** (`gh run list`: 2× `failure`) for exactly the manifest-coverage reason fixed here — their tracked files were not yet allowlisted. **Saying "commit and push" will land the staged fix and turn CI green**; until then origin/main stays red while the local tree is green.
+**Landing outcome (user-authorized):** `f54cfd2` (T-007 + ADR-024 L4 backfill, 21 files) was pushed and came back **red** on two catches the local Phase 6 had missed (remote-only `docs` job: unresolved rustdoc link; a report rotated into tracked-uncovered after the last green gate run). Fixed in `4b85d73`; **CI now green** (`gh run 36693902280` success, gates + docs) — `cargo doc` joins the local verify set, and both prior red runs stand in history as the classifier and rustdoc doing their jobs.
 
 ## Tickets
 

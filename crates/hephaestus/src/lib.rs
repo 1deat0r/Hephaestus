@@ -9,6 +9,7 @@ pub mod contracts;
 pub mod migrate;
 pub mod security;
 pub mod semantic;
+pub mod traceability;
 
 #[cfg(test)]
 mod tests {

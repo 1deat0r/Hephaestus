@@ -1,13 +1,5 @@
-# Runtime files outside the frozen spec envelope (ADR-024 L4 classifier).
-# One path per line, sorted. No stale entries; no MANIFEST members.
-.githooks/pre-commit
-.github/workflows/ci.yml
-.gitignore
 Cargo.lock
 Cargo.toml
-GLOSSARY.md
-MANIFEST.sha256
-Makefile
 crates/hephaestus/Cargo.toml
 crates/hephaestus/src/contracts/generated.rs
 crates/hephaestus/src/contracts/mod.rs
@@ -52,13 +44,23 @@ crates/synthetic-evaluator/src/rng.rs
 crates/synthetic-evaluator/tests/corpus_probes.rs
 crates/synthetic-evaluator/tests/evaluate_scenarios.rs
 docs/RUNTIME_DECISIONS.md
+.githooks/pre-commit
+.github/workflows/ci.yml
+.gitignore
+GLOSSARY.md
+Makefile
+MANIFEST.sha256
+# One path per line, sorted. No stale entries; no MANIFEST members.
 python/hephaestus_workers/__init__.py
 python/pyproject.toml
 python/tests/__init__.py
 python/tests/test_smoke.py
+# Runtime files outside the frozen spec envelope (ADR-024 L4 classifier).
 rust-toolchain.toml
 tests/test_digest_vectors.py
 tools/check_manifest_coverage.py
+tools/check_md_links.py
 tools/gen_digest_vectors.py
 tools/generate_contracts_rs.py
+tools/md_links_baseline.txt
 tools/runtime_allowlist.txt

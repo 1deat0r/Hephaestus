@@ -1,0 +1,2 @@
+# Known link violations, one exact "path:line: message" per line (ADR-024).
+# Shrink-only: CI fails if an entry stops firing or a new violation appears.

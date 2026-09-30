@@ -1,13 +1,17 @@
 # Hephaestus dev commands (T-001).
-# Python gates use .venv (see requirements-validation.txt); create it with:
-#   python3 -m venv .venv && .venv/bin/pip install -r requirements-validation.txt
+# First run after clone:
+#   make setup   # python3 -m venv .venv + pip install -r requirements-validation.txt
+#   make hooks   # wire git hooks (git config core.hooksPath .githooks)
 PY := .venv/bin/python
 CARGO := cargo
 
-.PHONY: ci fmt fmt-check clippy test-rust test-py verify test-package gen-check clean
+.PHONY: ci ci-fast fmt fmt-check clippy test-rust test-py verify test-package gen-check hooks hooks-check setup clean
 
-## Run every environment-independent gate (mirrors CI).
-ci: fmt-check clippy test-rust gen-check test-py verify test-package
+## Run every environment-independent gate (mirrors CI; the single gate registry).
+ci: fmt-check clippy test-rust test-py ci-fast hooks-check
+
+## Fast spec/doc freshness gates (.githooks/pre-commit runs exactly these).
+ci-fast: gen-check verify test-package
 
 fmt:
 	$(CARGO) fmt --all
@@ -35,6 +39,20 @@ verify:
 
 test-package:
 	$(PY) -m unittest discover -s tests
+
+## One-time per clone: wire the committed git hooks.
+hooks:
+	git config core.hooksPath .githooks
+
+## Fail until `make hooks` has been run; self-skips under CI (no local config there).
+hooks-check:
+	@if [ -n "$$CI" ]; then echo "hooks-check: skipped (CI)"; \
+	elif [ "$$(git config core.hooksPath)" = ".githooks" ]; then echo "hooks-check: ok"; \
+	else echo "hooks-check: FAIL — run 'make hooks' to wire .githooks"; exit 1; fi
+
+## One-time per clone: validation venv.
+setup:
+	python3 -m venv .venv && .venv/bin/pip install -r requirements-validation.txt
 
 clean:
 	$(CARGO) clean

@@ -1,0 +1,12 @@
+#!/bin/sh
+# Hephaestus pre-commit: fast freshness gates only (full gates = `make ci`).
+# Gate list lives in the Makefile (ci-fast target) — do not duplicate it here.
+if [ ! -x .venv/bin/python ]; then
+    echo "pre-commit: .venv missing — run 'make setup' and retry." >&2
+    exit 1
+fi
+if ! make ci-fast; then
+    echo "" >&2
+    echo "pre-commit: make ci-fast failed — fix the findings; do NOT retry with --no-verify." >&2
+    exit 1
+fi

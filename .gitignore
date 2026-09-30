@@ -12,3 +12,10 @@ target/
 .vscode/
 *.swp
 .DS_Store
+
+# Agent workflow installer/session byproducts (auto-workflow 2026-09-30).
+# Deliberately NOT ignored: .scratch/ (issue tracker), docs/agents/ (setup
+# docs + loop state), CLAUDE.md (Agent skills block) — user decides those.
+.agents/
+.claude/
+skills-lock.json

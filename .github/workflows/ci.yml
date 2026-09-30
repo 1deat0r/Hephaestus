@@ -25,3 +25,18 @@ jobs:
           .venv/bin/pip install -r requirements-validation.txt
       - name: Run environment-independent gates
         run: make ci
+
+  # rustdoc warnings denied, parallel to gates (ADR-024 sequence step 10).
+  # Deliberately NOT part of `make ci` — local latency budget stays untouched.
+  docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # Same SHA pin as `gates` (ADR-024 — mutable refs are gate rot).
+      - uses: dtolnay/rust-toolchain@02cb101ec7c40f2c49e1d9714d64511d8e1b74de
+        with:
+          toolchain: "1.98.1"
+      - name: cargo doc with warnings denied
+        env:
+          RUSTDOCFLAGS: "-D warnings"
+        run: cargo doc --workspace --no-deps

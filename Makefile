@@ -5,10 +5,10 @@
 PY := .venv/bin/python
 CARGO := cargo
 
-.PHONY: ci ci-fast fmt fmt-check clippy test-rust test-py verify test-package gen-check conflict-staged conflict-tree manifest-check md-links readme-fences report-unreferenced hooks hooks-check setup clean
+.PHONY: ci ci-fast fmt fmt-check clippy test-rust test-py verify test-package gen-check conflict-staged conflict-tree manifest-check md-links readme-fences report-unreferenced gate-seal seal hooks hooks-check setup clean
 
 ## Run every environment-independent gate (mirrors CI; the single gate registry).
-ci: fmt-check clippy test-rust test-py conflict-tree manifest-check md-links readme-fences report-unreferenced ci-fast hooks-check
+ci: fmt-check clippy test-rust test-py conflict-tree manifest-check md-links readme-fences report-unreferenced gate-seal ci-fast hooks-check
 
 ## Fast spec/doc freshness gates (.githooks/pre-commit runs exactly these).
 ci-fast: gen-check verify test-package conflict-staged
@@ -75,6 +75,14 @@ readme-fences:
 ## Advisory: tracked files never named by markdown (ADR-024 — always exits 0).
 report-unreferenced:
 	$(PY) tools/report_unreferenced.py
+
+## Verify the runtime gate seal (ADR-024 — gate files can't join MANIFEST).
+gate-seal:
+	$(PY) tools/gate_seal.py --check
+
+## Regenerate the gate seal after an intentional gate change (cite ADR).
+seal:
+	$(PY) tools/gate_seal.py --write
 
 ## One-time per clone: wire the committed git hooks.
 hooks:

@@ -1,0 +1,13 @@
+#!/bin/sh
+# ADR-024 convention: any change to gate machinery must cite an ADR.
+# Gates define what "green" means; changing them is an architectural decision.
+gate_changed=$(git diff --cached --name-only | grep -E \
+  '^(Makefile$|\.github/workflows/|\.githooks/|tools/[^/]+\.py$|tools/(runtime_allowlist|md_links_baseline)\.txt$|tools/gate_seal\.sha256$)' \
+  || true)
+if [ -n "$gate_changed" ]; then
+  if ! grep -qE 'ADR-[0-9]{3}' "$1"; then
+    echo "commit-msg: gate file(s) changed — the commit message must cite an ADR (e.g. ADR-024):" >&2
+    echo "$gate_changed" | sed 's/^/  /' >&2
+    exit 1
+  fi
+fi

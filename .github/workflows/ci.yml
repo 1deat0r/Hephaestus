@@ -24,6 +24,7 @@ jobs:
           cargo fmt --all -- --check
           cargo clippy --workspace --all-targets -- -D warnings
           cargo test --workspace
+          python3 tools/generate_contracts_rs.py --check
           PYTHONPATH=python python -m unittest discover -s python/tests -t python -v
           python tools/verify_package.py
           python -m unittest discover -s tests

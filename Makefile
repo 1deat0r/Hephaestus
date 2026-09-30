@@ -4,10 +4,10 @@
 PY := .venv/bin/python
 CARGO := cargo
 
-.PHONY: ci fmt fmt-check clippy test-rust test-py verify test-package clean
+.PHONY: ci fmt fmt-check clippy test-rust test-py verify test-package gen-check clean
 
 ## Run every environment-independent gate (mirrors CI).
-ci: fmt-check clippy test-rust test-py verify test-package
+ci: fmt-check clippy test-rust gen-check test-py verify test-package
 
 fmt:
 	$(CARGO) fmt --all
@@ -20,6 +20,10 @@ clippy:
 
 test-rust:
 	$(CARGO) test --workspace
+
+## Generated contracts must match the schema (T-002).
+gen-check:
+	python3 tools/generate_contracts_rs.py --check
 
 ## Worker-package unit tests (runtime tests; separate from spec-package checks).
 test-py:

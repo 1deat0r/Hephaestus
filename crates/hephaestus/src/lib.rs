@@ -1,9 +1,13 @@
-//! Hephaestus control plane (skeleton).
+//! Hephaestus control plane (skeleton + typed contracts, T-001/T-002).
 //!
-//! Workspace scaffolding only — no contract records yet (T-002+).
+//! No scheduler, authorization service, or scientific analysis runtime yet.
 
 /// Layer this crate implements in the staged architecture (ADR-003).
 pub const LAYER: &str = "control-plane";
+
+pub mod contracts;
+pub mod migrate;
+pub mod semantic;
 
 #[cfg(test)]
 mod tests {

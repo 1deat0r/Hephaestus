@@ -1,0 +1,1055 @@
+{
+ "fixture_notice": "SYNTHETIC, UNEXECUTED SPECIFICATION EXAMPLE. No observations, spending authority, novelty, or performance are established.",
+ "records": [
+  {
+   "assumptions": [
+    "All values are examples, not observed results or approved spending."
+   ],
+   "authorization": {
+    "allowed_capabilities": [
+     "protected_software_experiment"
+    ],
+    "allowed_destinations": [],
+    "forbidden_actions": [
+     "external_spend",
+     "public_disclosure"
+    ],
+    "policy_version": "fixture-policy-1",
+    "profile": "plan_only",
+    "state": "approved"
+   },
+   "beneficiary": "Coding-agent developers",
+   "budget": {
+    "currency": "NZD",
+    "minor_units": 1000
+   },
+   "confidentiality": "private",
+   "constraints": [
+    "No physical or production actions."
+   ],
+   "created_at": "2026-09-30T04:15:00+13:00",
+   "data_origin": "synthetic_fixture",
+   "domains": [
+    "software systems"
+   ],
+   "guardrails": [
+    "Do not omit evaluator-required context."
+   ],
+   "id": "MIS-CONTEXT",
+   "kind": "mission",
+   "max_wall_seconds": 3600,
+   "objective": "Investigate more efficient correct context assembly from a broad goal.",
+   "provenance": {
+    "actor_id": "SPEC-AUTHOR",
+    "artifact_hashes": [],
+    "input_refs": [],
+    "method": "synthetic_fixture_not_observed",
+    "trust_origin": "synthetic_fixture"
+   },
+   "record_version": 1,
+   "schema_version": "1.2",
+   "stop_conditions": [
+    "No actual authorization is granted by this fixture."
+   ],
+   "success_metrics": [
+    "Qualified hypotheses and valid discriminating experiments."
+   ]
+  },
+  {
+   "access_scope": "synthetic",
+   "content_sha256": "2e1082d689343728d1718412e3796f055c5a55f2819e04da42ac5f802960d93f",
+   "created_at": "2026-09-30T04:15:00+13:00",
+   "data_origin": "synthetic_fixture",
+   "id": "SRC-FIXTURE",
+   "kind": "source",
+   "limitations": [
+    "Not a real measurement or paper."
+   ],
+   "locator": "examples/fixture-source.txt",
+   "parser_version": "plain-text-1",
+   "provenance": {
+    "actor_id": "SPEC-AUTHOR",
+    "artifact_hashes": [],
+    "input_refs": [],
+    "method": "synthetic_fixture_not_observed",
+    "trust_origin": "synthetic_fixture"
+   },
+   "published_at": null,
+   "record_version": 1,
+   "retrieved_at": "2026-09-30T04:15:00+13:00",
+   "schema_version": "1.2",
+   "source_category": "synthetic_fixture",
+   "title": "Synthetic context-assembly premise"
+  },
+  {
+   "confidence_method": null,
+   "created_at": "2026-09-30T04:15:00+13:00",
+   "data_origin": "synthetic_fixture",
+   "dependency_group": "SYNTHETIC-PREMISE",
+   "evidence_type": "assumption",
+   "id": "EVD-ASSUMPTION",
+   "kind": "evidence",
+   "provenance": {
+    "actor_id": "SPEC-AUTHOR",
+    "artifact_hashes": [],
+    "input_refs": [],
+    "method": "synthetic_fixture_not_observed",
+    "trust_origin": "synthetic_fixture"
+   },
+   "quarantined": false,
+   "record_version": 1,
+   "schema_version": "1.2",
+   "source_refs": [
+    {
+     "id": "SRC-FIXTURE",
+     "version": 1
+    }
+   ],
+   "source_spans": [
+    {
+     "locator": "line 2",
+     "quoted_text": "Assume, solely to demonstrate the record format, that context reconstruction repeats after small repository changes.",
+     "source_ref": {
+      "id": "SRC-FIXTURE",
+      "version": 1
+     }
+    }
+   ],
+   "statement": "Assume repeated context construction is material for the hypothetical investigation.",
+   "status": "active",
+   "valid_from": null,
+   "valid_to": null
+  },
+  {
+   "alternative_explanations": [
+    "Bookkeeping rather than reconstruction may dominate."
+   ],
+   "beneficiary": "Coding-agent developers",
+   "context": "Hypothetical repository change workloads.",
+   "created_at": "2026-09-30T04:15:00+13:00",
+   "data_origin": "synthetic_fixture",
+   "evidence_refs": [
+    {
+     "id": "EVD-ASSUMPTION",
+     "version": 1
+    }
+   ],
+   "id": "OPP-CONTEXT",
+   "kind": "opportunity",
+   "mission_ref": {
+    "id": "MIS-CONTEXT",
+    "version": 1
+   },
+   "pressure_type": "bottleneck",
+   "problem": "Repeated context construction may redo unchanged work.",
+   "provenance": {
+    "actor_id": "SPEC-AUTHOR",
+    "artifact_hashes": [],
+    "input_refs": [],
+    "method": "synthetic_fixture_not_observed",
+    "trust_origin": "synthetic_fixture"
+   },
+   "record_version": 1,
+   "schema_version": "1.2",
+   "search_scope": "Not yet searched.",
+   "state": "discovered",
+   "suspected_constraint": "Correctness may couple context reuse to conservative invalidation.",
+   "unknowns": [
+    "Whether any real bottleneck exists."
+   ],
+   "value_basis": "Speculative premise requiring actual traces."
+  },
+  {
+   "analogy_mapping": null,
+   "boundaries": [
+    "Specified repository and change-pattern distribution."
+   ],
+   "created_at": "2026-09-30T04:15:00+13:00",
+   "data_origin": "synthetic_fixture",
+   "description": "Selectively refine dependency tracking and fall back to full reconstruction when coverage is uncertain.",
+   "evidence_refs": [
+    {
+     "id": "EVD-ASSUMPTION",
+     "version": 1
+    }
+   ],
+   "failure_modes": [
+    "Unrecognized dependencies or excessive bookkeeping."
+   ],
+   "id": "MEC-REFINE",
+   "kind": "mechanism",
+   "minimal_realization": "A future isolated software prototype.",
+   "operator": "composition",
+   "opportunity_ref": {
+    "id": "OPP-CONTEXT",
+    "version": 1
+   },
+   "parent_refs": [],
+   "prerequisites": [
+    "An operational dependency oracle."
+   ],
+   "provenance": {
+    "actor_id": "SPEC-AUTHOR",
+    "artifact_hashes": [],
+    "input_refs": [],
+    "method": "synthetic_fixture_not_observed",
+    "trust_origin": "synthetic_fixture"
+   },
+   "record_version": 1,
+   "relationships": [
+    "Refinement may reduce redundant work but adds bookkeeping."
+   ],
+   "schema_version": "1.2",
+   "variables": [
+    {
+     "name": "reconstruction_time",
+     "role": "outcome",
+     "unit": "ms"
+    },
+    {
+     "name": "coverage",
+     "role": "guardrail",
+     "unit": "fraction"
+    }
+   ]
+  },
+  {
+   "alternatives": [
+    "Warm-cache effects or dropped work explain apparent speed."
+   ],
+   "assumptions": [
+    "The presumed bottleneck exists; not yet measured."
+   ],
+   "boundary_conditions": [
+    "Trusted dependency oracle and recorded environments."
+   ],
+   "comparator": "Exact dependency caching and full reconstruction.",
+   "context": "Specified coding-repository change workloads.",
+   "created_at": "2026-09-30T04:15:00+13:00",
+   "data_origin": "synthetic_fixture",
+   "engineering_target": "not_assessed",
+   "evidence_refs": [
+    {
+     "id": "EVD-ASSUMPTION",
+     "version": 1
+    }
+   ],
+   "falsifiers": [
+    {
+     "condition": "A valid qualified test finds no reduction, with precision sufficient for its declared decision rule.",
+     "interpretation_limit": "An inconclusive interval does not refute the mechanism.",
+     "measurement_method": "Paired analysis plus mechanism ablation.",
+     "prediction_id": "PRED-WORK"
+    },
+    {
+     "condition": "A valid interval is wholly below the 0.20 target.",
+     "interpretation_limit": "Failure of the engineering target does not refute the mechanism.",
+     "measurement_method": "Predeclared paired repository-level interval.",
+     "prediction_id": "PRED-TIME"
+    }
+   ],
+   "id": "HYP-CONTEXT",
+   "intervention": "Selective refinement with conservative fallback.",
+   "kind": "hypothesis",
+   "mechanism_ref": {
+    "id": "MEC-REFINE",
+    "version": 1
+   },
+   "mission_ref": {
+    "id": "MIS-CONTEXT",
+    "version": 1
+   },
+   "novelty_status": "unresolved",
+   "opportunity_ref": {
+    "id": "OPP-CONTEXT",
+    "version": 1
+   },
+   "parent_refs": [],
+   "predictions": [
+    {
+     "claim_type": "mechanistic",
+     "direction": "decrease",
+     "estimand": "Paired repository-level difference in redundant work",
+     "id": "PRED-WORK",
+     "observable": "Redundant reconstruction work",
+     "scope": "Future declared workload distribution.",
+     "threshold": 0,
+     "threshold_basis": "Directional mechanism claim; measurement definition must be qualified.",
+     "unit": "operations"
+    },
+    {
+     "claim_type": "engineering",
+     "direction": "increase",
+     "estimand": "Repository-level fractional reduction versus exact dependency caching",
+     "id": "PRED-TIME",
+     "observable": "End-to-end time improvement",
+     "scope": "Future held-out repositories.",
+     "threshold": 0.2,
+     "threshold_basis": "Illustrative product target, not a forecast or measured effect.",
+     "unit": "fraction"
+    }
+   ],
+   "provenance": {
+    "actor_id": "SPEC-AUTHOR",
+    "artifact_hashes": [],
+    "input_refs": [],
+    "method": "synthetic_fixture_not_observed",
+    "trust_origin": "synthetic_fixture"
+   },
+   "record_version": 1,
+   "schema_version": "1.2",
+   "scientific_conclusion": "not_assessed",
+   "state": "compiled",
+   "statement": "Selective dependency refinement may reduce redundant reconstruction without missing required dependencies under the declared oracle.",
+   "testability": {
+    "blockers": [
+     "No implementation or empirical variance estimate."
+    ],
+    "method": "Implement a protected oracle and qualified paired experiment.",
+    "status": "blocked"
+   }
+  },
+  {
+   "analysis": {
+    "anytime_valid_method": null,
+    "assumptions": [
+     "independent repositories"
+    ],
+    "confidence_level": 0.975,
+    "data_partition": "confirmatory",
+    "design": "fixed_sample",
+    "implementation_sha256": "1a95670f26d240b446922ab5d2d797da803e892c0acff93f05e24a64418bb346",
+    "method_id": "SYNTHETIC-QUALIFIED-METHOD",
+    "method_qualification": "qualified_for_declared_assumptions",
+    "multiplicity_strategy": "Must be predeclared for both endpoints before confirmation.",
+    "primary_endpoints": [
+     "PRED-WORK",
+     "PRED-TIME"
+    ],
+    "sample_size_rationale": "Must be chosen after a separate pilot or defensible bound.",
+    "sampling_unit": "repository",
+    "stopping_rule": "No confirmatory execution permitted until sample size and method are fixed.",
+    "target_n": 40
+   },
+   "blockers": [],
+   "budget": {
+    "currency": "NZD",
+    "minor_units": 500
+   },
+   "comparator": "Exact dependency caching; full reconstruction; no-refinement ablation.",
+   "conditions": [
+    "Frozen future workload distribution."
+   ],
+   "controls": [
+    "Oracle coverage check and randomized run order."
+   ],
+   "created_at": "2026-09-30T04:15:00+13:00",
+   "data_origin": "synthetic_fixture",
+   "destination": null,
+   "discrimination": [
+    {
+     "alternative": "Dropped work or warm cache",
+     "diagnostic_observation": "Protected dependency coverage and no-refinement ablation.",
+     "predicted_difference": "Coverage or ablation behavior differs from a true reduction in redundant reconstruction."
+    }
+   ],
+   "evidence_snapshot_sha256": "ea44cf11315eb47b6635ae2680edd5a81123aee3628cb53931411d86ad639771",
+   "family_ref": {
+    "id": "FAMILY-TEST",
+    "version": 1
+   },
+   "grant_ref": {
+    "id": "GRANT-TEST",
+    "version": 1
+   },
+   "guardrail_ids": [
+    "GUARD-COVERAGE"
+   ],
+   "hypothesis_ref": {
+    "id": "HYP-CONTEXT",
+    "version": 1
+   },
+   "id": "EXP-CONTEXT",
+   "intervention_artifact_sha256": "f209714b83eed13c7ba706741217ce4a2b190b2e69bb9e10697ec4ed6e6161f4",
+   "kind": "experiment_plan",
+   "mission_ref": {
+    "id": "MIS-CONTEXT",
+    "version": 1
+   },
+   "operation_id": "OP-FIXTURE-EXPERIMENT",
+   "prediction_ids": [
+    "PRED-WORK",
+    "PRED-TIME"
+   ],
+   "protected_evaluator_sha256": "3866de34291111bb83ad0d6dfee08332283d65e73b5d22d41ba5c66d8d007ef7",
+   "provenance": {
+    "actor_id": "SPEC-AUTHOR",
+    "artifact_hashes": [],
+    "input_refs": [],
+    "method": "synthetic_fixture_not_observed",
+    "trust_origin": "synthetic_fixture"
+   },
+   "qualification_ref": {
+    "id": "QUAL-TEST",
+    "version": 1
+   },
+   "record_version": 1,
+   "registration": {
+    "payload_sha256": "fa823906259c9b692e87bb79a055eb1d6a5032c2e920732f1a81c01d8d4a041d",
+    "registered_at": "2026-09-29T16:00:00+00:00",
+    "status": "frozen"
+   },
+   "required_capabilities": [
+    "protected_software_experiment"
+   ],
+   "schema_version": "1.2",
+   "status": "completed"
+  },
+  {
+   "actual_cost": {
+    "currency": "NZD",
+    "minor_units": 0
+   },
+   "analysis_artifact_sha256": "1e5711416186a790eceac9269cf3a92fe3a86003e84ade6b87f8046301b2385c",
+   "analysis_receipt_ref": {
+    "id": "RECEIPT-ANALYSIS",
+    "version": 1
+   },
+   "control_results": [
+    {
+     "id": "Oracle coverage check and randomized run order.",
+     "status": "pass"
+    }
+   ],
+   "created_at": "2026-09-30T04:15:00+13:00",
+   "data_opened_at": "2026-09-29T17:00:00+00:00",
+   "data_origin": "synthetic_fixture",
+   "deviations": [],
+   "engineering_target": "met",
+   "execution_receipt_ref": {
+    "id": "RECEIPT-EXECUTION",
+    "version": 1
+   },
+   "execution_validity": "valid",
+   "experiment_plan_ref": {
+    "id": "EXP-CONTEXT",
+    "version": 1
+   },
+   "findings": [
+    {
+     "estimate": 0.3,
+     "interpretation": "Synthetic metadata only",
+     "lower_bound": 0.25,
+     "prediction_id": "PRED-WORK",
+     "unit": "operations",
+     "upper_bound": 0.35
+    },
+    {
+     "estimate": 0.3,
+     "interpretation": "Synthetic metadata only",
+     "lower_bound": 0.25,
+     "prediction_id": "PRED-TIME",
+     "unit": "fraction",
+     "upper_bound": 0.35
+    }
+   ],
+   "guardrail_results": [
+    {
+     "id": "GUARD-COVERAGE",
+     "status": "pass"
+    }
+   ],
+   "hypothesis_ref": {
+    "id": "HYP-CONTEXT",
+    "version": 1
+   },
+   "id": "RES-NOTRUN",
+   "kind": "experiment_result",
+   "limitations": [
+    "No experiment was performed."
+   ],
+   "provenance": {
+    "actor_id": "SPEC-AUTHOR",
+    "artifact_hashes": [],
+    "input_refs": [],
+    "method": "synthetic_fixture_not_observed",
+    "trust_origin": "synthetic_fixture"
+   },
+   "raw_artifact_hashes": [
+    "f198c59277e2b1c96f4586c330ada8d5338ff8e04d9bd4f877f81497fc2ddea0"
+   ],
+   "record_version": 1,
+   "schema_version": "1.2",
+   "scientific_conclusion": "supported"
+  },
+  {
+   "approval_artifact_sha256": null,
+   "budget": {
+    "currency": "NZD",
+    "minor_units": 0
+   },
+   "created_at": "2026-09-30T04:15:00+13:00",
+   "data_origin": "synthetic_fixture",
+   "dependency_refs": [],
+   "destination": null,
+   "effect_class": "pure",
+   "grant_ref": null,
+   "id": "TASK-PLAN",
+   "input_refs": [
+    {
+     "id": "HYP-CONTEXT",
+     "version": 1
+    }
+   ],
+   "kind": "task",
+   "max_attempts": 1,
+   "max_wall_seconds": 60,
+   "mission_ref": {
+    "id": "MIS-CONTEXT",
+    "version": 1
+   },
+   "operation_id": "OP-FIXTURE-PLAN",
+   "output_contract": "A planning proposal only.",
+   "provenance": {
+    "actor_id": "SPEC-AUTHOR",
+    "artifact_hashes": [],
+    "input_refs": [],
+    "method": "synthetic_fixture_not_observed",
+    "trust_origin": "synthetic_fixture"
+   },
+   "purpose": "Plan a hypothetical context investigation; do not execute it.",
+   "read_paths": [
+    "examples/fixture-source.txt"
+   ],
+   "record_version": 1,
+   "replay_strategy": "recompute_deterministic",
+   "required_capabilities": [
+    "read_fixture"
+   ],
+   "retry_policy": "safe_retry",
+   "schema_version": "1.2",
+   "state": "planned",
+   "verification_rule": "Schema and selected semantic checks; not scientific validation.",
+   "write_paths": []
+  },
+  {
+   "abstained": true,
+   "authoritative": false,
+   "calibration_artifact_sha256": null,
+   "calibration_status": "uncalibrated",
+   "created_at": "2026-09-30T04:15:00+13:00",
+   "data_origin": "synthetic_fixture",
+   "id": "DEC-EXAMPLE",
+   "kind": "decision",
+   "options": [
+    "ready",
+    "blocked"
+   ],
+   "probabilities": null,
+   "provenance": {
+    "actor_id": "SPEC-AUTHOR",
+    "artifact_hashes": [],
+    "input_refs": [],
+    "method": "synthetic_fixture_not_observed",
+    "trust_origin": "synthetic_fixture"
+   },
+   "provider_identity": "no_provider_called",
+   "question": "Is the candidate ready for confirmation?",
+   "record_version": 1,
+   "schema_version": "1.2",
+   "selected_option": null,
+   "task_ref": {
+    "id": "TASK-PLAN",
+    "version": 1
+   },
+   "use": "advisory"
+  },
+  {
+   "created_at": "2026-09-30T04:15:00+13:00",
+   "data_origin": "synthetic_fixture",
+   "event_type": "synthetic.mission.draft",
+   "id": "EVT-DRAFT",
+   "kind": "event",
+   "mission_ref": {
+    "id": "MIS-CONTEXT",
+    "version": 1
+   },
+   "operation_id": "SYNTHETIC-OP-001",
+   "payload_sha256": "2e1082d689343728d1718412e3796f055c5a55f2819e04da42ac5f802960d93f",
+   "policy_version": "fixture-policy-1",
+   "previous_event_sha256": null,
+   "provenance": {
+    "actor_id": "SPEC-AUTHOR",
+    "artifact_hashes": [],
+    "input_refs": [],
+    "method": "synthetic_fixture_not_observed",
+    "trust_origin": "synthetic_fixture"
+   },
+   "record_version": 1,
+   "schema_version": "1.2",
+   "sequence": 1,
+   "subject_ref": {
+    "id": "MIS-CONTEXT",
+    "version": 1
+   }
+  },
+  {
+   "artifact_hashes": [
+    "f209714b83eed13c7ba706741217ce4a2b190b2e69bb9e10697ec4ed6e6161f4",
+    "3866de34291111bb83ad0d6dfee08332283d65e73b5d22d41ba5c66d8d007ef7",
+    "ea44cf11315eb47b6635ae2680edd5a81123aee3628cb53931411d86ad639771",
+    "1a95670f26d240b446922ab5d2d797da803e892c0acff93f05e24a64418bb346",
+    "c8c8171fc496cf0f7cdf8c896f17b72166b2d27a8c692e53bb96bc2677e7405d",
+    "a2f8be0cfa14c267ec5d33a7d1cbf9e8ad78c180dbe19f18d7297501ec8ed114",
+    "f198c59277e2b1c96f4586c330ada8d5338ff8e04d9bd4f877f81497fc2ddea0",
+    "1e5711416186a790eceac9269cf3a92fe3a86003e84ade6b87f8046301b2385c",
+    "03f946233e8d38c2e5dab2238ad1d7181d523a5b9b70700640f4925cf5fd0f11"
+   ],
+   "created_at": "2026-09-30T04:15:00+13:00",
+   "data_origin": "synthetic_fixture",
+   "hypothesis_refs": [
+    {
+     "id": "HYP-CONTEXT",
+     "version": 1
+    }
+   ],
+   "id": "DOS-PLANNED",
+   "kind": "dossier",
+   "limitations": [
+    "Synthetic unexecuted fixture; no authorization or performance claim."
+   ],
+   "mission_ref": {
+    "id": "MIS-CONTEXT",
+    "version": 1
+   },
+   "novelty_report": {
+    "claim_chart_sha256": "0c85db1a113fb55852c7ff5be7e1493ed14439aae0b8b6f5746f273b0d0b2366",
+    "differences": "Synthetic assessed difference",
+    "limitations": [
+     "No novelty conclusion."
+    ],
+    "search_scope": "No prior-art search for this illustrative candidate was run.",
+    "status": "near_match"
+   },
+   "promotion_receipt_ref": {
+    "id": "RECEIPT-PROMOTION",
+    "version": 1
+   },
+   "provenance": {
+    "actor_id": "SPEC-AUTHOR",
+    "artifact_hashes": [],
+    "input_refs": [],
+    "method": "synthetic_fixture_not_observed",
+    "trust_origin": "synthetic_fixture"
+   },
+   "record_version": 1,
+   "reproduction_artifact_sha256": "03f946233e8d38c2e5dab2238ad1d7181d523a5b9b70700640f4925cf5fd0f11",
+   "reproduction_receipt_ref": {
+    "id": "RECEIPT-REPRODUCTION",
+    "version": 1
+   },
+   "reproduction_status": "independent_pass",
+   "result_refs": [
+    {
+     "id": "RES-NOTRUN",
+     "version": 1
+    }
+   ],
+   "schema_version": "1.2",
+   "status": "validated_candidate",
+   "unresolved_blockers": []
+  },
+  {
+   "benefit_status": "not_assessed",
+   "budget": {
+    "currency": "NZD",
+    "minor_units": 100
+   },
+   "candidate_sha256": "2222222222222222222222222222222222222222222222222222222222222222",
+   "created_at": "2026-09-30T04:15:00+13:00",
+   "data_origin": "synthetic_fixture",
+   "destination": null,
+   "evaluation_artifact_sha256": null,
+   "evaluation_manifest_sha256": "3333333333333333333333333333333333333333333333333333333333333333",
+   "evaluator_id": null,
+   "evidence_refs": [
+    {
+     "id": "EVD-ASSUMPTION",
+     "version": 1
+    }
+   ],
+   "family_ref": null,
+   "grant_ref": null,
+   "guardrail_status": "not_assessed",
+   "id": "IMPROVE-CONTEXT",
+   "incumbent_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+   "kind": "improvement_candidate",
+   "mission_ref": {
+    "id": "MIS-CONTEXT",
+    "version": 1
+   },
+   "operation_id": "OP-IMPROVE-CONTEXT",
+   "provenance": {
+    "actor_id": "SPEC-AUTHOR",
+    "artifact_hashes": [],
+    "input_refs": [],
+    "method": "synthetic_fixture_not_observed",
+    "trust_origin": "synthetic_fixture"
+   },
+   "record_version": 1,
+   "rollback_reason": null,
+   "rollback_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+   "schema_version": "1.2",
+   "state": "proposed",
+   "target": "context"
+  },
+  {
+   "assumptions": [
+    "independent repositories"
+   ],
+   "created_at": "2026-09-30T04:15:00+13:00",
+   "data_origin": "synthetic_fixture",
+   "designs": [
+    "fixed_sample"
+   ],
+   "domain": "software systems",
+   "id": "QUAL-TEST",
+   "implementation_sha256": "1a95670f26d240b446922ab5d2d797da803e892c0acff93f05e24a64418bb346",
+   "issuer_id": "SYNTHETIC-METHOD-REGISTRY",
+   "kind": "method_qualification",
+   "method_id": "SYNTHETIC-QUALIFIED-METHOD",
+   "provenance": {
+    "actor_id": "SPEC-AUTHOR",
+    "artifact_hashes": [],
+    "input_refs": [],
+    "method": "synthetic_fixture_not_observed",
+    "trust_origin": "synthetic_fixture"
+   },
+   "qualification_artifact_sha256": "c8c8171fc496cf0f7cdf8c896f17b72166b2d27a8c692e53bb96bc2677e7405d",
+   "record_version": 1,
+   "schema_version": "1.2",
+   "state": "qualified"
+  },
+  {
+   "artifact_sha256": "f209714b83eed13c7ba706741217ce4a2b190b2e69bb9e10697ec4ed6e6161f4",
+   "capabilities": [
+    "protected_software_experiment"
+   ],
+   "created_at": "2026-09-30T04:15:00+13:00",
+   "data_origin": "synthetic_fixture",
+   "destination": null,
+   "expires_at": "2026-10-01T00:00:00+00:00",
+   "id": "GRANT-TEST",
+   "issued_at": "2026-09-29T00:00:00+00:00",
+   "issuer_id": "SYNTHETIC-OWNER",
+   "kind": "authorization_grant",
+   "max_cost": {
+    "currency": "NZD",
+    "minor_units": 1000
+   },
+   "mission_ref": {
+    "id": "MIS-CONTEXT",
+    "version": 1
+   },
+   "operation_id": "OP-FIXTURE-EXPERIMENT",
+   "policy_version": "fixture-policy-1",
+   "provenance": {
+    "actor_id": "SPEC-AUTHOR",
+    "artifact_hashes": [],
+    "input_refs": [],
+    "method": "synthetic_fixture_not_observed",
+    "trust_origin": "synthetic_fixture"
+   },
+   "record_version": 1,
+   "schema_version": "1.2",
+   "state": "approved"
+  },
+  {
+   "alpha": 0.05,
+   "created_at": "2026-09-30T04:15:00+13:00",
+   "data_origin": "synthetic_fixture",
+   "data_partition_sha256": "a2f8be0cfa14c267ec5d33a7d1cbf9e8ad78c180dbe19f18d7297501ec8ed114",
+   "id": "FAMILY-TEST",
+   "kind": "experiment_family",
+   "max_confirmatory_tests": 2,
+   "mission_ref": {
+    "id": "MIS-CONTEXT",
+    "version": 1
+   },
+   "plan_refs": [
+    {
+     "id": "EXP-CONTEXT",
+     "version": 1
+    }
+   ],
+   "provenance": {
+    "actor_id": "SPEC-AUTHOR",
+    "artifact_hashes": [],
+    "input_refs": [],
+    "method": "synthetic_fixture_not_observed",
+    "trust_origin": "synthetic_fixture"
+   },
+   "record_version": 1,
+   "retired": false,
+   "schema_version": "1.2",
+   "selection_history_refs": [
+    {
+     "id": "HYP-CONTEXT",
+     "version": 1
+    }
+   ],
+   "strategy": "bonferroni_fixed_family"
+  },
+  {
+   "created_at": "2026-09-30T04:15:00+13:00",
+   "data_origin": "synthetic_fixture",
+   "family_ref": {
+    "id": "FAMILY-TEST",
+    "version": 1
+   },
+   "feedback": "sealed_until_campaign_end",
+   "id": "ACCESS-TEST",
+   "issuer_id": "SYNTHETIC-DATA-BROKER",
+   "kind": "holdout_access",
+   "opened_at": "2026-09-29T17:00:00+00:00",
+   "plan_ref": {
+    "id": "EXP-CONTEXT",
+    "version": 1
+   },
+   "provenance": {
+    "actor_id": "SPEC-AUTHOR",
+    "artifact_hashes": [],
+    "input_refs": [],
+    "method": "synthetic_fixture_not_observed",
+    "trust_origin": "synthetic_fixture"
+   },
+   "query_index": 1,
+   "record_version": 1,
+   "schema_version": "1.2"
+  },
+  {
+   "artifact_hashes": [
+    "f198c59277e2b1c96f4586c330ada8d5338ff8e04d9bd4f877f81497fc2ddea0"
+   ],
+   "bindings": {
+    "analysis_implementation_sha256": "1a95670f26d240b446922ab5d2d797da803e892c0acff93f05e24a64418bb346",
+    "candidate_sha256": "f209714b83eed13c7ba706741217ce4a2b190b2e69bb9e10697ec4ed6e6161f4",
+    "evaluator_sha256": "3866de34291111bb83ad0d6dfee08332283d65e73b5d22d41ba5c66d8d007ef7",
+    "evidence_snapshot_sha256": "ea44cf11315eb47b6635ae2680edd5a81123aee3628cb53931411d86ad639771",
+    "experiment_plan_ref": {
+     "id": "EXP-CONTEXT",
+     "version": 1
+    },
+    "hypothesis_ref": {
+     "id": "HYP-CONTEXT",
+     "version": 1
+    },
+    "mission_ref": {
+     "id": "MIS-CONTEXT",
+     "version": 1
+    },
+    "policy_version": "fixture-policy-1",
+    "registration_sha256": "fa823906259c9b692e87bb79a055eb1d6a5032c2e920732f1a81c01d8d4a041d"
+   },
+   "created_at": "2026-09-30T04:15:00+13:00",
+   "data_origin": "synthetic_fixture",
+   "endpoint_ids": [
+    "PRED-WORK",
+    "PRED-TIME"
+   ],
+   "guardrail_ids": [
+    "GUARD-COVERAGE"
+   ],
+   "id": "RECEIPT-EXECUTION",
+   "independence_basis": null,
+   "issuer_id": "SYNTHETIC-RUNNER",
+   "kind": "verification_receipt",
+   "outcome": "pass",
+   "provenance": {
+    "actor_id": "SPEC-AUTHOR",
+    "artifact_hashes": [],
+    "input_refs": [],
+    "method": "synthetic_fixture_not_observed",
+    "trust_origin": "synthetic_fixture"
+   },
+   "purpose": "execution",
+   "record_version": 1,
+   "schema_version": "1.2",
+   "subject_payload_sha256": "f6b1a2b1a4ef2ec943957500067483e137da0f44f509ab0b9f955960484635ab",
+   "subject_ref": {
+    "id": "RES-NOTRUN",
+    "version": 1
+   }
+  },
+  {
+   "artifact_hashes": [
+    "1e5711416186a790eceac9269cf3a92fe3a86003e84ade6b87f8046301b2385c"
+   ],
+   "bindings": {
+    "analysis_implementation_sha256": "1a95670f26d240b446922ab5d2d797da803e892c0acff93f05e24a64418bb346",
+    "candidate_sha256": "f209714b83eed13c7ba706741217ce4a2b190b2e69bb9e10697ec4ed6e6161f4",
+    "evaluator_sha256": "3866de34291111bb83ad0d6dfee08332283d65e73b5d22d41ba5c66d8d007ef7",
+    "evidence_snapshot_sha256": "ea44cf11315eb47b6635ae2680edd5a81123aee3628cb53931411d86ad639771",
+    "experiment_plan_ref": {
+     "id": "EXP-CONTEXT",
+     "version": 1
+    },
+    "hypothesis_ref": {
+     "id": "HYP-CONTEXT",
+     "version": 1
+    },
+    "mission_ref": {
+     "id": "MIS-CONTEXT",
+     "version": 1
+    },
+    "policy_version": "fixture-policy-1",
+    "registration_sha256": "fa823906259c9b692e87bb79a055eb1d6a5032c2e920732f1a81c01d8d4a041d"
+   },
+   "created_at": "2026-09-30T04:15:00+13:00",
+   "data_origin": "synthetic_fixture",
+   "endpoint_ids": [
+    "PRED-WORK",
+    "PRED-TIME"
+   ],
+   "guardrail_ids": [
+    "GUARD-COVERAGE"
+   ],
+   "id": "RECEIPT-ANALYSIS",
+   "independence_basis": null,
+   "issuer_id": "SYNTHETIC-ANALYZER",
+   "kind": "verification_receipt",
+   "outcome": "pass",
+   "provenance": {
+    "actor_id": "SPEC-AUTHOR",
+    "artifact_hashes": [],
+    "input_refs": [],
+    "method": "synthetic_fixture_not_observed",
+    "trust_origin": "synthetic_fixture"
+   },
+   "purpose": "analysis",
+   "record_version": 1,
+   "schema_version": "1.2",
+   "subject_payload_sha256": "f6b1a2b1a4ef2ec943957500067483e137da0f44f509ab0b9f955960484635ab",
+   "subject_ref": {
+    "id": "RES-NOTRUN",
+    "version": 1
+   }
+  },
+  {
+   "artifact_hashes": [
+    "03f946233e8d38c2e5dab2238ad1d7181d523a5b9b70700640f4925cf5fd0f11"
+   ],
+   "bindings": {
+    "analysis_implementation_sha256": "1a95670f26d240b446922ab5d2d797da803e892c0acff93f05e24a64418bb346",
+    "candidate_sha256": "f209714b83eed13c7ba706741217ce4a2b190b2e69bb9e10697ec4ed6e6161f4",
+    "evaluator_sha256": "3866de34291111bb83ad0d6dfee08332283d65e73b5d22d41ba5c66d8d007ef7",
+    "evidence_snapshot_sha256": "ea44cf11315eb47b6635ae2680edd5a81123aee3628cb53931411d86ad639771",
+    "experiment_plan_ref": {
+     "id": "EXP-CONTEXT",
+     "version": 1
+    },
+    "hypothesis_ref": {
+     "id": "HYP-CONTEXT",
+     "version": 1
+    },
+    "mission_ref": {
+     "id": "MIS-CONTEXT",
+     "version": 1
+    },
+    "policy_version": "fixture-policy-1",
+    "registration_sha256": "fa823906259c9b692e87bb79a055eb1d6a5032c2e920732f1a81c01d8d4a041d"
+   },
+   "created_at": "2026-09-30T04:15:00+13:00",
+   "data_origin": "synthetic_fixture",
+   "endpoint_ids": [
+    "PRED-WORK",
+    "PRED-TIME"
+   ],
+   "guardrail_ids": [
+    "GUARD-COVERAGE"
+   ],
+   "id": "RECEIPT-REPRODUCTION",
+   "independence_basis": "Synthetic independent pipeline; not real evidence",
+   "issuer_id": "SYNTHETIC-REPRODUCER",
+   "kind": "verification_receipt",
+   "outcome": "pass",
+   "provenance": {
+    "actor_id": "SPEC-AUTHOR",
+    "artifact_hashes": [],
+    "input_refs": [],
+    "method": "synthetic_fixture_not_observed",
+    "trust_origin": "synthetic_fixture"
+   },
+   "purpose": "reproduction",
+   "record_version": 1,
+   "schema_version": "1.2",
+   "subject_payload_sha256": "e69da68a43d7c3236e7f4f4df0a12317a74bfc87627b9d1915cf60ad42332502",
+   "subject_ref": {
+    "id": "DOS-PLANNED",
+    "version": 1
+   }
+  },
+  {
+   "artifact_hashes": [
+    "f209714b83eed13c7ba706741217ce4a2b190b2e69bb9e10697ec4ed6e6161f4",
+    "3866de34291111bb83ad0d6dfee08332283d65e73b5d22d41ba5c66d8d007ef7",
+    "ea44cf11315eb47b6635ae2680edd5a81123aee3628cb53931411d86ad639771",
+    "1a95670f26d240b446922ab5d2d797da803e892c0acff93f05e24a64418bb346",
+    "c8c8171fc496cf0f7cdf8c896f17b72166b2d27a8c692e53bb96bc2677e7405d",
+    "a2f8be0cfa14c267ec5d33a7d1cbf9e8ad78c180dbe19f18d7297501ec8ed114",
+    "f198c59277e2b1c96f4586c330ada8d5338ff8e04d9bd4f877f81497fc2ddea0",
+    "1e5711416186a790eceac9269cf3a92fe3a86003e84ade6b87f8046301b2385c",
+    "03f946233e8d38c2e5dab2238ad1d7181d523a5b9b70700640f4925cf5fd0f11"
+   ],
+   "bindings": {
+    "analysis_implementation_sha256": "1a95670f26d240b446922ab5d2d797da803e892c0acff93f05e24a64418bb346",
+    "candidate_sha256": "f209714b83eed13c7ba706741217ce4a2b190b2e69bb9e10697ec4ed6e6161f4",
+    "evaluator_sha256": "3866de34291111bb83ad0d6dfee08332283d65e73b5d22d41ba5c66d8d007ef7",
+    "evidence_snapshot_sha256": "ea44cf11315eb47b6635ae2680edd5a81123aee3628cb53931411d86ad639771",
+    "experiment_plan_ref": {
+     "id": "EXP-CONTEXT",
+     "version": 1
+    },
+    "hypothesis_ref": {
+     "id": "HYP-CONTEXT",
+     "version": 1
+    },
+    "mission_ref": {
+     "id": "MIS-CONTEXT",
+     "version": 1
+    },
+    "policy_version": "fixture-policy-1",
+    "registration_sha256": "fa823906259c9b692e87bb79a055eb1d6a5032c2e920732f1a81c01d8d4a041d"
+   },
+   "created_at": "2026-09-30T04:15:00+13:00",
+   "data_origin": "synthetic_fixture",
+   "endpoint_ids": [
+    "PRED-WORK",
+    "PRED-TIME"
+   ],
+   "guardrail_ids": [
+    "GUARD-COVERAGE"
+   ],
+   "id": "RECEIPT-PROMOTION",
+   "independence_basis": null,
+   "issuer_id": "SYNTHETIC-PROMOTER",
+   "kind": "verification_receipt",
+   "outcome": "pass",
+   "provenance": {
+    "actor_id": "SPEC-AUTHOR",
+    "artifact_hashes": [],
+    "input_refs": [],
+    "method": "synthetic_fixture_not_observed",
+    "trust_origin": "synthetic_fixture"
+   },
+   "purpose": "promotion",
+   "record_version": 1,
+   "schema_version": "1.2",
+   "subject_payload_sha256": "e69da68a43d7c3236e7f4f4df0a12317a74bfc87627b9d1915cf60ad42332502",
+   "subject_ref": {
+    "id": "DOS-PLANNED",
+    "version": 1
+   }
+  }
+ ]
+}

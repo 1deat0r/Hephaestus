@@ -5,10 +5,10 @@
 PY := .venv/bin/python
 CARGO := cargo
 
-.PHONY: ci ci-fast fmt fmt-check clippy test-rust test-py verify test-package gen-check conflict-staged conflict-tree hooks hooks-check setup clean
+.PHONY: ci ci-fast fmt fmt-check clippy test-rust test-py verify test-package gen-check conflict-staged conflict-tree manifest-check hooks hooks-check setup clean
 
 ## Run every environment-independent gate (mirrors CI; the single gate registry).
-ci: fmt-check clippy test-rust test-py conflict-tree ci-fast hooks-check
+ci: fmt-check clippy test-rust test-py conflict-tree manifest-check ci-fast hooks-check
 
 ## Fast spec/doc freshness gates (.githooks/pre-commit runs exactly these).
 ci-fast: gen-check verify test-package conflict-staged
@@ -59,6 +59,10 @@ conflict-tree:
 	1) ;; \
 	*) echo "conflict-tree: git grep error (rc=$$rc)" >&2; exit $$rc ;; \
 	esac
+
+## Tracked files ⊆ MANIFEST ∪ allowlist, MANIFEST ⊆ tracked (ADR-024 L4).
+manifest-check:
+	$(PY) tools/check_manifest_coverage.py
 
 ## One-time per clone: wire the committed git hooks.
 hooks:

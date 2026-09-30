@@ -47,6 +47,7 @@ docs/RUNTIME_DECISIONS.md
 .githooks/commit-msg
 .githooks/pre-commit
 .github/workflows/ci.yml
+.github/workflows/periodic.yml
 .gitignore
 GLOSSARY.md
 Makefile
@@ -59,6 +60,8 @@ python/tests/test_smoke.py
 # Runtime files outside the frozen spec envelope (ADR-024 L4 classifier).
 rust-toolchain.toml
 tests/test_digest_vectors.py
+tools/check_audit_age.py
+tools/check_links_online.py
 tools/check_manifest_coverage.py
 tools/check_md_links.py
 tools/check_readme_fences.py

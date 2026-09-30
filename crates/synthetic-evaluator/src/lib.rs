@@ -17,7 +17,10 @@
 
 use serde::{Deserialize, Serialize};
 
+mod evaluate;
 mod rng;
+
+pub use evaluate::{AMBIGUITY_BAND, Assessment, PARAM_TOL, Verdict, evaluate};
 
 /// Scenario classes the fixture corpus must cover (IMPLEMENTATION_PLAN T-003).
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]

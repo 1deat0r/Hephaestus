@@ -482,11 +482,13 @@ fn dependency_install_failure_has_a_pinned_cause() {
                 "-m".to_string(),
                 "pip".to_string(),
                 "install".to_string(),
-                // PEP 668 (distro pythons) refuses BEFORE the network layer;
-                // bypass that policy check so the attempt reaches the
-                // sandbox's blocked egress and fails with the pinned cause.
+                // PEP 668 refuses before the network layer, and a
+                // preinstalled dist (CI images ship several) would satisfy
+                // the requirement without touching one; bypass the policy
+                // check with a package that cannot be present so the only
+                // remaining failure cause is blocked egress (ticket-02 AC).
                 "--break-system-packages".to_string(),
-                "requests".to_string(),
+                "hephaestus-nonexistent-pkg-7f3a".to_string(),
             ],
             spec: base_spec(),
             input_files: vec![],

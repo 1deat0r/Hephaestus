@@ -26,6 +26,15 @@ jobs:
       # Sandbox tests hard-require bwrap (honest green — they never skip).
       - name: Install bubblewrap
         run: sudo apt-get update && sudo apt-get install -y bubblewrap
+      # Stock Ubuntu 24.04 restricts unprivileged user namespaces (AppArmor),
+      # which breaks bwrap's netns loopback (RTM_NEWADDR EPERM) and fails
+      # every sandbox test. Ephemeral runner; tests stay fail-closed (ADR-026).
+      - name: Relax unprivileged-userns restriction (bwrap)
+        run: |
+          key=/proc/sys/kernel/apparmor_restrict_unprivileged_userns
+          echo "apparmor_restrict_unprivileged_userns before: $(cat "$key" 2>/dev/null || echo absent)"
+          if [ -e "$key" ]; then sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0; fi
+          echo "apparmor_restrict_unprivileged_userns after: $(cat "$key" 2>/dev/null || echo absent)"
       - name: Run environment-independent gates
         run: make ci
 

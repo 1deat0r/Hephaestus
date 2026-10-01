@@ -136,3 +136,23 @@ build does not belong on the commit hot path; the remote job stays the
 backstop); moving `md-links` into `ci-fast` (ADR-024 already rejected
 transient link failures on the commit path); editing ADR-024's appendix in
 place (registers are append-only records — supersession is stated here).
+
+## ADR-026 — The CI runner relaxes Ubuntu's unprivileged-userns AppArmor restriction before the bwrap gates
+
+The T-010 sandbox tests hard-require bwrap and never skip (they fail when
+bwrap cannot run), but they only reached GitHub's `ubuntu-latest` runners
+with the run-14 push: `crates/hephaestus/tests/sandbox_deny.rs` first exists
+in the T-008..T-013 commit, so every previously green CI run predates it.
+Stock Ubuntu 24.04 ships `kernel.apparmor_restrict_unprivileged_userns=1`;
+under that restriction unprivileged bwrap fails inside its own netns with
+`bwrap: loopback: Failed RTM_NEWADDR: Operation not permitted` and every
+sandbox test goes red — runs 36924168195 and 36924735157 (four attempts,
+identical failure). The `gates` job therefore prints and then sets that
+sysctl to 0 before `make ci`: the runner VM is ephemeral, the local gate is
+untouched, and the tests themselves stay fail-closed — if bwrap still cannot
+run they fail rather than skip, so CI green keeps meaning what it meant.
+Rejected: letting the sandbox tests skip under CI (CI would be greener than
+local `make ci` — the exact honesty hole ADR-024 exists to close); pinning
+an older runner image (image pins rot and mask the real incompatibility);
+AppArmor profile surgery instead of one sysctl (more surface, no stronger
+guarantee on a throwaway VM).

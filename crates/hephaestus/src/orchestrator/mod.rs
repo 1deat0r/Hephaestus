@@ -8,6 +8,7 @@
 //! allocation policy is versioned and visible (§11:221). No learned
 //! controller, no fabricated posteriors (§11:225).
 
+pub mod archive;
 pub mod record;
 
 pub use record::{

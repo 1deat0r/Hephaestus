@@ -216,6 +216,9 @@ docs/agents/auto-workflow/state-archive-20261001T050137Z-run11.md
 .scratch/t043-trust-propagation/grill.md
 .scratch/t043-trust-propagation/issues/01-propagation-contract.md
 .scratch/t043-trust-propagation/spec.md
+.scratch/t044-multi-objective-archive/grill.md
+.scratch/t044-multi-objective-archive/issues/01-pareto-archive.md
+.scratch/t044-multi-objective-archive/spec.md
 crates/hephaestus/src/acceleration/mod.rs
 crates/hephaestus/src/acceleration/record.rs
 crates/hephaestus/src/advisory/mod.rs
@@ -252,6 +255,7 @@ crates/hephaestus/src/memory/mod.rs
 crates/hephaestus/src/memory/record.rs
 crates/hephaestus/src/methods/mod.rs
 crates/hephaestus/src/methods/record.rs
+crates/hephaestus/src/orchestrator/archive.rs
 crates/hephaestus/src/orchestrator/mod.rs
 crates/hephaestus/src/orchestrator/record.rs
 crates/hephaestus/src/pilot/mod.rs
@@ -291,6 +295,7 @@ crates/hephaestus/tests/import_closure.rs
 crates/hephaestus/tests/learning_reuse_gates.rs
 crates/hephaestus/tests/memory_quarantine.rs
 crates/hephaestus/tests/method_registry.rs
+crates/hephaestus/tests/multi_objective_archive.rs
 crates/hephaestus/tests/pilot_campaigns.rs
 crates/hephaestus/tests/prior_art.rs
 crates/hephaestus/tests/prototype_worker.rs

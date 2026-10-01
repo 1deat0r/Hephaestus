@@ -14,6 +14,7 @@ pub mod ledger;
 pub mod migrate;
 pub mod mission;
 pub mod operations;
+pub mod orchestrator;
 pub mod policy;
 pub mod sandbox;
 pub mod scheduler;

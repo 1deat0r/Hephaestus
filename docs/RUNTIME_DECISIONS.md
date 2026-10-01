@@ -109,3 +109,30 @@ hook, fail; unreferenced-file report → `make ci`, advisory; full `make ci` →
 GitHub CI (SHA-pinned actions), fail; online link audit + audit-age watchdog →
 scheduled workflow, fail-in-workflow; `cargo doc -D warnings` → separate CI
 job, later; GitHub ruleset → repository owner, external.
+
+## ADR-025 — The pre-commit tier runs the manifest classifier; rustdoc gets one named command
+
+Two checks that only GitHub Actions ran became reachable locally: the
+manifest-coverage classifier (ADR-024 layer 4) joined `ci-fast`, so the
+pre-commit hook — which runs exactly `make ci-fast` — now blocks a commit
+whose tracked files are neither manifest-covered nor allowlisted, with the
+classifier's own hint, instead of letting a push go red (run 3 pushed twice
+red through precisely this hole). `make doc-check` became the single
+definition of `RUSTDOCFLAGS="-D warnings" cargo doc --workspace --no-deps`,
+and the remote docs job calls it, so the command cannot drift between
+registry and workflow. Serves the same obligations ADR-024 cites (R-014,
+R-016, R-043) by making its layer-4 classifier reachable before a push;
+introduces no new obligation. Measured `ci-fast` overhead: baseline pair
+0.928 s / 0.950 s (spread 0.022 s), after 0.954 s — the delta sits inside
+the baseline spread; timings in the run-4 state LOG. `manifest-check` stays
+explicitly listed on `ci` as well — the target list is the human-readable
+gate inventory, and the deterministic double-run is free at that scale.
+This supersedes two ADR-024 appendix rows: "manifest-classifier → `make
+ci`" becomes "`ci-fast` (hence every commit) and `make ci`"; "cargo doc →
+separate CI job, later" becomes "local `make doc-check` target, called by
+the separate CI job". Rejected alternatives: putting cargo doc into `ci-fast`
+or `ci` (violates ADR-024 step 10's latency decision — a multi-second rustdoc
+build does not belong on the commit hot path; the remote job stays the
+backstop); moving `md-links` into `ci-fast` (ADR-024 already rejected
+transient link failures on the commit path); editing ADR-024's appendix in
+place (registers are append-only records — supersession is stated here).

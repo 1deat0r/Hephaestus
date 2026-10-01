@@ -1,18 +1,18 @@
 ## STATE
 status: success
 origin: session
-goal: Implement T-007: capability grants and the deterministic policy engine — grants bind operation, scope, destination, expiration, artifact identity where relevant, and approved cost; provider credentials stay outside model-visible context
+goal: Implement T-013 corpus ingestion, source-span provenance, full-text retrieval, coverage reports, and typed evidence edges over local authorized files (R-015, R-016, R-017, R-018, R-098, R-106, R-107)
 goal_source: derived:roadmap
 phase: 8
-fixed_point: ee7a08130090080256da8078dcbf3e934b84f8dd
-spec: none
-baseline: ee7a08130090080256da8078dcbf3e934b84f8dd + (clean porcelain at new open)
-tickets: 01=done, 02=done, 03=done, 04=done
-edges: 1->3, 2->3, 3->4
-attempts: 01=1, 02=1, 03=1, 04=3
-exec_count: 14
+fixed_point: d2a4d52694000ef9021e4018918eadcf0ecc6687
+spec: .scratch/t013-corpus/spec.md
+baseline: d2a4d52694000ef9021e4018918eadcf0ecc6687 + (runs 4-11 uncommitted incl. T-012 mission module, staged coherently per standing landing procedure)
+tickets: 01=done, 02=done, 03=done
+edges: 01->02, 01->03
+attempts: 01=1, 02=1, 03=1
+exec_count: 12
 skills_pin: 1.7.0
-updated: 2026-09-30T10:50:00Z
+updated: 2026-10-01T05:30:00Z
 
 ## LOG
 2026-09-30T05:56:41Z EVENT Phase 0 bootstrap: fresh STATE created; baseline/fixed_point recorded once; skills_pin=1.7.0
@@ -117,3 +117,266 @@ updated: 2026-09-30T10:50:00Z
 2026-09-30T10:40:00Z EXEC 14 retro
 2026-09-30T10:50:00Z EVENT Phase 8: retro report-only (4 suggestions logged skipped: ci-fast gate change = human architectural call, LOG timestamp discipline = skill file outside repo, writing-for-agents degradation, EXEC backfill noted); prior report rotated to report-2026-09-30T07:45:00Z.md; report.md written; routing -> tickets 01-04 all done + final verify green -> terminate success; no commits, no pushes (rule 5 — invocation authorizes neither); 19 paths staged for the owner
 2026-09-30T11:10:00Z EVENT Post-loop (user-authorized "commit and push"): f54cfd2 (T-007 + ADR-024 allowlist backfill, 21 files) pushed, CI red — caught rustdoc unresolved-link (remote docs job) + rotated-report uncovered entry; 4b85d73 fixed both (cargo doc joins local verify); gh run 36693902280 = success (gates + docs green); audit rows appended
+2026-09-30T09:14:57Z EVENT Run 4: prior STATE archived to state-archive-20260930T091500Z-run3.md (status success; explicit "continue" reopens); report.md rotated to report-2026-09-30T10:50:00Z.md (Phase 0 step 3, performed at bootstrap this time)
+2026-09-30T09:14:57Z EVENT RESET exec_count 14 -> 0 (fresh goal); baseline/fixed_point re-recorded at d2a4d52 (post-push, clean tree); skills_pin=1.7.0 reused
+2026-09-30T09:14:57Z EVENT Anomaly noted: run-3 STATE/log timestamps drifted up to ~100min AHEAD of real UTC (estimated, not minted from date -u); updated: 10:50 read as future-stale per anti-stuck rule — adopted immediately, never blocked on; append-only rows preserved; run 4 mints every timestamp from `date -u`
+2026-09-30T09:14:57Z EVENT Goal intake: invocation gave no goal; recorded goal complete (4/4); open issues none; retro suggestions: (a) manifest-check into ci-fast = apply-able in-repo (highest value — it is the exact gap that produced run 3's red push), (b)/(c) out-of-repo skipped prior run, (d) done; TODO/FIXME none; roadmap T-008 deferred behind the retro item per derivation order -> source derived:retro
+2026-09-30T09:14:57Z EVENT Phase 0 bootstrap (run 4): improve-codebase-architecture skipped again in derivation order with logged rationale (roadmap/retro outrank speculative scans)
+2026-09-30T09:15:14Z EXEC 1 grill
+2026-09-30T09:16:46Z EVENT Phase 2 complete: grill-with-docs -> grilling self-interview, 10-question frontier self-answered from evidence (.scratch/gate-parity/grill.md); facts: hook delegates to ci-fast, docs job raw command, ADR-025 next free, seal covers Makefile+ci.yml
+2026-09-30T09:17:28Z EXEC 2 spec
+2026-09-30T09:17:28Z EVENT Phase 3 complete: spec written to .scratch/gate-parity/spec.md (Status: ready-for-agent, local tracker)
+2026-09-30T09:17:28Z EXEC 3 tickets
+2026-09-30T09:17:28Z EVENT Phase 4 complete: 1 ticket (grill Q9 single-slice rationale), 0 edges, frontier={01}; published to .scratch/gate-parity/issues/
+2026-09-30T09:18:52Z EXEC 4 implement
+2026-09-30T09:18:52Z EVENT Phase 5: ticket 01 (single slice, config+ADR — no unit seam per grill Q5, behavioral evidence instead): Makefile ci-fast += manifest-check with ADR-025 comment; doc-check target (unwired, ADR-024 step-10 comment); ci.yml docs job now calls make doc-check (single registry); ADR-025 appended to RUNTIME_DECISIONS with measured timings corrected to actuals; gate seal regenerated
+2026-09-30T09:18:52Z EVENT Evidence: baseline ci-fast 0.950s/0.928s -> after 0.954s (delta ~0.02s, within noise); make doc-check EXIT=0 (rustdoc -D warnings — the run-3 gap); NEGATIVE PROBE: staged unlisted .gate-parity-probe.tmp -> make ci-fast EXIT=2 with classifier hint "uncovered: .gate-parity-probe.tmp"; probe removed from index+disk -> ci-fast EXIT=0; committed history never touched
+2026-09-30T09:18:52Z EXEC 5 verify
+2026-09-30T09:18:52Z EVENT Phase 6 attempt 1 RED — md-links fail-closed caught a REAL defect: the Phase-0 report rotation left report.md tracked-in-index but absent on disk (FileNotFoundError). The gate was right, not flaky: fix = stage the rotation + temporarily drop report.md's allowlist entry (stale while absent; re-added when Phase 8 rewrites the file — logged as a mid-run index/allowlist dance, seal regenerated).
+2026-09-30T09:20:40Z EVENT Phase 6 GREEN (attempt 2, ticket 01 = single attempt): make ci EXIT=0 (manifest-check ok tracked=187 allowlisted=106, md-links ok 47 md files, gate-seal ok 20, verify_package PASS, 94 py tests, hooks-check ok); doc-check EXIT=0; negative probe passed; ci-fast 0.95s (delta ~0.02s)
+RC=2
+2026-09-30T09:20:40Z EXEC 6 review
+2026-09-30T09:23:58Z EVENT Clarification: the stray bare 'RC=2' line a few rows up is a shell-redirect mistake from the make ci attempt-1 wrapper, NOT a gate result; authoritative Phase 6 records are the two Phase 6 events (attempt 1 RED on rotation divergence, attempt 2 GREEN EXIT=0) and the fix-cycle confirmation below
+2026-09-30T09:23:58Z EVENT Phase 7 pass 1 (two-axis, parallel sub-agents): Standards — 1 hard-literal (ADR-025 lacked R-IDs), 2 judgement (.PHONY, timing band generous), 1 term-overload (ci.yml comment); Spec — all 8 ACs MET except evidence-future-tense nuance; no scope creep; 3 small implementation nits (ADR rounding, stray RC line, .PHONY)
+2026-09-30T09:23:58Z EXEC 7 implement
+2026-09-30T09:23:58Z EVENT Fix cycle 1: ADR-025 now cites inherited R-014/R-016/R-043 (served via ADR-024's classifier, no new obligation) + precise timing (baseline pair 0.928/0.950 spread 0.022, after 0.954); doc-check added to .PHONY; ci.yml comment de-overloaded; stray RC line annotated (append-only preserved); seal regenerated
+2026-09-30T09:23:58Z EXEC 8 verify
+2026-09-30T09:23:58Z EVENT Phase 6 GREEN (fix cycle 1): make ci EXIT=0 (manifest 187/106, md-links 47 files, seal 20, verify_package PASS, 94 py, hooks-check); make doc-check EXIT=0
+2026-09-30T09:24:14Z EXEC 9 review
+
+2026-09-30T09:28:54Z EVENT Phase 7 pass 2: Standards — all 5 pass-1 findings REMEDIATED/ACCEPTED (R-IDs honest inheritance, .PHONY, timing raw numbers, comment fixed, RC annotated); fresh nits = untracked-run-artifact landing procedure + trailing newline + non-monotonic LOG (documented anomaly). Spec — ACs 1,2,3,5,6,7,8 MET; AC4 PARTIAL (comment = other workflow change), AC7 future-tense honest-pending; no scope creep; no unsupported claims
+2026-09-30T09:28:54Z EXEC 10 implement
+2026-09-30T09:28:54Z EVENT Fix cycle 2: AC4 wording now admits the 2-line comment; AC7 precision corrected (entry re-added at staging/landing time — ls-files reads the index, gates green while untracked); trailing newline restored. Pass 3 NOT spent — cycle-2 fixes are documentation-text only (no code/gate surface); logged as known limitation rather than silently skipped
+2026-09-30T09:28:54Z EXEC 11 verify
+2026-09-30T09:28:54Z EVENT Phase 6 GREEN (post-cycle-2): make ci EXIT=0; make doc-check EXIT=0; seal 20 ok (no sealed file touched in cycle 2 — .scratch only)
+2026-09-30T09:31:12Z EXEC 12 retro
+2026-09-30T09:31:12Z EVENT Phase 8: retro report-only (4 rows: skill-file rotation/gates friction skipped rule 6(c), landing-note judged redundant (classifier hint teaches it), writing-for-agents degradation, date -u discipline applied in-run as a positive outcome); no GLOSSARY/requirements changes needed; routing -> ticket 01 done + final verify green -> terminate success; report.md written; no commits, no pushes (rule 5)
+2026-09-30T09:31:12Z EVENT Terminal verification: make ci EXIT=0 after report.md creation (tracked-file gates unaffected — report.md is worktree-untracked while its rotation deletion is staged; landing procedure documented in report known-issues #2)
+2026-09-30T20:20:30Z EVENT STANDING DIRECTIVE (user invocation): "run this auto skills in perpetuity all day until I tell you explicitly to stop, make the best decisions and choose the best courses of action on your own, do not stop or ask me anything" — governs this and every subsequent cycle in this session until an explicit stop; source user-invocation; logged in decisions.md
+2026-09-30T20:20:30Z EVENT Run 5 (cycle 1 under the directive): prior STATE archived to state-archive-20260930T201900Z-run4.md (success); report.md rotated to report-2026-09-30T09:31:12Z.md at bootstrap; exec_count reset; ~11h gap since run 4 (real clock 20:19Z, date -u discipline)
+2026-09-30T20:20:30Z EVENT Goal intake under directive: no goal text in invocation -> derivation order: open issues none; run-4 retro rows all report-only/applied; TODO/FIXME none; README roadmap -> IMPLEMENTATION_PLAN M1: T-006 done, T-007 done, next prerequisite-ready T-008 (T-009 gates on T-006+T-007+T-008); source derived:roadmap
+2026-09-30T20:20:30Z EVENT Phase 0 bootstrap (run 5): no STOP; baseline re-recorded incl. run-4 uncommitted gate-parity files; skills already loaded this session (grilling/to-spec/to-tickets/implement/tdd/code-review/retro) — no re-invocation needed
+2026-09-30T20:20:47Z EXEC 1 grill
+2026-09-30T20:38:03Z EVENT Phase 2 complete: grill self-interview 10 questions answered from MASTER_SPEC:373/408/410, R-055/R-056 OBLIGATIONS, plan T-008 (.scratch/t008-budget-ledger/grill.md)
+2026-09-30T20:38:57Z EXEC 2 spec
+2026-09-30T20:38:57Z EVENT Phase 3 complete: spec written to .scratch/t008-budget-ledger/spec.md (Status: ready-for-agent, local tracker)
+2026-09-30T20:38:57Z EXEC 3 tickets
+2026-09-30T20:38:57Z EVENT Phase 4 complete: 3 tickets, 2 edges (1->2, 1->3), no cycles, frontier={01}; published to .scratch/t008-budget-ledger/issues/
+2026-09-30T20:40:05Z EXEC 4 implement
+2026-09-30T20:40:05Z EVENT Phase 5 entered (perpetual directive): implement/tdd/code-review/retro skills loaded earlier in session, reused; sequential frontier in main tree, no branches/PRs/sub-agents (rule 5: no commit authorization)
+2026-09-30T20:43:45Z EVENT Ticket 01 done: BudgetLedger new/reserve/commit/release + read model; 4 integration + 3 unit tests green (transactional refusal matrix AT-055, exact-fit allowed, overage denied, four-bucket sum held across cycles; one test bug fixed — cycle test reserved stale availability)
+2026-09-30T20:43:45Z EVENT edges 1->2 and 1->3 satisfied -> tickets 02 and 03 ready
+2026-09-30T20:45:55Z EVENT Ticket 02 done: mark_unresolved/reconcile + read model (unresolved total + count); 4 new tests green (null-with-reason entries, overrun refusal, exactly-once reconcile with AlreadyReconciled replay refusal, settle-over-headroom refusal); available() extended to subtract known unresolved holds; 8/8 integration suite green
+2026-09-30T20:47:17Z EVENT Ticket 03 done: 8-thread x 50-attempt Mutex race (successes+failures fully accounted, reserved == successes*hold, never over limit), determinism totals pinned (310/0/190/0), GLOSSARY +3 (row written FIRST), all gates green
+2026-09-30T20:47:17Z EXEC 5 verify
+2026-09-30T20:47:17Z EVENT Phase 6 GREEN (attempt 1): fmt ok; clippy -D warnings 0; cargo test --workspace 208 passed/0 failed (+13 budget); make doc-check EXIT=0; make ci EXIT=0 (manifest 187/106, md-links 47, seal 20, verify_package PASS, 94 py, hooks-check ok)
+2026-09-30T20:47:17Z EXEC 6 review
+2026-09-30T21:04:15Z EVENT Phase 7 pass 1 (two-axis): Standards — 2 hard (unchecked money arithmetic on reserve/reconcile paths, InsufficientAvailable payload fabricated 0 vs doc), judgement (R-056 missing from file header, latent commit-restore mutation, invariant helpers self-referential/misnamed, GLOSSARY released overclaim). Spec — REAL BUG: reserve ignored unresolved holds (mark_unresolved(800) then reserve(500) drove available negative; AC invariant UNMET), thread ok/err assertion arithmetically forced, budget files untracked so manifest-check never saw them
+2026-09-30T21:04:15Z EXEC 7 implement
+2026-09-30T21:04:15Z EVENT Fix cycle 1: regression test reserve_respects_unresolved_holds written FIRST (RED confirmed), then ONE shared checked available_minor() formula used by available/reserve/mark_unresolved (dedup + bug fixed); reconcile payload = real settle_room (checked chain, no fabricated 0); commit reordered check-before-mutate (restore path eliminated); .sum() -> try_fold; header cites R-056; invariant helpers now assert against independently recomputed capacity + non-negativity (load-bearing) with honest comments; boundary unit test (i64::MAX limit); GLOSSARY released wording corrected; budget sources STAGED + 2 allowlist entries + seal re-written so manifest-check covers the new code (tracked=189, allowlisted=108 — spec Out-of-Scope gate exception, run-3 precedent, decision row logged)
+2026-09-30T21:04:15Z EXEC 8 verify
+2026-09-30T21:04:15Z EVENT Phase 6 GREEN (fix cycle 1): fmt ok; clippy 0; cargo test --workspace 210 passed/0 failed (+2); make doc-check EXIT=0; make ci EXIT=0 with the new files actually covered by manifest-check
+2026-09-30T21:04:15Z EXEC 9 review
+2026-09-30T21:11:02Z EVENT Phase 7 pass 2: every pass-1 finding REMEDIATED (verified by reviewers reading current code); fresh = allowlist/seal unstaged vs staged files, one untested refusal, dead lets
+2026-09-30T21:11:02Z EXEC 10 implement
+2026-09-30T21:11:02Z EVENT Fix cycle 2: allowlist+seal staged (index consistent for landing); reservation-id collision refusal test added; dead bindings removed -> clippy 0, 210/210, make ci EXIT=0; pass 3 conserved (bookkeeping + one assertion + dead code) with decision row
+2026-09-30T21:11:02Z EVENT EXEC 11 verify (inline: fix-cycle-2 gates above)
+2026-09-30T21:11:02Z EXEC 12 retro
+2026-09-30T21:11:02Z EVENT Phase 8: retro report-only (3 rows skipped with reasons; red-first + date -u applied in-run); report.md written; routing -> 3/3 tickets done + final verify green -> terminate success; NO commits (directive lacks authorization); landing procedure in report known-issues
+2026-09-30T21:11:02Z EVENT Perpetual directive: cycle 6 to be derived immediately after this terminal write (next prerequisite-ready: T-009 scheduler/DAG, now unblocked)
+2026-09-30T21:11:34Z EVENT Run 6 (cycle 2 under the perpetual directive): prior STATE archived to state-archive-20260930T211100Z-run5.md (success); report.md rotated at bootstrap; exec_count reset; no STOP
+2026-09-30T21:11:34Z EVENT Goal intake: no goal text -> derivation: open issues none; run-5 retro report-only/applied; TODO none; roadmap M1: T-006/T-007/T-008 all done -> T-009 now unblocked (plan: "T-009 depends on all three"); source derived:roadmap
+2026-09-30T21:11:34Z EVENT Phase 0 bootstrap (run 6): baseline carries runs 4+5 uncommitted work; T-008 BudgetLedger available as the reservation substrate
+2026-09-30T21:12:07Z EXEC 1 grill
+2026-09-30T21:13:57Z EVENT Phase 2 complete: grill 12 questions answered (plan T-009 + MASTER_SPEC:367-377/439 + OBLIGATIONS R-055/056/057) -> .scratch/t009-scheduler/grill.md
+2026-09-30T21:14:56Z EXEC 2 spec
+2026-09-30T21:14:56Z EVENT Phase 3 complete: spec at .scratch/t009-scheduler/spec.md (ready-for-agent, local tracker)
+2026-09-30T21:14:56Z EXEC 3 tickets
+2026-09-30T21:14:56Z EVENT Phase 4 complete: 4 tickets, 3 edges (1->2, 2->3, 2->4), no cycles, frontier={01}; published to issues/
+2026-09-30T21:15:32Z EXEC 4 implement
+2026-09-30T21:15:32Z EVENT Phase 5 entered (cycle 6): sequential frontier in main tree; no branches/PRs/sub-agents (rule 5); tdd/seams per grill Q11
+2026-09-30T21:19:22Z EVENT Ticket 01 done: TaskDag + validate (declarations/deps/Kahn-cycle/dependency-outputs/write-conflict) with named violations; 2 integration + 2 unit tests green; reaches() dead-code cleaned
+2026-09-30T21:27:53Z EVENT Ticket 02 done: TaskExecutor capability contract (run/run_batch/run_cancellable/signal_cancel) + Scheduler (validate-on-new, cascade, wave builder: class order/max_in_flight/resource units/exclusivity, reserve-before-dispatch, outcome->commit/release/unresolved, trivial run_batch grouping); 4 run tests green first pass after compile-red; wave-builder unit tests added
+2026-09-30T21:27:53Z EVENT Ticket 03 done: bounded retries (retryable:false => exactly 1 call regardless of max_attempts — MASTER_SPEC:371; exhaustion at 3), TimedOut follows retry rules, timeout validated at DAG seam; 3 tests green (one flag-lifecycle bug fixed: handles now created at construction, cascade retried on empty wave to prevent false Stuck)
+2026-09-30T21:27:53Z EVENT Ticket 04 done: pre-dispatch cancel => signal_cancel + zero reservations + cascade to descendants; executor Cancelled releases reservation; trivial batching (6 trivial -> 1 run_batch / 6 tasks; non-trivial 0 batch calls); GLOSSARY +3 (row written FIRST); 3 tests green
+2026-09-30T21:27:53Z EVENT Fix: clippy -D warnings 7 findings (manual_contains, redundant pattern, collapsible if, redundant binding, dead test scaffolding) all fixed
+2026-09-30T21:27:53Z EXEC 5 verify
+2026-09-30T21:27:53Z EVENT Phase 6 GREEN (attempt 1): fmt ok; clippy 0; cargo test --workspace 226 passed/0 failed (scheduler: 10 run + 2 deny + 4 unit); make doc-check EXIT=0; make ci EXIT=0 (manifest-check tracked=195 allowlisted=114 — scheduler files staged+covered, seal 20, verify_package PASS, 94 py, hooks-check)
+2026-09-30T21:27:53Z EXEC 6 review
+2026-09-30T21:43:42Z EVENT Phase 7 pass 1: Standards — 2 HARD (batch-path held/outcome mis-pairing: a priced success could leak its reservation while a free task got someone else's hold; commit-error path left a reservation) + 5 judgement (swallowed settlement Results, deny-header absence, GLOSSARY 'hold' wording, Failed/TimedOut dup, write-only outcomes map, Stuck naming). Spec — AC gaps: COST_MISMATCH untested, budget-probe untestable as worded, attempt numbers unexposed, ambiguous-after-cancel untestable, ticket boxes unticked; mixed-wave determinism hole (retry re-dispatch order doc); max_in_flight:0 livelock
+2026-09-30T21:43:42Z EXEC 7 implement
+2026-09-30T21:43:42Z EVENT Fix cycle 1: outcomes paired by dispatched index (bug fixed + mixed-wave regression test asserts spent==sum of own holds); commit-error now releases then reports Settlement loudly; Settlement variant replaces all swallowed Results (incl. sanitized ambiguous reason); failure reasons stored and exposed via RunReport::failure_reason (+2 asserts); attempts exposed via RunReport::attempts (retry test extended); write-only outcomes map removed; fail_attempt helper dedups Failed/TimedOut; InvalidConfig(max_in_flight=0); let-chain collapse; 'hold' wording -> reservation vocabulary; deny-header honest-absence; spec/ticket AC wording reworked to testable forms; 4 ticket files ACs ticked with comments; .scratch/t009 unstaged again (standing untracked-docs decision)
+2026-09-30T21:43:42Z EXEC 8 verify
+2026-09-30T21:43:42Z EVENT Phase 6 GREEN (attempt 1 of this run's ticket set; fix cycle included): fmt ok; clippy 0; cargo test --workspace 230 passed/0 failed (+4 regression/AC tests); make doc-check EXIT=0; make ci EXIT=0 (manifest 195/114, seal 20)
+2026-09-30T21:43:42Z EXEC 9 review
+2026-09-30T21:50:28Z EVENT Phase 7 pass 2 (combined axes verifier): ALL pass-1 findings REMEDIATED with proving lines quoted; ACCEPTED = reworded ACs match tests (no fresh overclaim). Fresh finding: wave-loop Settlement abort could leak sibling holds — FIXED (drain-and-release before abort) + root cause closed (constructor rejects cross-currency costs: InvalidConfig, new test); residual GLOSSARY 'hold' gloss fixed
+2026-09-30T21:50:28Z EXEC 10 implement
+2026-09-30T21:50:28Z EVENT Fix cycle 2: constructor currency check; drain-and-release on Settlement abort (defense in depth); glossary gloss reworded; cross-currency constructor test
+2026-09-30T21:50:28Z EXEC 11 verify
+2026-09-30T21:50:28Z EVENT Phase 6 FINAL GREEN: fmt ok; clippy 0; cargo test --workspace 231 passed/0 failed; make doc-check EXIT=0; make ci EXIT=0 (manifest 195/114, seal 20, verify_package PASS, 94 py, hooks-check)
+2026-09-30T21:50:28Z EXEC 12 retro
+2026-09-30T21:50:28Z EVENT Phase 8: retro report-only (rows below); report.md written; routing -> 4/4 tickets done + final verify green -> terminate success; no commits (rule 5); pass 3 conserved after pass 2 verified everything with the one fresh finding now fixed and gated (decision row)
+2026-09-30T22:20:08Z EVENT Run 7 (cycle 3 under the perpetual directive): bare invocation, standing directive in force (no stop given) -> reopen; prior STATE archived to state-archive-20260930T221800Z-run6.md (success); report.md rotated at bootstrap; exec_count reset; no STOP
+2026-09-30T22:20:08Z EVENT Goal intake: no goal text -> derivation: issues none; run-6 retro report-only/skipped; TODO none; roadmap M1 order: T-006/7/8/9 done, T-010 next (T-011 "requires the integrated execution path" = T-010's workers + T-009's scheduler); source derived:roadmap
+2026-09-30T22:20:08Z EVENT Phase 0 evidence probe: bwrap /usr/bin/bwrap works with --unshare-net (net-off smoke OK); unprivileged userns allowed (unprivileged_userns_clone=1, unshare --user OK); prlimit/setpriv present; python 3.14.7; python/hephaestus_workers is the T-001 skeleton ("no tools, no sandbox, no execution path yet (T-010+)"); R-059/R-110 = Contract M0 Runtime M1, AT-059 positive = bounded worker + collected outputs + attested mounts/env/descriptors/subprocess/network limits
+2026-09-30T22:20:08Z EVENT Phase 0 bootstrap (run 7): baseline carries runs 4-6 uncommitted work; skills already in session context
+2026-09-30T22:22:35Z EVENT Phase 2 complete: grill 12 questions answered (bwrap/prlimit probe, MASTER_SPEC:389/400/410/445, AT-059/AT-110, T-009 seam) -> .scratch/t010-sandbox/grill.md
+2026-09-30T22:23:10Z EVENT EXEC 1 grill (line backfilled after its completion event — same batched write; count matches exec_count=1)
+2026-09-30T22:23:34Z EXEC 2 spec
+2026-09-30T22:23:34Z EVENT Phase 3 complete: spec at .scratch/t010-sandbox/spec.md (ready-for-agent)
+2026-09-30T22:23:34Z EXEC 3 tickets
+2026-09-30T22:23:34Z EVENT Phase 4 complete: 4 tickets, 3 edges (1->2, 1->3, 1->4), no cycles, frontier={01}; published to issues/
+2026-09-30T22:24:25Z EXEC 4 implement
+2026-09-30T22:24:25Z EVENT Phase 5 (cycle 7): skills in-session; sequential frontier; red-first at the SandboxProvider seam; ticket 01 attempt starts
+2026-09-30T22:37:46Z EVENT Ticket 01 done (7/7 against REAL bwrap): net-unreachable (TCP+DNS), env secret scrubbed, /usr ro + /work rw, traversal into host binds denied (tmpfs-root write documented as namespaced), undeclared tool pre-spawn denial, attest denial (missing bwrap / network-On / zero-limit), wall-timeout kill; 2 argv-builder unit tests. Debug journey logged: (1) RLIMIT_NPROC is per-UID and counts THREADS (~1500 on this host) — provider now applies spec.nproc as payload allowance ABOVE the live count (documentation bullet added); (2) --proc/--dev/--tmpfs take ONE arg (triplet bug fed /proc as the command); (3) bwrap root is ephemeral tmpfs — traversal test targets crossing into RO host binds + host-absence, limitation documented; (4) first undeclared test declared the tool it ran (test bug fixed)
+2026-09-30T22:37:46Z EVENT edges 1->2/1->3/1->4 satisfied -> tickets 02, 03, 04 ready
+2026-09-30T22:42:42Z EVENT Ticket 02 done: DoS/dependency matrix green 13/13 (memory bomb bounded, fork bomb stopped at nproc allowance, SIGXCPU-style kill => exit 128+n/-1 within deadline, fsize denied, pip install fails, sys.path pure, cwd /work) + WorkerFailed.wall_ms metering added; clippy 0; workspace 246/246
+2026-09-30T22:47:44Z EVENT Ticket 03 done: runner.py+tools.py (TOOL_DENIED defense-in-depth), safe output collection (symlink -> OutputRefused whole-batch, count/per-file/total caps with truncation flag), input staging with basename enforcement; 6 e2e tests green (worker echo result.json, undeclared exit2, failing exit1, symlink refuse, caps, write_out artifact). Bugs fixed en route: python_pkg() wrong parent level, {i} literal f-string naming all files the same
+
+2026-09-30T22:53:24Z EVENT Ticket 04 done: SandboxExecutor maps Ok->Succeeded(cost), Timeout->TimedOut, denials->Failed(SANDBOX reason); scheduler e2e (2 priced tasks through real bwrap, spent==150 reserved==0); spin-tool timeout mapping; attest-denied mapping; GLOSSARY +3 (row-first); ci.yml gates job installs bubblewrap (gate edit, resealed); sandbox module docs carry the :389 limitations list
+2026-09-30T22:53:24Z EVENT Phase 6 GREEN (attempt 1): fmt ok; clippy 0; cargo test --workspace 255 passed/0 failed; make doc-check EXIT=0 (rustdoc argv[0] escape + redundant link fixed); make ci EXIT=0 (manifest tracked=202 allowlisted=121 — 7 new files staged+allowlisted, seal 20, verify_package PASS, 94 py, hooks-check)
+2026-09-30T22:53:24Z EXEC 5 verify (inline with ticket-04 green above)
+2026-09-30T22:53:24Z EXEC 6 review
+2026-09-30T23:02:30Z
+2026-09-30T23:02:30Z Phase 7 pass 1: Standards — 5 hard (staging coherence break; ADR-025 citation unstaged; bind-refusal gap ("/" "/home" passed attest); truncate char-boundary panic; collect-refusal leaked staging) + smells (bounded-death arms asserted nothing on Err paths, preview u64::MAX, glossary blank line). Spec — AC gaps: total-cap untested, input-basename silently sanitized vs doc "refused", pip-cause unpinned, subprocess-escape only implicit; LOG numbers verified correct
+2026-09-30T23:02:30Z EXEC 7 implement
+2026-09-30T23:02:30Z Fix cycle 1: bind refusal hardened + 5-case test; char-safe truncate; collect-refusal cleanup; honest preview; declared basename normalization; input-name refusal + test; total-cap test; pip-cause pinned (probe-first); subprocess child net-inheritance test; bounded-death arms assert wall_ms; GLOSSARY blank line; metering note; Makefile+RUNTIME_DECISIONS+GLOSSARY staged (atomic landing restored); ticket 02 AC amended
+2026-09-30T23:02:30Z EXEC 8 verify (gates next)
+2026-09-30T23:03:29Z
+2026-09-30T23:03:29Z Phase 6 GREEN (fix cycle 1): fmt ok; clippy 0 (useless_vec fixed); cargo test --workspace 260 passed/0 failed (+5 remediation tests); make doc-check EXIT=0; make ci EXIT=0 (manifest 202/121, seal 20)
+2026-09-30T23:03:29Z EXEC 9 review
+2026-09-30T23:13:00Z
+2026-09-30T23:13:00Z Phase 7 pass 2 (combined verifier): all pass-1 findings REMEDIATED with proving lines (staging coherence, ADR-025 staged, 5-case bind refusal, char-safe truncate, collect+input-refusal cleanup, honest preview, bounded arms, pip-cause, subprocess-net, total-cap, basename normalization). Fresh: input-staging leak (fixed, cycle 2) + path-qualified-declared test gap (fixed, cycle 2). LOG numbers independently verified by reviewer (260 then 261)
+2026-09-30T23:13:00Z EXEC 10 implement
+2026-09-30T23:13:00Z Fix cycle 2: input-staging refusal cleans staging; path-qualified declared-tool test added
+2026-09-30T23:13:00Z EXEC 11 verify
+2026-09-30T23:13:00Z Phase 6 FINAL GREEN: fmt ok; clippy 0; cargo test --workspace 261 passed/0 failed; make doc-check EXIT=0; make ci EXIT=0 (manifest 202/121, seal 20, verify_package PASS, 94 py, hooks-check)
+2026-09-30T23:13:00Z EXEC 12 retro
+2026-09-30T23:13:00Z Phase 8: retro report-only (rows below); report.md written; routing -> 4/4 tickets done + final verify green -> terminate success; NO commits (rule 5); pass 3 conserved after pass 2 verified with proving lines and cycle 2 covered by 261 green tests (decision row)
+2026-10-01T00:04:56Z EVENT Run 8 (cycle 4 under the standing directive): bare invocation, no stop -> reopen; run-7 STATE archived to state-archive-20261001T000400Z-run7.md (success); report rotated at bootstrap; exec_count reset; no STOP
+2026-10-01T00:04:56Z EVENT Goal intake: derivation order — issues none; run-7 retro report-only/skipped; TODO none; roadmap M1: T-006/7/8/9/10 all done and T-011's precondition ("requires the integrated execution path") satisfied by T-009 scheduler + T-010 SandboxExecutor; source derived:roadmap
+2026-10-01T00:04:56Z EVENT Phase 0 evidence: plan T-011 = "durable operation IDs, effect receipts, retry and reconciliation, event replay, and fault injection. Simulate crashes before and after dispatch, before output commit, after external effect, and during cancellation"; R-057/AT-057 = Contract M0 Runtime M1 (Scheduler+BudgetLedger); plan table maps T-007/T-010/T-011 -> R-099, R-108-R-111; MASTER_SPEC:369 operation recorded BEFORE effect dispatched, :371 reconciliation never blind retry, :377 replay rebuilds projections + fault-injection at reservation/dispatch/artifact/ack boundaries; T-006 EventLedger is the durability substrate (closes the ledger-integration deferrals from T-007/T-008)
+2026-10-01T00:04:56Z EVENT Phase 0 bootstrap (run 8): baseline carries runs 4-7 uncommitted work; skills in session
+2026-10-01T00:05:12Z EXEC 1 grill
+2026-10-01T00:06:14Z EVENT Phase 2 complete: grill 12 questions answered (plan T-011 + MASTER_SPEC:369/371/377/379 + T-006/7/8/9/10 substrates) -> .scratch/t011-recovery/grill.md
+2026-10-01T00:07:02Z EXEC 2 spec
+2026-10-01T00:07:02Z EVENT Phase 3 complete: spec at .scratch/t011-recovery/spec.md (ready-for-agent)
+2026-10-01T00:07:02Z EXEC 3 tickets
+2026-10-01T00:07:02Z EVENT Phase 4 complete: 4 tickets, linear edges 1->2->3->4, frontier={01}; published to issues/
+2026-10-01T00:07:50Z EXEC 4 implement
+2026-10-01T00:07:50Z EVENT Phase 5 (cycle 8): sequential frontier; red-first at the recorder seam; ticket 01 attempt starts
+2026-10-01T00:11:45Z EVENT Ticket 01 done: OperationRecorder (plan/dispatched/receipt/cancel_requested, sync-before-effect, store+payload_sha256 receipts, EMPTY_SHA256 for payload-less events, monotonic OP ids re-derived on reopen) + RecordingExecutor decorator (unplanned refusal, real wall/attempt/executor-tag receipts, Arc<Mutex> sharing); 5 tests green
+2026-10-01T00:15:27Z EVENT Ticket 02 done: replay fold (states incl Corrupt precedence, unknown-event counter, cancel flags, receipts parsed via store+payload hash); deterministic across reopens (byte-identical JSON); tampered chain refuses open; 3 integration + 2 unit tests green; AmbiguousEffect receipt folds to Ambiguous (grill Q6 recovery treatment)
+2026-10-01T00:18:23Z EVENT Ticket 03 done: recover() rule table (all 9 states incl dispatched+cancel stays Ambiguous) + apply() (release holds, null-with-reason entries, exactly-once via DuplicateCharge tolerance); fold precedence fixed so uncertain effects never hide behind Cancelled; dispatch_counts on view; 2 tests green (10 total in file)
+2026-10-01T00:21:34Z 2026-10-01T00:21:34Z Ticket 04 done: 5 fault-boundary tests (planned-only requeue untouched budget; dispatched->unresolved with stale-hold release + null-with-reason; artifact-committed stays Ambiguous with no receipt claim; ambiguous-effect reconciles exactly-once incl. re-apply; cancel intent recovers as cancelled never requeue) + full e2e (decorated executor -> death -> reopen -> Succeeded terminal); GLOSSARY +3 (row-first)
+2026-10-01T00:21:34Z Phase 6 GREEN (attempt 1): fmt ok; clippy 0 (unused import/let-return/unused-mut/doc-list fixed); cargo test --workspace 279 passed/0 failed (+18 operations tests); make doc-check EXIT=0; make ci EXIT=0 (manifest tracked=208 allowlisted=127 — 6 operation files staged+allowlisted, seal 20)
+2026-10-01T00:21:34Z EXEC 5 verify
+2026-10-01T00:21:34Z EXEC 6 review
+2026-10-01T00:43:25Z EXEC 7 implement
+2026-10-01T00:43:25Z EVENT Fix cycle 1 (pass-1 findings): fold receipt-presence Corrupt rule + receipt_read_failures counter + unreadable=>Ambiguous; reconciled() note dropped; fold/attach dedup attempted; 3 new tests (reopen ids OP-1/OP-2, overlong-tag contract refusal, scheduler+budget e2e spent==200 + replay Succeeded after restart); spec+ticket03 corrected (exhausted ambiguity => unresolved, rationale row); spec+ticket02 Dispatched textual fix
+2026-10-01T00:43:25Z EVENT EXEC 8 verify
+2026-10-01T00:43:25Z EVENT Phase 6 GREEN (fix cycle 1): fmt ok; clippy 0; cargo test --workspace 282 passed/0 failed; make doc-check EXIT=0; make ci EXIT=0 (manifest 208/127, seal 20); .scratch/t011 staged then UNSTAGED per standing untracked-docs decision (ci re-run confirmed green: tracked=208)
+2026-10-01T00:43:25Z EVENT EXEC 9 review
+2026-10-01T00:43:25Z EVENT Phase 7 pass 2 (combined): 10 findings REMEDIATED with proving lines; NOT-FIXED x2: receipts still double-loaded (second pass) + LOG missing post-fix green lines; nits: unreadable-receipt path untested, stale ticket comment counts
+2026-10-01T00:43:25Z EVENT EXEC 10 implement
+2026-10-01T00:43:25Z EVENT Fix cycle 2: receipts collected in the main fold loop (true single load); unreadable-payload unit test (Ambiguous for dispatched, Corrupt for undispatched); ticket comment counts corrected; decision-row correction for the earlier overclaim
+2026-10-01T00:43:25Z EVENT EXEC 11 verify
+2026-10-01T00:43:25Z EVENT Phase 6 FINAL GREEN (next line records it)
+2026-10-01T00:43:25Z EVENT EXEC 12 retro
+2026-10-01T00:44:11Z 2026-10-01T00:44:11Z EVENT Phase 6 FINAL GREEN (fix cycle 2): fmt ok; clippy 0; cargo test --workspace 283 passed/0 failed (+1 unreadable-payload unit test); make doc-check EXIT=0; make ci EXIT=0 (manifest 208/127, seal 20, verify_package PASS, 94 py, hooks-check)
+2026-10-01T00:44:11Z EVENT Phase 8: retro report-only (rows below); report.md written; routing -> 4/4 tickets done + final verify green -> terminate success; NO commits (rule 5); pass 3 conserved — pass 2 verified every prior item with proving lines and cycle 2 was single-load+unit-test mechanics under 283 green tests (decision row)
+2026-10-01T00:47:36Z EVENT Run 9 (cycle 5 under the standing directive): bare invocation, no stop -> reopen; run-8 STATE archived to state-archive-20261001T004700Z-run8.md (success); report rotated at bootstrap; exec_count reset; no STOP
+2026-10-01T00:47:36Z EVENT Goal intake: derivation order — issues none; run-8 retro report-only/skipped; TODO none; roadmap: M1's implementation tasks T-006..T-011 ALL done, and IMPLEMENTATION_PLAN line 44 states the M1 Exit: four evidence pillars exist in test suites but "A CLI can run and recover a deterministic fixture DAG" is FALSE — no binary exists (no src/main.rs, no [[bin]]); source derived:roadmap
+2026-10-01T00:47:36Z EVENT Phase 0 evidence: MASTER_SPEC:42 promises "a local CLI"; README is MANIFEST-frozen (81-file envelope — editing it would fail verify_package without a versioned reseal) so CLI documentation lives in the binary's --help + module docs, NOT README (decision row logged); check_readme_fences gate protects README shell fences from drift
+2026-10-01T00:47:36Z EVENT Phase 0 bootstrap (run 9): baseline carries runs 4-8 uncommitted work; skills in session
+2026-10-01T00:48:29Z EXEC 1 grill
+2026-10-01T00:50:12Z EVENT Phase 2 complete: grill 10 questions answered (plan:44 exit line, MASTER_SPEC:42/431, manifest evidence, zero-dep CLI) -> .scratch/m1-cli/grill.md
+2026-10-01T00:50:48Z EXEC 2 spec
+2026-10-01T00:50:48Z EVENT Phase 3 complete: spec at .scratch/m1-cli/spec.md (ready-for-agent)
+2026-10-01T00:50:48Z EXEC 3 tickets
+2026-10-01T00:50:48Z EVENT Phase 4 complete: 2 tickets, edge 1->2, frontier={01}; published to issues/
+2026-10-01T00:52:07Z EXEC 4 implement
+2026-10-01T00:52:07Z EVENT Phase 5 (cycle 9): red-first at the binary seam; fixture = 5 tasks so all four exit pillars are live (spec '4-task' corrected inline to five)
+2026-10-01T00:55:48Z EVENT Ticket 01 done: hephaestus binary (fixture module, DeterministicExecutor, stable JSON summaries, usage/exit-code discipline, empty-dir refusal); 5 CLI tests green incl. twin-run byte equality; fixture=5 tasks (spec corrected 4->five inline); recorder-truth epsilon state=planned with refusal counted in budget block
+2026-10-01T00:56:21Z 2026-10-01T00:56:21Z EVENT Ticket 02 done: fixture recover (replay + plan, task-id mapping everywhere), round-trip test proves ALL FOUR plan:44 pillars from CLI output (terminal-not-requeued, delta unresolved never requeued, refused==1/limit==100, replayed_ops==5), missing-state exit 1; 7/7 CLI tests
+2026-10-01T00:56:21Z EVENT EXEC 5 verify (gates next)
+2026-10-01T00:58:43Z 2026-10-01T00:58:43Z EVENT Phase 6 GREEN (attempt 1): fmt ok; clippy 0 (doc-list indentation fixed); cargo test --workspace 290 passed/0 failed (+7 CLI); make doc-check EXIT=0; make ci EXIT=0 (manifest tracked=211 allowlisted=130 — main.rs/fixture.rs/cli.rs staged+allowlisted, seal 20)
+2026-10-01T00:58:43Z 2026-10-01T00:58:43Z EVENT EXEC 6 review
+2026-10-01T01:03:17Z 2026-10-01T01:03:17Z EVENT Phase 7 pass 1 (combined): all substantive findings ACCEPTED-by-reviewer's-own-recomputation (budget arithmetic verified honest, exit codes match, no deps, README untouched, pillars can fail); fixes applied: ambiguous count field+assert, flag-like --state-dir guard + tests, command() dedup of run/recover arms, ticket 4->5 count, spec pillar-mapping corrected to implementation truth, state_dir edge tests
+2026-10-01T01:03:17Z EVENT EXEC 7 implement
+2026-10-01T01:03:17Z EVENT EXEC 8 verify: fmt ok; clippy 0; cargo test --workspace 291 passed/0 failed (+malformed-args test); make doc-check EXIT=0; make ci EXIT=0 (manifest 211/130, seal 20). Pass 2 CONSERVED — pass 1 verified budget arithmetic by recomputation and every AC gap closed with a test-backed fix; remaining smells were judgement-accepted in the review itself (decision row)
+2026-10-01T01:04:03Z 2026-10-01T01:04:03Z EVENT Phase 8: retro report-only (rows below); live demo captured: `fixture run` => states+{limit100,spent60,unresolved40,refused1,ambiguous1}, `fixture recover` => plan{requeue:[epsilon],unresolved:[delta],terminal:[alpha,beta,gamma],cancelled:[],corrupt:[]} replayed_ops=5 — IMPLEMENTATION_PLAN:44 demonstrable end-to-end; report.md written; routing -> 2/2 tickets done + final verify green -> terminate success; NO commits (rule 5); pass 2 conserved (decision row)
+2026-10-01T01:04:03Z 2026-10-01T01:04:03Z EVENT Perpetual directive: cycle 10 derives next on the following invocation (candidates: M0/M1 exit assessment with evidence receipts, M2 opener T-012, or retro follow-ups)
+2026-10-01T01:04:03Z EVENT Bookkeeping: run-9 bootstrap recorded its exec_count reset in prose only (no formal RESET line); header now counts run-9 EXEC entries (max 8) from the last EXEC 1 grill marker — append-only rows untouched, including one double-timestamp cosmetic row
+2026-10-01T02:24:40Z EVENT Run 10 (cycle 6 under the standing directive): bare invocation, no stop -> reopen; run-9 STATE archived to state-archive-20261001T022400Z-run9.md (success); report rotated at bootstrap; exec_count reset (formal RESET line this time); no STOP
+2026-10-01T02:24:40Z EVENT Goal intake: derivation — issues none; run-9 retro report-only; TODO none; roadmap: no exit assessment exists anywhere (grep clean); M0 Exit (plan:26) and M1 Exit (plan:44) are both complete-by-evidence (M1 CLI demo captured in run-9 report) but neither has a formal disposition document; knowledge page records the formal M0 exit assessment as an agreed-next-step that was never done; source derived:roadmap
+2026-10-01T02:24:40Z EVENT Phase 0 bootstrap (run 10): baseline carries runs 4-9 uncommitted work; skills in session
+2026-10-01T02:25:21Z EXEC 1 grill
+2026-10-01T02:25:21Z EVENT Phase 2 complete: grill 10 questions answered (plan:26/:44 Exit lines, manifest evidence, evidence-first method, honesty guards) -> .scratch/m0m1-exit-assessment/grill.md
+2026-10-01T02:26:06Z EXEC 2 spec
+2026-10-01T02:26:06Z EVENT Phase 3 complete: spec at .scratch/m0m1-exit-assessment/spec.md (ready-for-agent)
+2026-10-01T02:26:06Z EXEC 3 tickets
+2026-10-01T02:26:06Z EVENT Phase 4 complete: 1 ticket (grill Q7 single-slice), 0 edges, frontier={01}; published to issues/
+2026-10-01T02:26:27Z EXEC 4 implement
+2026-10-01T02:26:27Z EVENT Phase 5 (cycle 10): single artifact ticket; evidence gathering runs FIRST (receipts before prose)
+2026-10-01T02:30:13Z 2026-10-01T02:30:13Z EVENT Ticket 01 done: docs/M0_M1_EXIT_ASSESSMENT.md written AFTER fresh evidence (make ci EXIT0; workspace 291x5 runs (one unexplained transient documented honestly); doc-check 0; per-clause suites: contracts 12, synthetic-evaluator 19, traceability 16, evaluator_access 4, sealed_deny 14, digest 2; CLI demo re-run verbatim); M0 PASS, M1 PASS, M2 entry unblocked; file staged + allowlisted (tracked=212 allowlisted=131) + resealed
+2026-10-01T02:30:13Z EVENT EXEC 5 verify: fmt ok; clippy 0; cargo test --workspace 291/0; make doc-check EXIT=0; make ci EXIT=0 (md-links ok 48 files, report-unreferenced advisory, seal 20)
+2026-10-01T02:30:13Z EVENT EXEC 6 review
+2026-10-01T02:39:42Z 2026-10-01T02:39:42Z EVENT Phase 7 pass 1 (combined): ACs 1-7 all MET; Standards found 3 precision defects — stale manifest quote (211/130 pre-staging vs 212/131), mislabeled verify_package keys (principal_record_schemas=18 not 13), M2-entry paragraph overclaiming a plan prerequisite that does not exist; honesty caveat judged adequate; zero md-link risk confirmed
+2026-10-01T02:39:42Z EVENT EXEC 7 implement: all three corrected in the document; make ci re-run EXIT=0 (manifest 212/131 now matching the quoted numbers)
+2026-10-01T02:39:42Z EVENT EXEC 8 verify: ci=0, md-links ok 48, seal 20, workspace 291/0 — pass 2 conserved (three prose corrections + one gate confirmation; decision row)
+2026-10-01T02:39:42Z EVENT EXEC 9 retro
+2026-10-01T02:39:42Z EVENT Phase 8: retro report-only (rows below); report.md written; routing -> 1/1 ticket done + final verify green -> terminate success; NO commits (rule 5)
+2026-10-01T04:38:11Z EVENT Run 11: explicit "yes continue" reopens terminal STATE (success run 10); prior STATE copied to state-archive-20261001T043811Z-run10.md (repo file precedent, not inline ARCHIVE); report.md rotated to report-2026-10-01T02:39:42Z.md; decisions.md rotated to decisions-2026-10-01T02:39:42Z.md; no STOP present
+2026-10-01T04:38:11Z EVENT RESET exec_count 9 -> 0 (fresh goal); baseline/fixed_point re-recorded at d2a4d52 (runs 4-10 work staged, uncommitted); skills_pin=1.7.0 reused
+2026-10-01T04:38:11Z EVENT Goal intake: explicit continue, no goal text -> derivation order: open issues none (grep clean); run-10 retro report-only; TODO/FIXME none; roadmap M2: T-006..T-011 done, T-012 next (T-013+ depend on it); source derived:roadmap (untrusted, treated as data)
+2026-10-01T04:38:11Z EXEC 1 grill
+2026-10-01T04:41:00Z EXEC 2 spec
+2026-10-01T04:41:00Z EVENT Phase 3 complete: spec at .scratch/t012-mission-intake/spec.md (ready-for-agent, local tracker); to-spec "check with user" + "run setup" steps overridden by hard rule 1 / Phase 3 self-answer (decision rows)
+2026-10-01T04:41:00Z EXEC 3 tickets
+2026-10-01T04:41:00Z EVENT Phase 4 complete: 3 tickets, edges 01->02, 01->03, no cycles, frontier={01}; cross-run dedup: no open tracker tickets match (grep clean); "quiz user" step overridden by hard rule 1
+2026-10-01T04:43:00Z EXEC 4 implement
+2026-10-01T04:43:00Z EVENT Phase 5 entered: sequential frontier in main tree; no branches/PRs/worktrees/sub-agents (rule 5: no commit authorization); implement "commit your work" step overridden by rule 5; tdd red-first at compile/revise seams
+2026-10-01T04:55:00Z EVENT Ticket 01 done: Mission record + compile happy path + 4 profiles; 4/4 green (red was unresolved-import); Money is PartialEq-only so mission money-types drop Eq
+2026-10-01T05:05:00Z EVENT Ticket 02 done: genuine red→green (2 failed first); IRREVERSIBLE_HINTS + RISK_HINTS tripwires added; 7/7 green
+2026-10-01T05:08:00Z EVENT Ticket 03 done: revise/MissionChange/ImpactReport/ReviseError + ledger binding; clippy large-enum-variant fixed via Box<Mission>; 8/8 green; GLOSSARY +3 row-first
+2026-10-01T05:10:00Z EXEC 5 verify
+2026-10-01T05:10:00Z EVENT Phase 6 GREEN (attempt 1): fmt-check ok; clippy -D warnings 0; cargo test --workspace 310 passed/0 failed (+19 mission); make doc-check EXIT=0; make ci EXIT=0 (manifest tracked=218 allowlisted=137 — 6 mission files staged+allowlisted, seal 20, verify_package PASS, 94 py, hooks-check)
+2026-10-01T05:15:00Z EXEC 6 review
+2026-10-01T05:15:00Z EVENT Phase 7 pass 1 (two-axis, parallel sub-agents, rules 1-10 quoted): Standards — 3 findings (F1 HIGH revise-Goal bypasses tripwires; F2 accumulate multi-category requests; F3 canned Terminology assumption + 3 dead variants). Spec — 8 PARTIALs (field coverage, destinations, disclosure/actuation codes, impact exactness, guardrails, forbidden sets, serde stability) + 4 overclaim notes; no scope creep
+2026-10-01T05:20:00Z EXEC 7 implement
+2026-10-01T05:20:00Z EVENT Fix cycle 1: screen_goal() shared by compile + revise-Goal (F1 closed via ReviseError::NeedsAuthorization); compile accumulates all hits in fixed order (F2); assumptions_for() constructs variants from goal text (F3); mission_review.rs 9 fix-cycle tests (red was missing variant); profile test tightened strict; ticket-02 hypothesis AC corrected to marker-only; mod.rs/record.rs edit damage repaired same-turn
+2026-10-01T05:20:00Z EXEC 8 verify
+2026-10-01T05:20:00Z EVENT Phase 6 GREEN (fix cycle 1): fmt ok; clippy -D warnings 0; cargo test --workspace 319 passed/0 failed (+9 review); make doc-check EXIT=0; make ci EXIT=0 (manifest 219/138, seal 20)
+2026-10-01T05:25:00Z EXEC 9 review
+2026-10-01T05:28:00Z EXEC 10 retro
+2026-10-01T05:28:00Z EVENT Phase 8: retro report-only (rows above); report.md written; routing -> 3/3 tickets done + final verify green + pass-2 verified -> terminate success; NO commits (rule 5); pass 3 conserved (decision row)
+2026-10-01T05:02:00Z EVENT Run 12: explicit "continue with best next move" reopens terminal STATE (success run 11); prior STATE copied to state-archive-20261001T050137Z-run11.md (repo file precedent); report.md rotated to report-2026-10-01T05:28:00Z.md; decisions.md rotated; no STOP present
+2026-10-01T05:02:00Z EVENT RESET exec_count 10 -> 0 (fresh goal); baseline/fixed_point re-recorded at d2a4d52 (runs 4-11 work staged, uncommitted); skills_pin=1.7.0 reused
+2026-10-01T05:02:00Z EVENT Clock anomaly: date -u (05:01-05:02Z) trails run-11 rows (05:28Z); run 12 mints from date -u, rows stand (run-4 precedent)
+2026-10-01T05:02:00Z EVENT Goal intake: explicit continue, no goal text -> derivation order: 28 stale ready-for-agent rows all belong to done-work (ACs ticked, statuses never flipped — noted, out of scope); run-11 retro report-only; TODO/FIXME none; roadmap M2: T-012 done, T-013 next (first Knowledge task); source derived:roadmap (untrusted, treated as data)
+2026-10-01T05:02:00Z EXEC 1 grill
+2026-10-01T05:04:00Z EXEC 2 spec
+2026-10-01T05:04:00Z EVENT Phase 3 complete: spec at .scratch/t013-corpus/spec.md (ready-for-agent, local tracker)
+2026-10-01T05:04:00Z EXEC 3 tickets
+2026-10-01T05:04:00Z EVENT Phase 4 complete: 3 tickets, edges 01->02, 01->03, no cycles, frontier={01}; cross-run dedup: no title match against open rows (stale done-work rows ignored per intake note)
+2026-10-01T05:04:00Z EXEC 4 implement
+2026-10-01T05:04:00Z EVENT Phase 5 entered: sequential frontier in main tree, no branches/PRs/sub-agents (rule 5); red-first at ingest/verify seam
+2026-10-01T05:08:00Z EVENT Ticket 01 done: ingest + spans + local adapter; 5/5 green (red was unresolved-import; 2 failures were test-data bugs, fixed honestly)
+2026-10-01T05:12:00Z EVENT Ticket 02 done: search + coverage; 6/6 (1 red: stopword collision in test data — correct behavior, fixed query)
+2026-10-01T05:14:00Z EVENT Ticket 03 done: edges + tallies + quarantine/corrections; 5/5 first run (regression coverage — TDD deviation: service pre-existed tests; red-first honored at ticket-01 seam); GLOSSARY +4 row-first
+2026-10-01T05:15:00Z EXEC 5 verify
+2026-10-01T05:15:00Z EVENT Phase 6 GREEN (attempt 1): fmt ok; clippy -D warnings 0 (op_ref fixed); cargo test --workspace 335 passed/0 failed (+16 corpus); make doc-check EXIT=0; make ci EXIT=0 (manifest 225/144, seal 20)
+2026-10-01T05:20:00Z EXEC 6 review
+2026-10-01T05:22:00Z EXEC 7 implement
+2026-10-01T05:22:00Z EVENT Fix cycle 1: verify_span replays lowercase/trim vocabulary (UnknownTransform errors); search splits raw bytes (offsets index captures); correct() supersedes source id; QueryCoverage.inaccessible (0, documented); corpus_review.rs 7 fix-cycle tests (red was missing field); stale Some(1) assertion corrected to Some(0)
+2026-10-01T05:22:00Z EXEC 8 verify
+2026-10-01T05:22:00Z EVENT Phase 6 GREEN (fix cycle 1): fmt ok; clippy -D warnings 0 (mut-ref fixed); cargo test --workspace 342 passed/0 failed (+7 review); make doc-check EXIT=0; make ci EXIT=0 (manifest 226/145, seal 20)
+2026-10-01T05:28:00Z EXEC 9 review
+2026-10-01T05:28:00Z EVENT Phase 7 pass 2 (combined verifier): all 4 findings REMEDIATED with proving lines; 2 fresh P3 test gaps (trim arm untested, tiebreak test unfailable)
+2026-10-01T05:29:00Z EXEC 10 implement
+2026-10-01T05:29:00Z EVENT Fix cycle 2: trim replay test (incl. all-whitespace + negative) + exact (source,offset) tiebreak sequence; 8/8 review tests green; pass 3 conserved (test-only cycle, decision row)
+2026-10-01T05:29:00Z EXEC 11 verify
+2026-10-01T05:29:00Z EVENT Phase 6 FINAL GREEN: fmt ok; clippy 0; cargo test --workspace 343 passed/0 failed; make ci EXIT=0 (manifest 226/145, seal 20)
+2026-10-01T05:30:00Z EXEC 12 retro
+2026-10-01T05:30:00Z EVENT Phase 8: retro report-only (rows above); report.md written; routing -> 3/3 tickets done + final verify green + pass-2 verified -> terminate success; NO commits (rule 5)

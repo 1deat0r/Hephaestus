@@ -55,3 +55,79 @@ _Avoid_: error message (unstable prose), log line
 **Standing local authority**:
 The bootstrap issuer allowed to mint capability grants without a per-use prompt; it authorizes grant *use* through the policy engine, not its own recursion.
 _Avoid_: root trust (overclaims), admin
+
+**Budget ledger**:
+The single-currency, integer-minor-unit reservoir tracking reserved, spent, and unresolved amounts against one authorized limit (released capacity shows up as available); capacity is never oversubscribed.
+_Avoid_: wallet, balance (implies mutable truth), float money
+
+**Reservation**:
+An all-or-nothing claim on capacity, keyed by an opaque id, taken before dispatch and settled exactly once as spend (or returned untouched); the check and the debit are one step.
+_Avoid_: hold (ambiguous), lock (concurrency primitive, not money)
+
+**Unresolved charge**:
+An external charge awaiting reconciliation — an explicit amount when known, or null-with-a-mandatory-reason when the price is unknown; never a silent zero.
+_Avoid_: pending fee (downplays unknowns), estimated cost (sounds settled)
+
+**Task DAG**:
+A typed, validated plan of tasks — dependencies, read/write sets, retry and timeout declarations, costs, priority class — that must pass fail-closed validation (acyclic, outputs cover reads, conflicts ordered) before any scheduler sees it.
+_Avoid_: pipeline (implies fixed stages), workflow (too broad)
+
+**Scheduler**:
+The bounded, priority-class dispatcher that reserves budget before every dispatch, enforces in-flight/resource/exclusivity limits, and maps executor outcomes to commit, release, or unresolved — it owns no clock and no durability.
+_Avoid_: orchestrator (marketing), runner (the executor runs, not the scheduler)
+
+**Sandbox provider**:
+The capability contract that runs code inside OS-level isolation (namespaces, minimal binds, scrubbed env, network off, rlimits) and refuses to spawn when attestation fails.
+_Avoid_: container (implies different machinery), executor (the worker executes, the provider isolates)
+
+**Isolation spec**:
+One run's declared boundary: allowed tools, binds, env allowlist, wall/CPU/memory/nproc/fsize limits, network policy, and output caps — validated before anything spawns.
+_Avoid_: config (too broad), profile (the mission selects profiles; the spec is the concrete instance)
+
+**Attestation**:
+The pre-dispatch evidence that the sandbox tool exists and the spec is self-consistent; failure denies the dispatch rather than degrading.
+_Avoid_: certificate (crypto implication), self-attestation (this attests the host side, not the payload)
+
+**Trivial batch**:
+Several simultaneously-ready trivial deterministic tasks issued to the executor as one `run_batch` call instead of one process per field check.
+_Avoid_: micro-batch (jargon), chunk (ambiguous)
+
+**Operation**:
+One durably-identified unit of execution whose lifecycle (planned, dispatched, receipted, cancel-requested) is recorded in the event ledger *before* each corresponding effect — its state is always derived, never stored.
+_Avoid_: job (runner-level), task (the DAG node it wraps)
+
+**Effect receipt**:
+The content-addressed record of what an effect actually reported — outcome, cost, wall-time, reason, attempt, artifacts — committed to the artifact store and hash-referenced by its ledger event.
+_Avoid_: log line (not durable/addressed), result (loses the audit meaning)
+
+**Recovery plan**:
+The pure classification of replayed operations into requeue / unresolved / terminal / cancelled / corrupt, plus the explicit apply step that reconciles budget exactly once — retries only where permitted.
+_Avoid_: restart script (implies blind rerun), garbage collection
+
+**Mission**:
+The versioned record of authorized intent: beneficiary, objective, domain boundaries, constraints, resource envelope, permitted tools and destinations, forbidden actions, confidentiality, success metrics, evidence standard, and stop conditions — carrying no hypothesis field by construction.
+_Avoid_: goal (the uncompiled input), plan (a downstream artifact compiled from a mission)
+
+**Value frame**:
+The owner's standing priorities plus resource profile that bound an otherwise open-ended goal; without it the compiler fails closed instead of substituting its own values.
+_Avoid_: preferences (implies taste), defaults (reversible compiler assumptions are not the frame)
+
+**Authorization request**:
+The compiler's output when a goal needs unapproved spending, external disclosure, an irreversible operation, or materially ambiguous risk: a reason-coded record the owner must grant before any Mission exists — never a silently-guessed Mission.
+_Avoid_: permission prompt (implies UI), approval (T-004 approvals authenticate manifests, this requests intent authorization)
+
+**Corpus**:
+The in-memory owner of captured source bytes plus derived edges; every view (search hits, coverage, tallies) rebuilds deterministically from those bytes, and callers persist what they accept.
+_Avoid_: database (implies a server), index (one derived view among several)
+
+**Source span**:
+A byte-offset range into a source's captured bytes with parser identity and transform record, verified against the capture itself — never against a live file or mutable locator.
+_Avoid_: quote (loses the coordinates), reference (too broad)
+
+**Coverage report**:
+The honest count of what retrieval saw and skipped — documents searched and matched, spans returned, inaccessible and quarantined excluded — carrying no claim about what was not found.
+_Avoid_: recall (implies a bounded reference set adjudication), completeness (forbidden by R-009)
+
+**Evidence edge**:
+A typed link (Supports, Contradicts, Mentions, SharesOrigin) binding an evidence record to span coordinates with provenance; quarantine invalidates incident edges without deleting them.
+_Avoid_: citation (one-way pointer without type or lifecycle), annotation (free text)

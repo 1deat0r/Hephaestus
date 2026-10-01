@@ -5,10 +5,16 @@
 /// Layer this crate implements in the staged architecture (ADR-003).
 pub const LAYER: &str = "control-plane";
 
+pub mod budget;
 pub mod contracts;
+pub mod knowledge;
 pub mod ledger;
 pub mod migrate;
+pub mod mission;
+pub mod operations;
 pub mod policy;
+pub mod sandbox;
+pub mod scheduler;
 pub mod security;
 pub mod semantic;
 pub mod traceability;

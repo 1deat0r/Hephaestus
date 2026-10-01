@@ -5,13 +5,21 @@
 PY := .venv/bin/python
 CARGO := cargo
 
-.PHONY: ci ci-fast fmt fmt-check clippy test-rust test-py verify test-package gen-check conflict-staged conflict-tree manifest-check md-links readme-fences report-unreferenced gate-seal seal hooks hooks-check setup clean
+.PHONY: ci ci-fast fmt fmt-check clippy test-rust test-py verify test-package gen-check conflict-staged conflict-tree manifest-check md-links readme-fences report-unreferenced gate-seal seal hooks hooks-check setup clean doc-check
 
 ## Run every environment-independent gate (mirrors CI; the single gate registry).
 ci: fmt-check clippy test-rust test-py conflict-tree manifest-check md-links readme-fences report-unreferenced gate-seal ci-fast hooks-check
 
 ## Fast spec/doc freshness gates (.githooks/pre-commit runs exactly these).
-ci-fast: gen-check verify test-package conflict-staged
+## manifest-check joins the tier (ADR-025): a tracked-but-uncovered file
+## now fails the commit locally instead of a push after CI.
+ci-fast: gen-check verify test-package conflict-staged manifest-check
+
+## Rustdoc warnings denied — the same command the remote docs job runs.
+## Deliberately in NO tier: local latency budget stays untouched (ADR-024
+## step 10); the remote docs job remains the automatic backstop (ADR-025).
+doc-check:
+	RUSTDOCFLAGS="-D warnings" cargo doc --workspace --no-deps
 
 fmt:
 	$(CARGO) fmt --all

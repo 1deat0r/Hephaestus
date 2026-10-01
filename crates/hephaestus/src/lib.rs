@@ -19,6 +19,7 @@ pub mod evalsuite;
 pub mod evaluation;
 pub mod experiment;
 pub mod genesis;
+pub mod importclosure;
 pub mod knowledge;
 pub mod ledger;
 pub mod lifecycle;

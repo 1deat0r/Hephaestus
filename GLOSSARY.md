@@ -167,3 +167,11 @@ _Avoid_: risk (a possibility, not a countable outcome), caveat (a hedge, not a d
 **Guardrail class**:
 One of the four R-104 guardrail families — scoped error, correctness, precision/power, noninferiority — ALL of which must be declared before qualification; a per-class named gap is reported, never a generic refusal.
 _Avoid_: check (the evaluation, not the declared class), test suite (runtime evidence, not the pre-registration gate)
+
+**Import closure**:
+The declared module set checked against independently resolved Rust imports of the first domain — participants (importers + targets) must exactly match the declaration; unsupported resolution blocks with the import named, never silently omitted.
+_Avoid_: dependency graph (broader, unresolved), module list (the input, not the verified verdict)
+
+**Oracle disagreement**:
+Divergence between two independent closure recounts — the declared closure is refused (conservative), never resolved by picking a winner.
+_Avoid_: bug (the disagreement is data), tiebreak (implies a winner is chosen)

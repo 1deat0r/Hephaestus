@@ -210,6 +210,9 @@ docs/agents/auto-workflow/state-archive-20261001T050137Z-run11.md
 .scratch/t041-guardrail-classes/grill.md
 .scratch/t041-guardrail-classes/issues/01-presence-gate.md
 .scratch/t041-guardrail-classes/spec.md
+.scratch/t042-closure-oracle/grill.md
+.scratch/t042-closure-oracle/issues/01-closure-check.md
+.scratch/t042-closure-oracle/spec.md
 crates/hephaestus/src/acceleration/mod.rs
 crates/hephaestus/src/acceleration/record.rs
 crates/hephaestus/src/advisory/mod.rs
@@ -238,6 +241,8 @@ crates/hephaestus/src/genesis/mod.rs
 crates/hephaestus/src/genesis/record.rs
 crates/hephaestus/src/genesis/registry.rs
 crates/hephaestus/src/genesis/validators.rs
+crates/hephaestus/src/importclosure/mod.rs
+crates/hephaestus/src/importclosure/record.rs
 crates/hephaestus/src/lifecycle/mod.rs
 crates/hephaestus/src/lifecycle/record.rs
 crates/hephaestus/src/memory/mod.rs
@@ -278,6 +283,7 @@ crates/hephaestus/tests/experiment_compiler.rs
 crates/hephaestus/tests/genesis_registry.rs
 crates/hephaestus/tests/guardrail_classes.rs
 crates/hephaestus/tests/hypothesis_compiler.rs
+crates/hephaestus/tests/import_closure.rs
 crates/hephaestus/tests/learning_reuse_gates.rs
 crates/hephaestus/tests/memory_quarantine.rs
 crates/hephaestus/tests/method_registry.rs

@@ -16,7 +16,7 @@ phase_entries: 2=2, 3=2, 4=2, 5=2, 6=2
 exec_count: 87
 polls: 0
 skills_pin: 1.7.0
-updated: 2026-10-01T09:34:00Z
+updated: 2026-10-01T20:51:00Z
 
 ## LOG
 2026-10-01T09:20:00Z EVENT ROTATION: T-045 success; derived T-046 (R-061/062/063 zero R-named coverage)
@@ -107,3 +107,8 @@ updated: 2026-10-01T09:14:20Z
 2026-10-01T09:40:00Z EVENT COMMIT 4207825 landed (attempt 2: first attempt correctly refused by commit-msg hook - gate files changed require ADR citation; message amended with ADR-025, hook rule satisfied honestly); pre-commit hooks all green (gen-check, verify_package PASS, 94 reference tests, manifest-check 408/327); no push (rule 5); LOOP TERMINATED: user stop honored
 2026-10-01T11:20:00Z EVENT USER INSTRUCTION: "split them then push" - split commit 4207825 into per-ticket commits then push; rule-5 consent covers rewriting the UNPUSHED local commit + push (force-push still forbidden); backup tag backup-split-4207825 created; plan: 31 task commits (T-014..T-046; T-033+T-036+T-037 folded into one selfimprove commit - same-file interleave; genesis split at hypothesis/validators, orchestrator split at archive submodule decl) + 1 chore commit; per-commit verification via rebase --exec (cargo test --workspace + manifest-check + gate-seal + md-links), full make ci + clippy + fmt + doc-check at HEAD
 2026-10-01T11:20:00Z EVENT SPLIT BUILD start: baseline parent d2a4d52, target tree 4207825, groups in order: t014 t015 t016 t017 t018 t019 t020 t021 t022 t023 t024 t025 t026 t027 t028 t029 t030 t031 t032 t033+36+37 t034 t035 t038 t039 t040 t041 t042 t043 t044 t045 t046 chore
+2026-10-01T11:40:39Z EVENT SPLIT BUILD complete: 32 commits (T-014..T-046 per-ticket + chore) built on baseline a4469a2 (T-008..T-013); resulting HEAD tree byte-identical to pre-split HEAD dd3d8c1; matches backup-split-4207825 except the two workflow-audit doc files that record this split
+2026-10-01T20:46:00Z EVENT PER-COMMIT VERIFY: git rebase a4469a2 --exec "cargo test --workspace && make manifest-check && make gate-seal && make md-links" over all 32 commits - 29/32 exec cycles green inside the rebase; 3 exec stops (T-016 095dda4, T-021 78ea9b8, T-039 c01123d), every stop a sandbox_deny host fork-EAGAIN flake (bwrap "Can't fork for pid 1: Resource temporarily unavailable", python posix_spawn Errno 11, prlimit exit 1) - no content failure; each of the 3 commits re-run standalone with the identical command PASS; tally 32/32 green
+2026-10-01T20:47:00Z EVENT FINAL GATE at HEAD dd3d8c1: make ci EXIT=0 (fmt-check, clippy, test-rust, test-py, conflict-tree, manifest-check, md-links, readme-fences, report-unreferenced, gate-seal, ci-fast, hooks-check) + make doc-check EXIT=0
+2026-10-01T20:47:37Z EVENT PUSH executed under rule-5 consent ("split them then push"): plain fast-forward d2a4d52..dd3d8c1 (33 commits), no force, no rewrite of any pushed commit
+2026-10-01T20:51:00Z EVENT POST-PUSH CI run 36924168195 completed success (only upstream Node 20 / ubuntu-latest deprecation annotations); split-then-push instruction fully executed

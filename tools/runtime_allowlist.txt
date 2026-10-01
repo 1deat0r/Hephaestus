@@ -221,6 +221,8 @@ crates/hephaestus/src/genesis/mod.rs
 crates/hephaestus/src/genesis/record.rs
 crates/hephaestus/src/genesis/registry.rs
 crates/hephaestus/src/genesis/validators.rs
+crates/hephaestus/src/lifecycle/mod.rs
+crates/hephaestus/src/lifecycle/record.rs
 crates/hephaestus/src/methods/mod.rs
 crates/hephaestus/src/methods/record.rs
 crates/hephaestus/src/orchestrator/mod.rs
@@ -231,6 +233,7 @@ crates/hephaestus/src/prototype/mod.rs
 crates/hephaestus/src/prototype/record.rs
 crates/hephaestus/tests/discovery_pressure_points.rs
 crates/hephaestus/tests/dossier_export.rs
+crates/hephaestus/tests/evidence_lifecycle.rs
 crates/hephaestus/tests/experiment_compiler.rs
 crates/hephaestus/tests/genesis_registry.rs
 crates/hephaestus/tests/hypothesis_compiler.rs

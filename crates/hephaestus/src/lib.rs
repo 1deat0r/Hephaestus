@@ -14,6 +14,7 @@ pub mod experiment;
 pub mod genesis;
 pub mod knowledge;
 pub mod ledger;
+pub mod lifecycle;
 pub mod methods;
 pub mod migrate;
 pub mod mission;

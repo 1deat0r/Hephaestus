@@ -221,9 +221,12 @@ crates/hephaestus/src/orchestrator/mod.rs
 crates/hephaestus/src/orchestrator/record.rs
 crates/hephaestus/src/priorart/mod.rs
 crates/hephaestus/src/priorart/record.rs
+crates/hephaestus/src/prototype/mod.rs
+crates/hephaestus/src/prototype/record.rs
 crates/hephaestus/tests/discovery_pressure_points.rs
 crates/hephaestus/tests/experiment_compiler.rs
 crates/hephaestus/tests/genesis_registry.rs
 crates/hephaestus/tests/hypothesis_compiler.rs
 crates/hephaestus/tests/prior_art.rs
+crates/hephaestus/tests/prototype_worker.rs
 crates/hephaestus/tests/search_orchestrator.rs

@@ -139,3 +139,15 @@ _Avoid_: pain point (vague marketing), issue (tracker item), idea (unsourced)
 **Opportunity**:
 The operator output record: pressure-point type, problem statement, beneficiary, context, span-bound evidence references, suspected bottleneck, explicit causal uncertainty, qualitative value estimate, feasibility envelope, prior-art query plan, and unanswered questions — validity (evidence-backed / challenged / speculative) reported independently of narrative polish.
 _Avoid_: hypothesis (a downstream T-016 record), feature request (no grounding semantics), lead (implies sales pipeline)
+
+**Mechanism record**:
+The T-015 contract record T-016's hypothesis compiler builds on: entities, variables, relationships, prerequisites, expected effects, operating regime, failure modes, and a minimal realization — placeholder language ("use AI", "add a graph", "make it adaptive") is refused at construction.
+_Avoid_: idea (names no mechanism), approach (unstructured), design (downstream realization detail)
+
+**Operator registry**:
+The versioned, deterministically-ordered set of genesis transformations (abduction, contradiction resolution, structural transfer, composition, subtraction, failure resurrection), each with an input contract, applicability check, bounded output, and provenance stamping.
+_Avoid_: plugin system (implies dynamic loading), pipeline (implies fixed sequence)
+
+**Rejected applicability**:
+The structured, retained reason an operator declined a candidate — machine-stable reason code plus detail, never a silent drop; heuristic (non-justified-filter) rejections are separately audited and never eliminate (R-024).
+_Avoid_: error (the operator worked correctly), filter (implies elimination)

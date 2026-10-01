@@ -11,13 +11,49 @@ fn crate_dir() -> std::path::PathBuf {
     std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR"))
 }
 
+/// Bind source for the worker package. The repo itself may live under
+/// `$HOME` (CI checkouts do), and `IsolationSpec` refuses every home-tree
+/// bind — that forbid list is a security boundary and stays untouched
+/// ("host secrets must stay unbound"). So copy the package once per
+/// process to `/dev/shm` — a neutral path the spec allows — and bind
+/// that read-only. tmpfs: the copy dies with the host.
 fn python_pkg() -> std::path::PathBuf {
-    crate_dir()
-        .parent()
-        .expect("crates")
-        .parent()
-        .expect("workspace")
-        .join("python")
+    static STAGED: std::sync::OnceLock<std::path::PathBuf> = std::sync::OnceLock::new();
+    STAGED
+        .get_or_init(|| {
+            let src = crate_dir()
+                .parent()
+                .expect("crates")
+                .parent()
+                .expect("workspace")
+                .join("python");
+            let dst = std::path::PathBuf::from(format!(
+                "/dev/shm/hephaestus-python-test-{}",
+                std::process::id()
+            ));
+            copy_tree(&src, &dst).expect("stage python package for the sandbox bind");
+            dst
+        })
+        .clone()
+}
+
+fn copy_tree(src: &std::path::Path, dst: &std::path::Path) -> std::io::Result<()> {
+    std::fs::create_dir_all(dst)?;
+    for entry in std::fs::read_dir(src)? {
+        let entry = entry?;
+        let name = entry.file_name();
+        if name.to_str() == Some("__pycache__") {
+            continue;
+        }
+        let from = entry.path();
+        let to = dst.join(&name);
+        if entry.file_type()?.is_dir() {
+            copy_tree(&from, &to)?;
+        } else {
+            std::fs::copy(&from, &to)?;
+        }
+    }
+    Ok(())
 }
 
 fn base_spec() -> IsolationSpec {

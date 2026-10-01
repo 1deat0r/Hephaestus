@@ -210,6 +210,8 @@ docs/agents/auto-workflow/state-archive-20261001T050137Z-run11.md
 crates/hephaestus/src/discovery/mod.rs
 crates/hephaestus/src/discovery/operators.rs
 crates/hephaestus/src/discovery/record.rs
+crates/hephaestus/src/evaluation/mod.rs
+crates/hephaestus/src/evaluation/record.rs
 crates/hephaestus/src/experiment/mod.rs
 crates/hephaestus/src/experiment/record.rs
 crates/hephaestus/src/genesis/hypothesis.rs
@@ -232,4 +234,5 @@ crates/hephaestus/tests/hypothesis_compiler.rs
 crates/hephaestus/tests/method_registry.rs
 crates/hephaestus/tests/prior_art.rs
 crates/hephaestus/tests/prototype_worker.rs
+crates/hephaestus/tests/result_interpreter.rs
 crates/hephaestus/tests/search_orchestrator.rs

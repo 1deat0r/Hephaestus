@@ -209,6 +209,8 @@ docs/agents/auto-workflow/state-archive-20261001T043811Z-run10.md
 docs/agents/auto-workflow/state-archive-20261001T050137Z-run11.md
 crates/hephaestus/src/advisory/mod.rs
 crates/hephaestus/src/advisory/record.rs
+crates/hephaestus/src/backend/mod.rs
+crates/hephaestus/src/backend/record.rs
 crates/hephaestus/src/discovery/mod.rs
 crates/hephaestus/src/discovery/operators.rs
 crates/hephaestus/src/discovery/record.rs
@@ -242,6 +244,7 @@ crates/hephaestus/src/release/record.rs
 crates/hephaestus/src/workspace/mod.rs
 crates/hephaestus/src/workspace/record.rs
 crates/hephaestus/tests/advisory_provider.rs
+crates/hephaestus/tests/backend_adapter.rs
 crates/hephaestus/tests/discovery_pressure_points.rs
 crates/hephaestus/tests/dossier_export.rs
 crates/hephaestus/tests/eval_suite.rs

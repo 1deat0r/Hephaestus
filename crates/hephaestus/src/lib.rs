@@ -28,6 +28,7 @@ pub mod scheduler;
 pub mod security;
 pub mod semantic;
 pub mod traceability;
+pub mod workspace;
 
 #[cfg(test)]
 mod tests {

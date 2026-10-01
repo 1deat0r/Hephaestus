@@ -163,3 +163,7 @@ _Avoid_: test (the procedure, not the distinguishing observation), metric (a mea
 **Falsifier**:
 An explicit, stated outcome that would count against the claim — never a restatement of the hypothesis's own success metric; stripping falsifiers denies test-ready promotion (AT-025).
 _Avoid_: risk (a possibility, not a countable outcome), caveat (a hedge, not a decision rule)
+
+**Guardrail class**:
+One of the four R-104 guardrail families — scoped error, correctness, precision/power, noninferiority — ALL of which must be declared before qualification; a per-class named gap is reported, never a generic refusal.
+_Avoid_: check (the evaluation, not the declared class), test suite (runtime evidence, not the pre-registration gate)

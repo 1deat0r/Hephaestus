@@ -207,6 +207,9 @@ docs/agents/auto-workflow/state-archive-20261001T004700Z-run8.md
 docs/agents/auto-workflow/state-archive-20261001T022400Z-run9.md
 docs/agents/auto-workflow/state-archive-20261001T043811Z-run10.md
 docs/agents/auto-workflow/state-archive-20261001T050137Z-run11.md
+.scratch/t041-guardrail-classes/grill.md
+.scratch/t041-guardrail-classes/issues/01-presence-gate.md
+.scratch/t041-guardrail-classes/spec.md
 crates/hephaestus/src/acceleration/mod.rs
 crates/hephaestus/src/acceleration/record.rs
 crates/hephaestus/src/advisory/mod.rs
@@ -273,6 +276,7 @@ crates/hephaestus/tests/eval_suite.rs
 crates/hephaestus/tests/evidence_lifecycle.rs
 crates/hephaestus/tests/experiment_compiler.rs
 crates/hephaestus/tests/genesis_registry.rs
+crates/hephaestus/tests/guardrail_classes.rs
 crates/hephaestus/tests/hypothesis_compiler.rs
 crates/hephaestus/tests/learning_reuse_gates.rs
 crates/hephaestus/tests/memory_quarantine.rs

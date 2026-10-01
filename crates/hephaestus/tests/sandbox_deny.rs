@@ -482,6 +482,10 @@ fn dependency_install_failure_has_a_pinned_cause() {
                 "-m".to_string(),
                 "pip".to_string(),
                 "install".to_string(),
+                // PEP 668 (distro pythons) refuses BEFORE the network layer;
+                // bypass that policy check so the attempt reaches the
+                // sandbox's blocked egress and fails with the pinned cause.
+                "--break-system-packages".to_string(),
                 "requests".to_string(),
             ],
             spec: base_spec(),

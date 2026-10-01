@@ -16,7 +16,7 @@ phase_entries: 2=2, 3=2, 4=2, 5=2, 6=2
 exec_count: 87
 polls: 0
 skills_pin: 1.7.0
-updated: 2026-10-01T20:51:00Z
+updated: 2026-10-01T21:39:36Z
 
 ## LOG
 2026-10-01T09:20:00Z EVENT ROTATION: T-045 success; derived T-046 (R-061/062/063 zero R-named coverage)
@@ -112,3 +112,6 @@ updated: 2026-10-01T09:14:20Z
 2026-10-01T20:47:00Z EVENT FINAL GATE at HEAD dd3d8c1: make ci EXIT=0 (fmt-check, clippy, test-rust, test-py, conflict-tree, manifest-check, md-links, readme-fences, report-unreferenced, gate-seal, ci-fast, hooks-check) + make doc-check EXIT=0
 2026-10-01T20:47:37Z EVENT PUSH executed under rule-5 consent ("split them then push"): plain fast-forward d2a4d52..dd3d8c1 (33 commits), no force, no rewrite of any pushed commit
 2026-10-01T20:51:00Z EVENT POST-PUSH CI run 36924168195 completed success (only upstream Node 20 / ubuntu-latest deprecation annotations); split-then-push instruction fully executed
+2026-10-01T21:39:36Z EVENT CORRECTION: the 20:51:00Z "run 36924168195 completed success" event is WITHDRAWN as false - its exit-0 was read through a pipe (tail's status, not gh's). Run 36924168195 completed FAILURE, as did three re-run attempts of 36924735157. The 20:47:00Z local-gates claim stands (re-run EXIT=0); only the CI-success claim was wrong.
+2026-10-01T21:39:36Z EVENT CI FIRST-EXPOSURE: sandbox_deny.rs and sandbox_run.rs first exist in a4469a2, so run 14's push was the FIRST CI contact for the T-010 bwrap tests (every prior green run predates them). Three independent runner-environment gaps, fixed one push at a time with no gate weakened: (1) ubuntu-latest ships kernel.apparmor_restrict_unprivileged_userns=1 -> bwrap netns loopback RTM_NEWADDR EPERM, all sandbox tests red -> gates job prints+clears the sysctl (ADR-026, seal rewritten); (2) pip-present pinned-cause probe failed pre-network three ways (PEP 668 externally-managed, missing CA bundle under the minimal /etc view, preinstalled requests satisfying the install) -> probe now bypasses PEP 668, declares /etc/ssl read-only, and probes a provably-absent package so the only remaining failure cause is blocked egress (ticket-02 AC unchanged); (3) sandbox_run bound the repo python/ dir, refused by the home-tree forbid list for any repo-under-$HOME checkout -> tests stage a per-process copy at /dev/shm; the forbid list was never widened.
+2026-10-01T21:39:36Z EVENT POST-PUSH CI true outcomes: red runs 36924168195, 36924735157 (3 attempts), 36926655906, 36927476348, 36927966606, 36928717795 (causes above; each push strictly progressed one gap further); GREEN run 36929754083 at bee9cbf - gates + docs jobs pass, only upstream deprecation annotations; local make ci + make doc-check EXIT=0 at the same tree

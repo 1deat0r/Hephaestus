@@ -9,6 +9,7 @@ pub mod budget;
 pub mod contracts;
 pub mod discovery;
 pub mod dossier;
+pub mod evalsuite;
 pub mod evaluation;
 pub mod experiment;
 pub mod genesis;

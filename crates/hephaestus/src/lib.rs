@@ -33,6 +33,7 @@ pub mod release;
 pub mod sandbox;
 pub mod scheduler;
 pub mod security;
+pub mod selfimprove;
 pub mod semantic;
 pub mod traceability;
 pub mod workspace;

@@ -245,6 +245,10 @@ crates/hephaestus/src/prototype/mod.rs
 crates/hephaestus/src/prototype/record.rs
 crates/hephaestus/src/release/mod.rs
 crates/hephaestus/src/release/record.rs
+crates/hephaestus/src/selfimprove/learning.rs
+crates/hephaestus/src/selfimprove/learning_gate.rs
+crates/hephaestus/src/selfimprove/mod.rs
+crates/hephaestus/src/selfimprove/record.rs
 crates/hephaestus/src/workspace/mod.rs
 crates/hephaestus/src/workspace/record.rs
 crates/hephaestus/tests/acceleration_eval.rs
@@ -258,6 +262,7 @@ crates/hephaestus/tests/evidence_lifecycle.rs
 crates/hephaestus/tests/experiment_compiler.rs
 crates/hephaestus/tests/genesis_registry.rs
 crates/hephaestus/tests/hypothesis_compiler.rs
+crates/hephaestus/tests/learning_reuse_gates.rs
 crates/hephaestus/tests/method_registry.rs
 crates/hephaestus/tests/pilot_campaigns.rs
 crates/hephaestus/tests/prior_art.rs
@@ -265,4 +270,5 @@ crates/hephaestus/tests/prototype_worker.rs
 crates/hephaestus/tests/release_packet.rs
 crates/hephaestus/tests/result_interpreter.rs
 crates/hephaestus/tests/search_orchestrator.rs
+crates/hephaestus/tests/self_improvement.rs
 crates/hephaestus/tests/workspace_core.rs

@@ -7,6 +7,7 @@ pub const LAYER: &str = "control-plane";
 
 pub mod acceleration;
 pub mod advisory;
+pub mod amendment;
 pub mod backend;
 pub mod budget;
 pub mod contracts;

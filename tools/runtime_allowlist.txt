@@ -211,6 +211,8 @@ crates/hephaestus/src/acceleration/mod.rs
 crates/hephaestus/src/acceleration/record.rs
 crates/hephaestus/src/advisory/mod.rs
 crates/hephaestus/src/advisory/record.rs
+crates/hephaestus/src/amendment/mod.rs
+crates/hephaestus/src/amendment/record.rs
 crates/hephaestus/src/backend/mod.rs
 crates/hephaestus/src/backend/record.rs
 crates/hephaestus/src/discovery/mod.rs
@@ -255,6 +257,7 @@ crates/hephaestus/src/workspace/mod.rs
 crates/hephaestus/src/workspace/record.rs
 crates/hephaestus/tests/acceleration_eval.rs
 crates/hephaestus/tests/advisory_provider.rs
+crates/hephaestus/tests/amendment_gates.rs
 crates/hephaestus/tests/backend_adapter.rs
 crates/hephaestus/tests/discovery_pressure_points.rs
 crates/hephaestus/tests/domain_packs.rs

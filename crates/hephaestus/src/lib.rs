@@ -16,6 +16,7 @@ pub mod mission;
 pub mod operations;
 pub mod orchestrator;
 pub mod policy;
+pub mod priorart;
 pub mod sandbox;
 pub mod scheduler;
 pub mod security;

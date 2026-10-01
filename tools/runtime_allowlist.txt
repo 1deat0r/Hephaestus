@@ -229,6 +229,8 @@ crates/hephaestus/src/methods/mod.rs
 crates/hephaestus/src/methods/record.rs
 crates/hephaestus/src/orchestrator/mod.rs
 crates/hephaestus/src/orchestrator/record.rs
+crates/hephaestus/src/pilot/mod.rs
+crates/hephaestus/src/pilot/record.rs
 crates/hephaestus/src/priorart/mod.rs
 crates/hephaestus/src/priorart/record.rs
 crates/hephaestus/src/prototype/mod.rs
@@ -243,6 +245,7 @@ crates/hephaestus/tests/experiment_compiler.rs
 crates/hephaestus/tests/genesis_registry.rs
 crates/hephaestus/tests/hypothesis_compiler.rs
 crates/hephaestus/tests/method_registry.rs
+crates/hephaestus/tests/pilot_campaigns.rs
 crates/hephaestus/tests/prior_art.rs
 crates/hephaestus/tests/prototype_worker.rs
 crates/hephaestus/tests/result_interpreter.rs

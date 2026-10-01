@@ -21,6 +21,7 @@ pub mod migrate;
 pub mod mission;
 pub mod operations;
 pub mod orchestrator;
+pub mod pilot;
 pub mod policy;
 pub mod priorart;
 pub mod prototype;

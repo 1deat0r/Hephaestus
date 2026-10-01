@@ -131,3 +131,11 @@ _Avoid_: recall (implies a bounded reference set adjudication), completeness (fo
 **Evidence edge**:
 A typed link (Supports, Contradicts, Mentions, SharesOrigin) binding an evidence record to span coordinates with provenance; quarantine invalidates incident edges without deleting them.
 _Avoid_: citation (one-way pointer without type or lifecycle), annotation (free text)
+
+**Pressure point**:
+A structured, evidence-cited observation of strain in authorized traces — bottleneck, conflicting objectives, failure pattern, anomaly, assumption, or changed capability — mined by a named operator with a rejection contract, never a supplied idea.
+_Avoid_: pain point (vague marketing), issue (tracker item), idea (unsourced)
+
+**Opportunity**:
+The operator output record: pressure-point type, problem statement, beneficiary, context, span-bound evidence references, suspected bottleneck, explicit causal uncertainty, qualitative value estimate, feasibility envelope, prior-art query plan, and unanswered questions — validity (evidence-backed / challenged / speculative) reported independently of narrative polish.
+_Avoid_: hypothesis (a downstream T-016 record), feature request (no grounding semantics), lead (implies sales pipeline)

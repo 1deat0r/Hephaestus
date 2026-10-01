@@ -485,12 +485,21 @@ fn dependency_install_failure_has_a_pinned_cause() {
                 // PEP 668 refuses before the network layer, and a
                 // preinstalled dist (CI images ship several) would satisfy
                 // the requirement without touching one; bypass the policy
-                // check with a package that cannot be present so the only
-                // remaining failure cause is blocked egress (ticket-02 AC).
+                // check with a package that cannot be present. The system
+                // CA bundle is declared read-only so TLS setup cannot fail
+                // first — the only remaining cause is blocked egress
+                // (ticket-02 AC). Public certs, no host material.
                 "--break-system-packages".to_string(),
                 "hephaestus-nonexistent-pkg-7f3a".to_string(),
             ],
-            spec: base_spec(),
+            spec: {
+                let mut spec = base_spec();
+                spec.extra_ro_binds = vec![(
+                    std::path::PathBuf::from("/etc/ssl"),
+                    std::path::PathBuf::from("/etc/ssl"),
+                )];
+                spec
+            },
             input_files: vec![],
         })
         .expect_err("install must fail");

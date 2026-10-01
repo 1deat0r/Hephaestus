@@ -9,8 +9,10 @@
 //!
 //! Purity: no I/O, no ledger coupling. Callers persist what they accept.
 
+pub mod hypothesis;
 pub mod record;
 pub mod registry;
+pub mod validators;
 
 pub use record::{MechanismError, MechanismRecord, PlausibilityFlag, Provenance};
 pub use registry::{OperatorOutcome, RejectedApplicability};

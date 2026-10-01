@@ -151,3 +151,15 @@ _Avoid_: plugin system (implies dynamic loading), pipeline (implies fixed sequen
 **Rejected applicability**:
 The structured, retained reason an operator declined a candidate — machine-stable reason code plus detail, never a silent drop; heuristic (non-justified-filter) rejections are separately audited and never eliminate (R-024).
 _Avoid_: error (the operator worked correctly), filter (implies elimination)
+
+**Hypothesis**:
+The operational record a mechanism compiles into: context, intervention, comparator, proposed mechanism, predictions, estimands, effect bounds, boundary conditions, competing explanations, required observations, analysis requirements, and falsifiers — mechanistic claim and engineering target held separately, readiness decided only by semantic validation.
+_Avoid_: theory (implies established support), conjecture (unstructured), bet (implies stakes)
+
+**Operational discriminator**:
+The observation that distinguishes a hypothesis from its competing explanations — without one, the hypothesis stays exploratory (preserved, never deleted); it is the gate between EXPLORATORY and test-ready.
+_Avoid_: test (the procedure, not the distinguishing observation), metric (a measurement, not a distinguisher)
+
+**Falsifier**:
+An explicit, stated outcome that would count against the claim — never a restatement of the hypothesis's own success metric; stripping falsifiers denies test-ready promotion (AT-025).
+_Avoid_: risk (a possibility, not a countable outcome), caveat (a hedge, not a decision rule)

@@ -40,6 +40,7 @@ pub mod scheduler;
 pub mod security;
 pub mod selfimprove;
 pub mod semantic;
+pub mod taskplan;
 pub mod traceability;
 pub mod trustprop;
 pub mod workspace;

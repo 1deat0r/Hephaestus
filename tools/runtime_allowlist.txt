@@ -219,6 +219,9 @@ docs/agents/auto-workflow/state-archive-20261001T050137Z-run11.md
 .scratch/t044-multi-objective-archive/grill.md
 .scratch/t044-multi-objective-archive/issues/01-pareto-archive.md
 .scratch/t044-multi-objective-archive/spec.md
+.scratch/t045-task-contracts/grill.md
+.scratch/t045-task-contracts/issues/01-taskspec-reducer.md
+.scratch/t045-task-contracts/spec.md
 crates/hephaestus/src/acceleration/mod.rs
 crates/hephaestus/src/acceleration/record.rs
 crates/hephaestus/src/advisory/mod.rs
@@ -272,6 +275,7 @@ crates/hephaestus/src/selfimprove/learning.rs
 crates/hephaestus/src/selfimprove/learning_gate.rs
 crates/hephaestus/src/selfimprove/mod.rs
 crates/hephaestus/src/selfimprove/record.rs
+crates/hephaestus/src/taskplan/mod.rs
 crates/hephaestus/src/trustprop/mod.rs
 crates/hephaestus/src/workspace/mod.rs
 crates/hephaestus/src/workspace/record.rs
@@ -304,6 +308,7 @@ crates/hephaestus/tests/reproduction_record.rs
 crates/hephaestus/tests/result_interpreter.rs
 crates/hephaestus/tests/search_orchestrator.rs
 crates/hephaestus/tests/self_improvement.rs
+crates/hephaestus/tests/task_contracts.rs
 crates/hephaestus/tests/trust_propagation.rs
 crates/hephaestus/tests/workspace_core.rs
 crates/hephaestus/tests/yield_accounting.rs

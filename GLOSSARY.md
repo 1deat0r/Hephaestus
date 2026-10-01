@@ -183,3 +183,7 @@ _Avoid_: averaging (trust is not a mean), escalation (trust never rises through 
 **Multi-objective archive**:
 The R-032 frontier over candidates scored on declared, non-fabricated objective axes (cost x value band) where retention is Pareto dominance, not a single universal score — a cheap uncertain candidate and an expensive plausible candidate both remain when neither dominates (AT-032).
 _Avoid_: leaderboard (implies one ranking), weighted score (collapses axes), confidence (a fabricated number)
+
+**Task contract**:
+The R-049 bounded TaskSpec a worker compiles against - declared tools, write contracts with schemas, capability grants, budget and timeout bounds, retry cap, snapshot-isolated profile - absent any of which compile validation rejects it as an unrestricted agent, not a task (AT-049).
+_Avoid_: mini-agent (an unrestricted delegation), job description (no bounds), prompt (uncompiled)

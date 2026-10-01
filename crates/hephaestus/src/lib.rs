@@ -41,6 +41,7 @@ pub mod selfimprove;
 pub mod semantic;
 pub mod traceability;
 pub mod workspace;
+pub mod yieldaccount;
 
 #[cfg(test)]
 mod tests {

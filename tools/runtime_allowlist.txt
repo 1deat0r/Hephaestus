@@ -259,6 +259,8 @@ crates/hephaestus/src/selfimprove/mod.rs
 crates/hephaestus/src/selfimprove/record.rs
 crates/hephaestus/src/workspace/mod.rs
 crates/hephaestus/src/workspace/record.rs
+crates/hephaestus/src/yieldaccount/mod.rs
+crates/hephaestus/src/yieldaccount/record.rs
 crates/hephaestus/tests/acceleration_eval.rs
 crates/hephaestus/tests/advisory_provider.rs
 crates/hephaestus/tests/amendment_gates.rs
@@ -284,3 +286,4 @@ crates/hephaestus/tests/result_interpreter.rs
 crates/hephaestus/tests/search_orchestrator.rs
 crates/hephaestus/tests/self_improvement.rs
 crates/hephaestus/tests/workspace_core.rs
+crates/hephaestus/tests/yield_accounting.rs

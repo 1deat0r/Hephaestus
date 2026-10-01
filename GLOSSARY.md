@@ -187,3 +187,7 @@ _Avoid_: leaderboard (implies one ranking), weighted score (collapses axes), con
 **Task contract**:
 The R-049 bounded TaskSpec a worker compiles against - declared tools, write contracts with schemas, capability grants, budget and timeout bounds, retry cap, snapshot-isolated profile - absent any of which compile validation rejects it as an unrestricted agent, not a task (AT-049).
 _Avoid_: mini-agent (an unrestricted delegation), job description (no bounds), prompt (uncompiled)
+
+**Typed rejection**:
+The R-061/R-062/R-063 stable rejection record — a machine-comparable code (SEMANTIC_CONTRADICTION, PROVIDER_LEAK, UNKNOWN_SCHEMA_VERSION, MISSING_REFERENCE, UNSUPPORTED_CAPABILITY) plus detail - so a verifier failure is always attributable and never a bare error string.
+_Avoid_: error (unstructured), exception (implies unexpected), rejection reason (free text)

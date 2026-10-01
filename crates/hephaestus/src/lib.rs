@@ -14,6 +14,7 @@ pub mod containment;
 pub mod contracts;
 pub mod discovery;
 pub mod domainpack;
+pub mod domainver;
 pub mod dossier;
 pub mod evalsuite;
 pub mod evaluation;

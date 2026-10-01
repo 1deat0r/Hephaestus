@@ -222,6 +222,9 @@ docs/agents/auto-workflow/state-archive-20261001T050137Z-run11.md
 .scratch/t045-task-contracts/grill.md
 .scratch/t045-task-contracts/issues/01-taskspec-reducer.md
 .scratch/t045-task-contracts/spec.md
+.scratch/t046-domain-verifier/grill.md
+.scratch/t046-domain-verifier/issues/01-typed-verifier-gate.md
+.scratch/t046-domain-verifier/spec.md
 crates/hephaestus/src/acceleration/mod.rs
 crates/hephaestus/src/acceleration/record.rs
 crates/hephaestus/src/advisory/mod.rs
@@ -237,6 +240,7 @@ crates/hephaestus/src/discovery/operators.rs
 crates/hephaestus/src/discovery/record.rs
 crates/hephaestus/src/domainpack/mod.rs
 crates/hephaestus/src/domainpack/record.rs
+crates/hephaestus/src/domainver/mod.rs
 crates/hephaestus/src/dossier/mod.rs
 crates/hephaestus/src/dossier/record.rs
 crates/hephaestus/src/evalsuite/mod.rs
@@ -288,6 +292,7 @@ crates/hephaestus/tests/backend_adapter.rs
 crates/hephaestus/tests/containment_races.rs
 crates/hephaestus/tests/discovery_pressure_points.rs
 crates/hephaestus/tests/domain_packs.rs
+crates/hephaestus/tests/domain_verifier.rs
 crates/hephaestus/tests/dossier_export.rs
 crates/hephaestus/tests/eval_suite.rs
 crates/hephaestus/tests/evidence_lifecycle.rs

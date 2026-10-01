@@ -22,6 +22,7 @@ pub mod genesis;
 pub mod knowledge;
 pub mod ledger;
 pub mod lifecycle;
+pub mod memory;
 pub mod methods;
 pub mod migrate;
 pub mod mission;

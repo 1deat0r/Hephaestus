@@ -237,6 +237,8 @@ crates/hephaestus/src/genesis/registry.rs
 crates/hephaestus/src/genesis/validators.rs
 crates/hephaestus/src/lifecycle/mod.rs
 crates/hephaestus/src/lifecycle/record.rs
+crates/hephaestus/src/memory/mod.rs
+crates/hephaestus/src/memory/record.rs
 crates/hephaestus/src/methods/mod.rs
 crates/hephaestus/src/methods/record.rs
 crates/hephaestus/src/orchestrator/mod.rs
@@ -271,6 +273,7 @@ crates/hephaestus/tests/experiment_compiler.rs
 crates/hephaestus/tests/genesis_registry.rs
 crates/hephaestus/tests/hypothesis_compiler.rs
 crates/hephaestus/tests/learning_reuse_gates.rs
+crates/hephaestus/tests/memory_quarantine.rs
 crates/hephaestus/tests/method_registry.rs
 crates/hephaestus/tests/pilot_campaigns.rs
 crates/hephaestus/tests/prior_art.rs

@@ -41,6 +41,7 @@ pub mod security;
 pub mod selfimprove;
 pub mod semantic;
 pub mod traceability;
+pub mod trustprop;
 pub mod workspace;
 pub mod yieldaccount;
 

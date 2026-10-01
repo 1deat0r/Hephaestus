@@ -175,3 +175,7 @@ _Avoid_: dependency graph (broader, unresolved), module list (the input, not the
 **Oracle disagreement**:
 Divergence between two independent closure recounts — the declared closure is refused (conservative), never resolved by picking a winner.
 _Avoid_: bug (the disagreement is data), tiebreak (implies a winner is chosen)
+
+**Trust propagation**:
+The R-108 rule that derived records (summaries, caches, graph edges, cross-session memory) inherit the MINIMUM trust of their inputs — one untrusted source contaminates the derivation, and trust is never laundered by deriving through a trusted co-reference.
+_Avoid_: averaging (trust is not a mean), escalation (trust never rises through derivation)

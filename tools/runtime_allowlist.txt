@@ -213,6 +213,9 @@ docs/agents/auto-workflow/state-archive-20261001T050137Z-run11.md
 .scratch/t042-closure-oracle/grill.md
 .scratch/t042-closure-oracle/issues/01-closure-check.md
 .scratch/t042-closure-oracle/spec.md
+.scratch/t043-trust-propagation/grill.md
+.scratch/t043-trust-propagation/issues/01-propagation-contract.md
+.scratch/t043-trust-propagation/spec.md
 crates/hephaestus/src/acceleration/mod.rs
 crates/hephaestus/src/acceleration/record.rs
 crates/hephaestus/src/advisory/mod.rs
@@ -265,6 +268,7 @@ crates/hephaestus/src/selfimprove/learning.rs
 crates/hephaestus/src/selfimprove/learning_gate.rs
 crates/hephaestus/src/selfimprove/mod.rs
 crates/hephaestus/src/selfimprove/record.rs
+crates/hephaestus/src/trustprop/mod.rs
 crates/hephaestus/src/workspace/mod.rs
 crates/hephaestus/src/workspace/record.rs
 crates/hephaestus/src/yieldaccount/mod.rs
@@ -295,5 +299,6 @@ crates/hephaestus/tests/reproduction_record.rs
 crates/hephaestus/tests/result_interpreter.rs
 crates/hephaestus/tests/search_orchestrator.rs
 crates/hephaestus/tests/self_improvement.rs
+crates/hephaestus/tests/trust_propagation.rs
 crates/hephaestus/tests/workspace_core.rs
 crates/hephaestus/tests/yield_accounting.rs

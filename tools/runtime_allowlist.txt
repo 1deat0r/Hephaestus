@@ -235,6 +235,8 @@ crates/hephaestus/src/priorart/mod.rs
 crates/hephaestus/src/priorart/record.rs
 crates/hephaestus/src/prototype/mod.rs
 crates/hephaestus/src/prototype/record.rs
+crates/hephaestus/src/release/mod.rs
+crates/hephaestus/src/release/record.rs
 crates/hephaestus/src/workspace/mod.rs
 crates/hephaestus/src/workspace/record.rs
 crates/hephaestus/tests/discovery_pressure_points.rs
@@ -248,6 +250,7 @@ crates/hephaestus/tests/method_registry.rs
 crates/hephaestus/tests/pilot_campaigns.rs
 crates/hephaestus/tests/prior_art.rs
 crates/hephaestus/tests/prototype_worker.rs
+crates/hephaestus/tests/release_packet.rs
 crates/hephaestus/tests/result_interpreter.rs
 crates/hephaestus/tests/search_orchestrator.rs
 crates/hephaestus/tests/workspace_core.rs

@@ -25,6 +25,7 @@ pub mod pilot;
 pub mod policy;
 pub mod priorart;
 pub mod prototype;
+pub mod release;
 pub mod sandbox;
 pub mod scheduler;
 pub mod security;

@@ -4,7 +4,7 @@
 
 **Blocked by:** 01 (typed capability grants), 02 (facet predicate extraction).
 
-**Status:** ready-for-agent
+**Status:** done
 
 - [ ] Denies with a specific reason per facet: mission authorization, operation, capabilities, destination, artifact, policy chain, revocation, expiry/interval, cost, trust, missing budget (AT-060 / R-060)
 - [ ] Fail-closed: every missing or unparseable fact yields a reason, never a skip; the positive control (exact, unexpired, approved, trusted grant) evaluates allowed
@@ -13,3 +13,7 @@
 - [ ] Request/state/decision structs contain only enumerated authorization facts — no credential field, no provider handle, no model parameter
 - [ ] Consistency invariant tested: on every shared facet, engine denial ⇔ contract-layer check error
 - [ ] Reuses the ticket-02 predicates; does not fork their logic
+
+## Comments
+
+Closed 2026-10-02 — work landed earlier; verified green: policy_engine and capability_grant tests green in make ci.

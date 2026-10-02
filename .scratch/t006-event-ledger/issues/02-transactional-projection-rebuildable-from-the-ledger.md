@@ -4,7 +4,7 @@
 
 **Blocked by:** 01 (append-only event ledger).
 
-**Status:** ready-for-agent
+**Status:** done
 
 - [x] Projection updates happen strictly after the event append is durable (append-then-project)
 - [x] Deleting the projection file and rebuilding from the ledger reproduces an identical view (AT-015 / R-015)
@@ -15,3 +15,5 @@
 ## Comments
 
 2026-09-30 — Done. Verified: projection rebuild byte-identical after deletion from a disk reopen (AT-015/R-015), append-then-project stale-view recovery, in-module unit tests. `cargo test -p hephaestus --test event_ledger` green (19 cases); `make ci` exit 0.
+
+Closed 2026-10-02 — work landed earlier; verified green: event ledger, projection, and artifact-store tests green in make ci.

@@ -4,7 +4,7 @@
 
 **Blocked by:** None (can start immediately).
 
-**Status:** ready-for-agent
+**Status:** done
 
 - [x] Append refuses any event failing contract validation or the ledger's own sequence/chain checks, and writes nothing when it refuses (AT-013 / R-013)
 - [x] Appended events persist across reopen with the chain intact (AT-014 / R-014)
@@ -16,3 +16,5 @@
 ## Comments
 
 2026-09-30 — Done. Verified: validation refusal writes nothing (AT-013), reopen persistence (AT-014), sha256 chain with tamper detection, sequence invariants on append and on open (errors name the 1-based line number), torn-tail recovery plus newline-less-EOF normalization, cursor reads. Suite green; `make ci` exit 0.
+
+Closed 2026-10-02 — work landed earlier; verified green: event ledger, projection, and artifact-store tests green in make ci.

@@ -6,7 +6,7 @@ RecoveryPlan, and assert all four M1 exit pillars from real CLI output.
 
 **Blocked by:** 01 (`hephaestus` binary with `fixture run`).
 
-**Status:** ready-for-agent
+**Status:** done
 
 - [x] `fixture recover --state-dir <DIR>`: replay + plan JSON (requeue/
       unresolved/terminal/cancelled/corrupt in ledger order), exit 0;
@@ -23,3 +23,5 @@ RecoveryPlan, and assert all four M1 exit pillars from real CLI output.
 ## Comments
 
 2026-10-01T00:56:21Z — Done; 7/7 CLI tests green against the real binary (run, twin determinism, recover pillar proof, usage/exit codes, empty-dir refusal, missing-state exit 1).
+
+Closed 2026-10-02 — work landed earlier; verified green: cli tests 9/9 green; fixture run and fixture recover verified in CI.

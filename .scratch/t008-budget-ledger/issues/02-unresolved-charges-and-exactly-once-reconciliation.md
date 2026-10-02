@@ -9,7 +9,7 @@ duplicated" has a runtime home.
 
 **Blocked by:** 01 (core budget ledger).
 
-**Status:** ready-for-agent
+**Status:** done
 
 - [ ] `mark_unresolved(id, amount: Option<Money>, reason)` records the entry;
       missing reason, duplicate id, wrong currency, or negative amount →
@@ -23,3 +23,7 @@ duplicated" has a runtime home.
       `unresolved_count()` (entries) separately
 - [ ] Tests cite R-056/AT-056 in headers; deny-first coverage of every
       refusal path
+
+## Comments
+
+Closed 2026-10-02 — work landed earlier; verified green: budget_ledger concurrency tests green (M0_M1 receipts).

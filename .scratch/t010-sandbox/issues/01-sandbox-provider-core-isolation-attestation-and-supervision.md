@@ -8,7 +8,7 @@ and the first boundary tests can go red-then-green.
 
 **Blocked by:** None (can start immediately).
 
-**Status:** ready-for-agent
+**Status:** done
 
 - [x] `IsolationSpec` (declared tools, env allowlist, binds, wall/cpu/
       memory/nproc/fsize limits, network Off-only, output caps) with
@@ -31,3 +31,5 @@ and the first boundary tests can go red-then-green.
 ## Comments
 
 2026-09-30T22:53:24Z — Done; all ACs verified by the suites (sandbox_deny 13, sandbox_run 9, launch unit 2) and green gates (255 workspace tests, doc-check 0, make ci 0 with the new files allowlisted).
+
+Closed 2026-10-02 — work landed earlier; verified green: sandbox_deny 17/17 and sandbox_run green; bwrap gates verified in CI.

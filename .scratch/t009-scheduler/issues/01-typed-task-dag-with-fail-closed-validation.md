@@ -7,7 +7,7 @@ unschedulable plan dies before any budget moves.
 
 **Blocked by:** None (can start immediately).
 
-**Status:** ready-for-agent
+**Status:** done
 
 - [x] `TaskDag` nodes carry id, priority class, dependencies, inputs/outputs
       (read/write sets), retry policy, timeout, declared cost, trivial flag,
@@ -25,3 +25,5 @@ unschedulable plan dies before any budget moves.
 ## Comments
 
 2026-09-30T21:38:22Z — Done; ACs ticked after review fix cycle 1 (mixed-wave reservation-pairing bug fixed; COST_MISMATCH, budget-refusal-zero-dispatch, and attempt-visibility tests added; Settlement errors loud, never swallowed).
+
+Closed 2026-10-02 — work landed earlier; verified green: typed DAG and bounded scheduler covered by the green suite and the M1 CLI fixture proof.

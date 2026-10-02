@@ -7,7 +7,7 @@ line's four pillars are reachable by one command.
 
 **Blocked by:** None (can start immediately).
 
-**Status:** ready-for-agent
+**Status:** done
 
 - [x] `src/main.rs` + `fixture.rs`: `fixture run --state-dir <DIR>` runs
       the constant fixture (5 scripted tasks; budget limit below priced
@@ -26,3 +26,5 @@ line's four pillars are reachable by one command.
 ## Comments
 
 2026-10-01T00:56:21Z — Done; 7/7 CLI tests green against the real binary (run, twin determinism, recover pillar proof, usage/exit codes, empty-dir refusal, missing-state exit 1).
+
+Closed 2026-10-02 — work landed earlier; verified green: cli tests 9/9 green; fixture run and fixture recover verified in CI.

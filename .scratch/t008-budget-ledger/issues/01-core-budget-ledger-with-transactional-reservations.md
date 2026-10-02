@@ -8,7 +8,7 @@ is what a scheduler needs to dispatch against (AT-055's sequential half).
 
 **Blocked by:** None (can start immediately).
 
-**Status:** ready-for-agent
+**Status:** done
 
 - [ ] `BudgetLedger::new(limit: Money)` fixes the currency; read model
       exposes `limit/available/reserved/spent` as pure sums
@@ -25,3 +25,7 @@ is what a scheduler needs to dispatch against (AT-055's sequential half).
 - [ ] Integer-only checked arithmetic — no floats; overflow/negative denied
 - [ ] In-module unit tests for arithmetic edges; deny-first integration
       tests citing R-055/AT-055; zero new dependencies
+
+## Comments
+
+Closed 2026-10-02 — work landed earlier; verified green: budget_ledger concurrency tests green (M0_M1 receipts).

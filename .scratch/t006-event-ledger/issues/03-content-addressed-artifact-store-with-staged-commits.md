@@ -4,7 +4,7 @@
 
 **Blocked by:** 01 (event ledger).
 
-**Status:** ready-for-agent
+**Status:** done
 
 - [x] Staged files live outside the object namespace and become addressable only via one atomic rename (AT-057 / R-057)
 - [x] The referencing ledger event is appended only after the commit rename succeeds — enforced by API shape (commit takes no ledger) and exercised by the crash-boundary tests; the ordering is a documented caller convention, not a type-system guarantee (limitation recorded in the spec)
@@ -17,3 +17,5 @@
 ## Comments
 
 2026-09-30 — Done. Verified: pre-commit non-addressability, digest-mismatch and malformed-digest refusal, both crash boundaries with a real GC sweep and post-gc orphan read (AT-057/R-057). Suite green; `make ci` exit 0.
+
+Closed 2026-10-02 — work landed earlier; verified green: event ledger, projection, and artifact-store tests green in make ci.

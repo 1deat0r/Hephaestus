@@ -8,7 +8,7 @@ capability contract a future sandboxed worker can plug into.
 
 **Blocked by:** 01 (typed task DAG).
 
-**Status:** ready-for-agent
+**Status:** done
 
 - [x] `TaskExecutor` trait (`run`, `run_batch` with per-task default,
       `signal_cancel`) with typed outcomes
@@ -32,3 +32,5 @@ capability contract a future sandboxed worker can plug into.
 ## Comments
 
 2026-09-30T21:38:22Z — Done; ACs ticked after review fix cycle 1 (mixed-wave reservation-pairing bug fixed; COST_MISMATCH, budget-refusal-zero-dispatch, and attempt-visibility tests added; Settlement errors loud, never swallowed).
+
+Closed 2026-10-02 — work landed earlier; verified green: typed DAG and bounded scheduler covered by the green suite and the M1 CLI fixture proof.

@@ -4,7 +4,7 @@
 
 **Blocked by:** 02 (transactional projection), 03 (artifact store).
 
-**Status:** ready-for-agent
+**Status:** done
 
 - [x] Crash-injection suite covers each boundary: after event append, between append and projection, after staging, between rename and referencing event — reopen recovers each time (AT-057 / R-057)
 - [x] After simulated death, evidence and artifacts reconstruct from persisted records alone, with no ephemeral state (AT-014 / R-014)
@@ -16,3 +16,5 @@
 ## Comments
 
 2026-09-30 — Done. Verified: end-to-end death-at-every-boundary suite (AT-014/AT-015/AT-057), GLOSSARY +4 terms (decision rows recorded; domain.md premise corrected), fmt/clippy -D warnings/`cargo test --workspace`/`make ci` all green after each fix cycle. Limitations recorded in spec Further Notes and the workflow report (sync_data scope; conventions-vs-guarantees; retry clause deferred to T-011).
+
+Closed 2026-10-02 — work landed earlier; verified green: event ledger, projection, and artifact-store tests green in make ci.

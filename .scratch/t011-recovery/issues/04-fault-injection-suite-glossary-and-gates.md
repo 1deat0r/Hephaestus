@@ -6,7 +6,7 @@ vocabulary, and green gates — closing the run and the M1 recovery story.
 
 **Blocked by:** 03 (recovery plan with budget reconciliation).
 
-**Status:** ready-for-agent
+**Status:** done
 
 - [x] Boundary tests: (1) planned-only crash ⇒ requeue, budget untouched;
       (2) dispatched-no-receipt ⇒ Ambiguous ⇒ release+unresolved (or
@@ -28,3 +28,5 @@ vocabulary, and green gates — closing the run and the M1 recovery story.
 ## Comments
 
 2026-10-01T00:21:34Z — Done; verified by operations_deny (19 tests) + replay unit tests + green gates (279 workspace, doc-check 0, make ci 0, manifest 208/127).
+
+Closed 2026-10-02 — work landed earlier; verified green: operations_deny replay, recovery, and fault tests green (M0_M1 receipts).

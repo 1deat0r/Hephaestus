@@ -8,7 +8,7 @@ timeouts are spec-validated and executor-enforced, never scheduler-clocked.
 
 **Blocked by:** 02 (executor contract and bounded scheduler core).
 
-**Status:** ready-for-agent
+**Status:** done
 
 - [x] `retryable: false` ⇒ exactly one executor call even when
       `max_attempts > 1` (MASTER_SPEC:371)
@@ -23,3 +23,5 @@ timeouts are spec-validated and executor-enforced, never scheduler-clocked.
 ## Comments
 
 2026-09-30T21:38:22Z — Done; ACs ticked after review fix cycle 1 (mixed-wave reservation-pairing bug fixed; COST_MISMATCH, budget-refusal-zero-dispatch, and attempt-visibility tests added; Settlement errors loud, never swallowed).
+
+Closed 2026-10-02 — work landed earlier; verified green: typed DAG and bounded scheduler covered by the green suite and the M1 CLI fixture proof.

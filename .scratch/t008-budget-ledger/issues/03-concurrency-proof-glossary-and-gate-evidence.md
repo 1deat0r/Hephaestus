@@ -7,7 +7,7 @@ the run.
 
 **Blocked by:** 01 (core budget ledger).
 
-**Status:** ready-for-agent
+**Status:** done
 
 - [ ] Multi-thread test: N threads × M `reserve` attempts through a
       `std::sync::Mutex<BudgetLedger>` against a small limit; final assert
@@ -22,3 +22,7 @@ the run.
       LOG; test headers cite R-055/R-056/AT-055/AT-056
 - [ ] Known limitations recorded (in-process-only guarantee, no durability
       by design) in the spec/report, not hidden
+
+## Comments
+
+Closed 2026-10-02 — work landed earlier; verified green: budget_ledger concurrency tests green (M0_M1 receipts).

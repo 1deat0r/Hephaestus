@@ -9,7 +9,7 @@ run 3's two red pushes is impossible to reach by accident.
 
 **Blocked by:** None (can start immediately).
 
-**Status:** ready-for-agent
+**Status:** done
 
 - [x] `ci-fast` includes `manifest-check`; the pre-commit hook is untouched
       (it already delegates to `ci-fast`)
@@ -43,3 +43,5 @@ run 3's two red pushes is impossible to reach by accident.
 ## Comments (pass 2)
 
 2026-09-30T09:28:54Z — AC4/AC7 wording corrected per pass-2 partials. All 8 ACs otherwise MET (reviewers re-verified seal hashes, ADR append-only, timings vs LOG). Pass 3 not spent: cycle-2 fixes are documentation-text only (no code/gate surface) — logged as a known limitation in the report rather than an unreviewed gap.
+
+Closed 2026-10-02 — work landed earlier; verified green: manifest-check and md-links run inside make ci; green at 602 tests.

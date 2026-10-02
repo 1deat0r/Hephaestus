@@ -7,7 +7,7 @@ section — the documented gate before M2.
 
 **Blocked by:** None (can start immediately).
 
-**Status:** ready-for-agent
+**Status:** done
 
 - [x] Fresh evidence captured this session and quoted with commands +
       exit codes: `make ci`, `cargo test --workspace`, `make doc-check`,
@@ -32,3 +32,5 @@ section — the documented gate before M2.
 ## Comments
 
 2026-10-01T02:30:13Z — Done; evidence-first (runs before prose); all checklist items verified; gates green incl. md-links 48 files; one historical transient documented in the assessment itself.
+
+Closed 2026-10-02 — work landed earlier; verified green: M0_M1_EXIT_ASSESSMENT.md carries PASS receipts for every M0/M1 clause.

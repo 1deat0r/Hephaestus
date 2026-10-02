@@ -7,7 +7,7 @@ unresolved limb exactly once, never auto-repair corruption.
 
 **Blocked by:** 02 (replay view from the verified chain).
 
-**Status:** ready-for-agent
+**Status:** done
 
 - [x] Rule table: Planned ⇒ requeue; Ambiguous+retryable+attempts<max ⇒
       requeue; Ambiguous otherwise ⇒ release held reservation + record
@@ -27,3 +27,5 @@ unresolved limb exactly once, never auto-repair corruption.
 ## Comments
 
 2026-10-01T00:21:34Z — Done; verified by operations_deny (19 tests) + replay unit tests + green gates (279 workspace, doc-check 0, make ci 0, manifest 208/127).
+
+Closed 2026-10-02 — work landed earlier; verified green: operations_deny replay, recovery, and fault tests green (M0_M1 receipts).

@@ -6,7 +6,7 @@ without slowing local `make ci` or CI wall-time.
 
 **Blocked by:** None (can start immediately).
 
-**Status:** ready-for-agent
+**Status:** done
 
 - [x] CI workflow gains a `docs` job running `RUSTDOCFLAGS="-D warnings" cargo doc --workspace --no-deps`, same triggers, parallel to `gates`
 - [x] Gate seal regenerated so the in-tree `gate-seal` check verifies after the workflow edit
@@ -14,3 +14,7 @@ without slowing local `make ci` or CI wall-time.
 - [x] Full `make ci` green after all changes
 - [x] Workflow YAML still parses (with an available parser, or structural check if none)
 - [x] No changes to Makefile, hooks, or `make ci` composition
+
+## Comments
+
+Closed 2026-10-02 — work landed earlier; verified green: the docs CI job runs green on every push this session (gh run: gates + docs).

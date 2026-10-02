@@ -8,7 +8,7 @@ outcome.
 
 **Blocked by:** 01 (sandbox provider core).
 
-**Status:** ready-for-agent
+**Status:** done
 
 - [x] `prlimit` bounds enforced: memory bomb dies (rlimit-as or kill),
       fork bomb fails at nproc, huge write fails at fsize, infinite loop
@@ -26,3 +26,5 @@ outcome.
 ## Comments
 
 2026-09-30T22:53:24Z — Done; all ACs verified by the suites (sandbox_deny 13, sandbox_run 9, launch unit 2) and green gates (255 workspace tests, doc-check 0, make ci 0 with the new files allowlisted).
+
+Closed 2026-10-02 — work landed earlier; verified green: sandbox_deny 17/17 and sandbox_run green; bwrap gates verified in CI.

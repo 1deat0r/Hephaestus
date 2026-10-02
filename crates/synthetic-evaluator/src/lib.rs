@@ -21,8 +21,10 @@ mod corpus;
 mod evaluate;
 mod rng;
 
+mod trace_fixture;
 pub use corpus::{CorpusEntry, Probe, load_corpus, observation_receipt};
 pub use evaluate::{AMBIGUITY_BAND, Assessment, PARAM_TOL, Verdict, evaluate};
+pub use trace_fixture::trace_fixture;
 
 /// Scenario classes the fixture corpus must cover (IMPLEMENTATION_PLAN T-003).
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]

@@ -127,3 +127,56 @@ pub fn preregister(
         manifest: manifest.clone(),
     })
 }
+
+/// Why an interval computation refused (typed-rejection convention).
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum IntervalError {
+    /// Fewer than two samples on a side — no variance, no interval.
+    TooFewSamples { side: String },
+}
+
+/// Qualified mean-difference interval over stage durations (T-061,
+/// fixture chain; registered as MethodSpec `mean-difference-z-interval`
+/// 1.0.0 in the tests that use it).
+///
+/// Formula (documented, hand-checked in `tests/method_registry.rs` —
+/// R-033: computed, never fabricated): seconds-saved =
+/// `mean(heavy) - mean(light)` ± `1.96 * sqrt(s_h^2/n_h + s_l^2/n_l)`
+/// with SAMPLE variances (n-1) over millisecond durations, converted to
+/// seconds. Assumptions bound with the registered spec: independent
+/// stage samples, normal approximation at z = 1.96, fixture-trace
+/// durations only.
+pub fn mean_difference_interval(
+    heavy_ms: &[u64],
+    light_ms: &[u64],
+) -> Result<(f64, f64), IntervalError> {
+    fn mean_of(v: &[u64], side: &str) -> Result<(f64, f64), IntervalError> {
+        if v.len() < 2 {
+            return Err(IntervalError::TooFewSamples {
+                side: side.to_string(),
+            });
+        }
+        let n = v.len() as f64;
+        Ok((v.iter().map(|x| *x as f64).sum::<f64>() / n, n))
+    }
+    fn sample_var(v: &[u64]) -> f64 {
+        let n = v.len() as f64;
+        let mean = v.iter().map(|x| *x as f64).sum::<f64>() / n;
+        v.iter()
+            .map(|x| {
+                let d = *x as f64 - mean;
+                d * d
+            })
+            .sum::<f64>()
+            / (n - 1.0)
+    }
+    let (mean_h, n_h) = mean_of(heavy_ms, "heavy")?;
+    let (mean_l, n_l) = mean_of(light_ms, "light")?;
+    let se = (sample_var(heavy_ms) / n_h + sample_var(light_ms) / n_l).sqrt();
+    let margin_ms = 1.96 * se;
+    let diff_ms = mean_h - mean_l;
+    Ok((
+        (diff_ms - margin_ms) / 1000.0,
+        (diff_ms + margin_ms) / 1000.0,
+    ))
+}

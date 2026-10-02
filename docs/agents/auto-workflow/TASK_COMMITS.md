@@ -44,3 +44,57 @@ Notes:
   file records the mapping instead.
 - Forward cadence: one commit and one push per completed small task,
   then CI gates the next task.
+
+## Pre-T-047 index (tasks T-001 to T-046)
+
+All of this work was committed and pushed before the current rules
+existed. Nothing was left in the working tree. Most tasks already have
+their own commits. Two commits hold several tasks.
+
+| Task | Commit(s) | Note |
+|---|---|---|
+| T-001 dev workspace | `25989ae` | one commit |
+| T-002 typed contract records | `744cd86`, `e773eb2` | freshness gate included |
+| T-003 fixture world + hidden evaluator | `8ef259e`, `d6437d0`, `219bdda`, `a83bd6a` | four small commits |
+| T-004 security model pieces | `f2e2916`, `60a50e8`, `940d98a`, `40b1409`, `b12b6a3`, `1785230`, `16ad81a` | seven small commits (digests, approvals, trust, grants, receipts, sealed) |
+| T-005 traceability validation | `43cebb3`, `9b27310`, `bdf870b` | three commits |
+| T-006 event ledger | `47e4760` | one commit |
+| T-007 capability grants + policy engine | `f54cfd2` (+ `4b85d73` CI fix) | one commit |
+| T-008 to T-013 | `a4469a2` | SIX tasks in one commit — pushed before the per-task rule. A split needs a history rewrite. The rules forbid rewriting pushed history, so this stays as it is |
+| T-014 pressure-point operators | `b8378dd` | one commit |
+| T-015 mechanism registry | `d148480` | one commit |
+| T-016 hypothesis compiler | `095dda4` | one commit |
+| T-017 search orchestration | `dcb7ff2` | one commit |
+| T-018 prior-art investigation | `e32343c` | one commit |
+| T-019 experiment plan compiler | `0c8f751` | one commit |
+| T-020 prototype worker | `0e03149` | one commit |
+| T-021 method registry | `78ea9b8` | one commit |
+| T-022 result interpreter | `b4f42cf` | one commit |
+| T-023 dossier export | `f535bb5` | one commit |
+| T-024 evidence lifecycle | `6799280` | one commit |
+| T-025 workspace core | `29db77d` | one commit |
+| T-026 eval suite | `9d345cc` | one commit |
+| T-027 pilot campaigns | `13546a7` | one commit |
+| T-028 release dossier packet | `12ce393` | one commit |
+| T-029 advisory provider | `95bac04` | one commit |
+| T-030 backend adapter | `f2a01a7` | one commit |
+| T-031 acceleration evaluation | `d110bac` | one commit |
+| T-032 domain packs | `08f2ddf` | one commit |
+| T-033 + T-036 + T-037 | `3b37019` | three tasks folded by the user-ordered split (same-file interleave); the fold is recorded in the rotated decisions file |
+| T-034 reproduction records | `0399b72` | one commit |
+| T-035 amendment gates | `c445773` | one commit |
+| T-038 revocation-race containment | `532ace3` | one commit |
+| T-039 quarantine propagation | `c01123d` | one commit |
+| T-040 yield accounting | `69ab041` | one commit |
+| T-041 guardrail classes | `861c893` | one commit |
+| T-042 import-closure oracle | `c72df72` | one commit |
+| T-043 trust propagation | `c7da33c` | one commit |
+| T-044 Pareto archive | `d34255e` | one commit |
+| T-045 bounded task contracts | `af2417c` | one commit |
+| T-046 domain verifier | `d26d10a` | one commit |
+
+Chores and audits (not tasks): baseline `0f49466`, the ADR-024 gate
+series, workflow audit records (`d63d553`, `ee7a081`, `d2a4d52`,
+`dd3d8c1`, `62dd3a3`, `1941b83`), and the run-14 CI fixes
+(`56d4267`, `9b52d52`, `f2af85b`, `1e88917`, `bee9cbf`). The full list
+is `git log 0f49466..1941b83`.

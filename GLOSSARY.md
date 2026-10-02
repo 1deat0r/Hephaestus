@@ -191,3 +191,95 @@ _Avoid_: mini-agent (an unrestricted delegation), job description (no bounds), p
 **Typed rejection**:
 The R-061/R-062/R-063 stable rejection record — a machine-comparable code (SEMANTIC_CONTRADICTION, PROVIDER_LEAK, UNKNOWN_SCHEMA_VERSION, MISSING_REFERENCE, UNSUPPORTED_CAPABILITY) plus detail - so a verifier failure is always attributable and never a bare error string.
 _Avoid_: error (unstructured), exception (implies unexpected), rejection reason (free text)
+
+**Review vote**:
+A reviewer's recorded stance on a subject, typed as a judgment — it never counts as empirical validation and is never consulted by the advancement gate (R-034, AT-034).
+_Avoid_: approval count (a tally decides nothing), evidence (votes are not evidence), confidence score (a fabricated number)
+
+**Objection**:
+A concrete reviewer concern retained on the review record with its disposition (open, or resolved with a note); an open blocking objection stops advancement (R-036, AT-036).
+_Avoid_: comment (no lifecycle), resolved flag (loses history), issue (unscoped)
+
+**Review authority**:
+One of the three separated scopes — generator, analyzer, promoter, with a candidate workspace inheriting generator-side limits — that requests an operation; only the analyzer scope registers an evaluator-edit proposal, and no scope can mutate an evaluator through the review service (R-035, AT-035).
+_Avoid_: reviewer (a person, not a scope), permission (that is the grant system), owner (implies transferable ownership)
+
+**External act**:
+One of the three actions that leave the research boundary — adoption, publication, or manufacturing — each of which needs its own authorization before it may happen (R-045, AT-045).
+_Avoid_: deployment (too narrow — publication is an external act too), release (that is the scoped release packet), go-live (vague)
+
+**Separate authorization**:
+A per-act, subject-digest-bound grant recorded from the standing authority; one act's authorization never covers another act or a different subject version (R-045, AT-045).
+_Avoid_: approval (the HMAC manifest tag), permission (the capability-grant system), consent (implies a model or user opinion, not a standing authority)
+
+**Provisional target**:
+A section-26 engineering budget recorded before measurement — it is never an achieved result and never appears in the achieved-benchmark display funnel (R-076, AT-076).
+_Avoid_: goal (too soft), SLA (implies a commitment), benchmark (reserved for measured runs)
+
+**Achieved benchmark**:
+A performance measurement pinned to a receipt, its value, and the recorded reference machine — the only kind of performance claim the achieved display funnel returns (R-076, AT-076).
+_Avoid_: result (unpinned), score (not a measurement), provisional target (the other variant)
+
+**Stronger comparator**:
+The best existing implementation a proposed change must be benchmarked against — for context caching, the exact-cache beside full reconstruction; running only the straw baseline without a recorded exclusion justification fails benchmark review (R-083, AT-083).
+_Avoid_: baseline (ambiguous about strength), control (experiment vocabulary), fair comparison (unverifiable)
+
+**Exclusion justification**:
+The recorded reason a stronger comparator was left out of a benchmark review — the only alternative to actually running it, and never an empty string (R-083, AT-083).
+_Avoid_: note (too weak), excuse (informal), waiver (implies authority to override)
+
+**Evidence label**:
+The dossier's required measured-or-unmeasured marker: `Measured` must carry its version-bound run receipt, `Unmeasured` carries the reason and source — no dossier exists without one (R-082, AT-082).
+_Avoid_: tag (informal), quality (vague), provenance (covers origin, not measurement status)
+
+**Synthetic fixture**:
+Packaged example data explicitly labeled `synthetic_fixture` at its source records — it exports only under an unmeasured evidence label and never renders as real experimental evidence (R-082, AT-082).
+_Avoid_: sample (could be real), mock (test jargon), dummy (no provenance meaning)
+
+**Domain-only discovery**:
+Evaluating the generator on opportunities and mechanisms it originated itself — a benchmark run without supplied, independently lineaged hypotheses is refused at admission (R-073, AT-073).
+_Avoid_: brainstorming (informal), seed refinement (the thing this guards against), open-ended search (unmeasurable)
+
+**Independently originated**:
+A hypothesis whose lineage names both the opportunity and the mechanism it came from — the only admissible benchmark input (R-073, AT-073).
+_Avoid_: novel (a judgment), seeded (the opposite), generated (says nothing about lineage)
+
+**Agent agreement**:
+Reviewers' unanimous (or not) approval offered at mission completion — recorded as opinion, structurally never consulted, and never a substitute for evidence (R-091, AT-091).
+_Avoid_: consensus (implies a decision), sign-off (a process artifact), validation (that requires evidence)
+
+**Completion evidence**:
+The version-bound evidence refs a mission must present to complete — the only input the completion gate reads, and the record a validated-candidate claim would need (R-091, AT-091).
+_Avoid_: approval (that is agreement), proof (overclaims), results (unscoped)
+
+**Classified record**:
+A record in a bundle export that carries all four of its own facts — status, evidence ids, scope, and reproduction state — the only kind a mixed-state bundle export accepts (R-092, AT-092).
+_Avoid_: tagged record (partial), enriched record (implies decoration), validated record (status is one of four facts)
+
+**Reproduction state**:
+Which reproduction outcome a record carries — Reproduced, EnvironmentMismatch, or Disagrees — always present as a typed field, never inferred from other facts (R-092, AT-092).
+_Avoid_: reproducibility (a property, not a state), verified (collapses the three outcomes)
+
+**Held-out workload manifest**:
+A confirmatory-partition repository's assignment and episodes — readable only by the protected evaluator, denied to workers by name (R-084, AT-084).
+_Avoid_: test set (implies leakage is fine), secret (it is data, not credentials), private data (scope, not classification)
+
+**Clustering unit**:
+The unit the analysis is declared and computed over (for pilots, the repository) — declared non-empty in the plan and carried verbatim into every variance estimate (R-084, AT-084).
+_Avoid_: granularity (vague), grouping (a verb), sample unit (the sampling unit is a different, finer concept)
+
+**Evidence class**:
+Which of the schema's kinds a statement stands as — observation, assumption, model judgment, derivation, source claim, or human judgment; an observation additionally requires a grounded source span, and repetition never changes the class (R-007, AT-007).
+_Avoid_: evidence type (the field name, not the concept), confidence (a number), reliability (a property)
+
+**Grounded span**:
+A source span backing a statement — the only thing that can make an observation an observation; absence of it keeps a repeated model statement a model judgment forever (R-007, AT-007).
+_Avoid_: citation (a reference, not coordinates), source (the captured bytes themselves), proof (overclaims)
+
+**Retrieved directive**:
+Instruction-like content recovered from a retrieved document — untrusted by origin, its own type with no path into a policy request, and evaluation always inert (R-058, AT-058).
+_Avoid_: prompt (model framing), command (implies execution), directive alone (drops the untrusted origin)
+
+**Inert instruction**:
+A retrieved instruction evaluated to exactly one recorded denial with no side effects — the required outcome when a paper tells the harness to disclose secrets or bypass policy (R-058, AT-058).
+_Avoid_: ignored (it is recorded, not dropped), sandboxed (that is the code half), blocked (no mechanism claimed)

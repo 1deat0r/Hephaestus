@@ -329,3 +329,9 @@ docs/agents/auto-workflow/report-2026-10-01T06:50:00Z.md
 docs/agents/auto-workflow/state-archive-20261001T063000Z-run12.md
 docs/agents/auto-workflow/state-archive-20261001T064500Z-run13.md
 docs/agents/auto-workflow/state-archive-20261001T065000Z-run14.md
+crates/hephaestus/src/review/mod.rs
+crates/hephaestus/src/review/record.rs
+crates/hephaestus/tests/review_service.rs
+.scratch/t047-review-authority/grill.md
+.scratch/t047-review-authority/spec.md
+.scratch/t047-review-authority/issues/01-review-authority-service.md

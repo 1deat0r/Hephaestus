@@ -18,22 +18,47 @@ AT-070 AT-071 AT-072 AT-074 AT-075 AT-077 AT-078 AT-079
 **Candidate goals:** (none yet)
 
 
-**Micro-tasks:** (each ends in one commit and one push)
+**Small tasks:** (max 8)
 
-1. Micro — audit the first eight listed IDs
-   - nano: extract the listed negative cases from OBLIGATIONS.md
-   - nano: locate one mirror test per ID (grep by concept, read both sides)
-   - nano: apply cite edits only at verified mirrors; never force a match
-   - nano: cargo fmt --check + ticket-status, then commit and push
-2. Micro — audit the remaining eight listed IDs
-   - nano: extract the listed negative cases from OBLIGATIONS.md
-   - nano: locate one mirror test per ID (grep by concept, read both sides)
-   - nano: apply cite edits only at verified mirrors; never force a match
-   - nano: cargo fmt --check + ticket-status, then commit and push
-3. Micro — close the batch
-   - nano: run the batch Verify command
-   - nano: record goal candidates under Candidate goals (never silent)
-   - nano: flip Status, tick every box, commit and push
+1. [ ] **S1** — cite the first half of this batch
+   **Status:** ready-for-agent
+   **Verify:** python3 tools/report_at_citations.py --batch .scratch/t066-at-citation-parity/issues/05-b3-advisory-backend-eval-at-batch.md --min-disposed 8
+   **Micro-tasks:** (max 6)
+   1. [ ] **M1** — cite group 1 of half 1
+      **Verify:** python3 tools/report_at_citations.py --batch .scratch/t066-at-citation-parity/issues/05-b3-advisory-backend-eval-at-batch.md --min-disposed 4
+      - [ ] extract the negative cases for this group from OBLIGATIONS.md
+      - [ ] locate one mirror test per ID; read both sides
+      - [ ] apply cite edits only at verified mirrors
+      - [ ] run this micro's Verify until green
+   2. [ ] **M2** — cite group 2 of half 1
+      **Verify:** python3 tools/report_at_citations.py --batch .scratch/t066-at-citation-parity/issues/05-b3-advisory-backend-eval-at-batch.md --min-disposed 8
+      - [ ] extract the negative cases for this group from OBLIGATIONS.md
+      - [ ] locate one mirror test per ID; read both sides
+      - [ ] apply cite edits only at verified mirrors
+      - [ ] run this micro's Verify until green
+
+2. [ ] **S2** — cite the second half of this batch and close it
+   **Status:** ready-for-agent
+   **Verify:** python3 tools/report_at_citations.py --batch .scratch/t066-at-citation-parity/issues/05-b3-advisory-backend-eval-at-batch.md --min-disposed 16
+   **Micro-tasks:** (max 6)
+   1. [ ] **M1** — cite group 1 of half 2
+      **Verify:** python3 tools/report_at_citations.py --batch .scratch/t066-at-citation-parity/issues/05-b3-advisory-backend-eval-at-batch.md --min-disposed 12
+      - [ ] extract the negative cases for this group from OBLIGATIONS.md
+      - [ ] locate one mirror test per ID; read both sides
+      - [ ] apply cite edits only at verified mirrors
+      - [ ] run this micro's Verify until green
+   2. [ ] **M2** — cite group 2 of half 2
+      **Verify:** python3 tools/report_at_citations.py --batch .scratch/t066-at-citation-parity/issues/05-b3-advisory-backend-eval-at-batch.md --min-disposed 16
+      - [ ] extract the negative cases for this group from OBLIGATIONS.md
+      - [ ] locate one mirror test per ID; read both sides
+      - [ ] apply cite edits only at verified mirrors
+      - [ ] run this micro's Verify until green
+   3. [ ] **M3** — close the batch
+      **Verify:** python3 tools/report_at_citations.py --batch .scratch/t066-at-citation-parity/issues/05-b3-advisory-backend-eval-at-batch.md
+      - [ ] run the batch Verify command
+      - [ ] record any goal candidates under Candidate goals
+      - [ ] flip Status to done and tick the acceptance boxes
+      - [ ] run cargo fmt --check and make ticket-status
 
 
 ## Comments

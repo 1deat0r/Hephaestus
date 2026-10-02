@@ -8,7 +8,7 @@ phase: 7
 fixed_point: 1941b83ae94532f197a7d88c020390dfa38e2875
 spec: .scratch/t066-at-citation-parity/spec.md
 baseline: 1941b83 [runs 15-35 staged uncommitted; workflow artifacts modified]
-tickets: 01=done, 02=done, 03=ready, 04=ready, 05=ready, 06=ready
+tasks: 01=done, 02=done, 03=done, 04=ready, 05=ready, 06=ready
 edges: 01->02, 02->03
 attempts: 01=1
 phase_entries: 8=1, 2=1, 3=1, 4=1, 5=1, 6=1, 7=1
@@ -18,6 +18,7 @@ skills_pin: 1.7.0
 updated: 2026-10-02T04:05:00Z
 
 ## LOG
+2026-10-02T10:45:00Z EVENT FOUR-LEVEL: skill rules 18/19 in force — TASK to small to micro to nano; 7 open tickets rebuilt; per-level caps 8/6/4 gated; STATE field renamed tasks; 03 reconciled done — docs/RUNTIME_DECISIONS.md
 2026-10-02T03:35:10Z EVENT ROTATION: t065 outcome success — report-2026-10-02T03:35:10Z.md written, decisions rotated (suffix 2026-10-02T03:35:10Z); work left STAGED, no commit (rule 5)
 2026-10-02T03:35:10Z EXEC 218 8-rotate
 2026-10-02T03:35:10Z EVENT DERIVE: all milestone exits assessed; highest-value remaining in-repo work = AT-scope coverage triage -> t066-at-citation-parity (77 AT gaps, honest triage: cite / reason / surface-as-goals)

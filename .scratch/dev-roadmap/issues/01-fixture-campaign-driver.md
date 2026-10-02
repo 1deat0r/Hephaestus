@@ -1,6 +1,6 @@
 # Fixture campaign driver — 20 missions, variance from actual runs
 
-**Size:** micro task(s)
+**Size:** task
 
 **Blocked by:** None (can start immediately)
 
@@ -10,22 +10,39 @@
 
 **Covers:** 1
 
-**Micro-tasks:** (each ends in one commit and one push)
+**Small tasks:** (max 8)
 
-1. Micro — seam + red test for run_fixture_batch
-   - nano: add the campaign module signature and the failing empty-batch test
-   - nano: run cargo test --test fixture_campaign until red is confirmed
-   - nano: implement the seam, run the test to green
-   - nano: cargo fmt + ticket-status, commit and push
-2. Micro — 20-mission loop with R-103 receipts
-   - nano: implement the loop over fixture variants through missionrun
-   - nano: add denominator and budget receipts to the report
-   - nano: run the test to green, cargo fmt, ticket-status
-   - nano: commit and push, poll CI
-3. Micro — close: allowlist, seal, status
-   - nano: add runtime_allowlist entries and make seal
-   - nano: run make ci + make doc-check
-   - nano: flip Status, tick boxes, commit and push
+1. [ ] **S1** — seam + red-to-green for run_fixture_batch
+   **Status:** ready-for-agent
+   **Verify:** cargo test --test fixture_campaign
+   **Micro-tasks:** (max 6)
+   1. [ ] **M1** — red-to-green cycle at the campaign seam
+      **Verify:** cargo test --test fixture_campaign
+      - [ ] add the campaign module signature and the failing test
+      - [ ] run cargo test --test fixture_campaign to confirm red
+      - [ ] implement the seam
+      - [ ] run the test to green
+
+2. [ ] **S2** — 20-mission loop with R-103 receipts
+   **Status:** ready-for-agent
+   **Verify:** cargo test --test fixture_campaign
+   **Micro-tasks:** (max 6)
+   1. [ ] **M1** — red-to-green cycle for the loop and receipts
+      **Verify:** cargo test --test fixture_campaign
+      - [ ] implement the loop over fixture variants through missionrun
+      - [ ] add denominator and budget receipts to the report
+      - [ ] run the test to green, then cargo fmt --check
+      - [ ] run make ticket-status
+
+3. [ ] **S3** — close: allowlist, seal, status
+   **Status:** ready-for-agent
+   **Verify:** make ci && make doc-check
+   **Micro-tasks:** (max 6)
+   1. [ ] **M1** — run the closing gates
+      **Verify:** make ci && make doc-check
+      - [ ] add runtime_allowlist entries as needed
+      - [ ] run make seal, then make ci and make doc-check
+      - [ ] flip Status to done and tick every box
 
 
 ## Comments

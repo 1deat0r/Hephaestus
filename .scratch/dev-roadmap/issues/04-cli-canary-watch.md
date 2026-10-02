@@ -1,6 +1,6 @@
 # CLI canary-watch command (bounded monitor loop)
 
-**Size:** nano task(s)
+**Size:** task
 
 **Blocked by:** None (can start immediately)
 
@@ -10,16 +10,27 @@
 
 **Covers:** 4
 
-**Micro-tasks:** (each ends in one commit and one push)
+**Small tasks:** (max 8)
 
-1. Micro — fixture canary-watch command
-   - nano: add the subcommand wiring in main.rs with usage and help lines
-   - nano: run monitor_deployment over a fixture stream, print the receipt
-   - nano: add the twin-run byte-identical cli test, run it green
-   - nano: cargo fmt + ticket-status, commit and push
-2. Micro — close: status flip
-   - nano: make ci + make doc-check
-   - nano: flip Status, tick boxes, commit and push
+1. [ ] **S1** — fixture canary-watch command
+   **Status:** ready-for-agent
+   **Verify:** cargo test --test cli canary_watch
+   **Micro-tasks:** (max 6)
+   1. [ ] **M1** — red-to-green cycle for the subcommand
+      **Verify:** cargo test --test cli canary_watch
+      - [ ] add subcommand wiring in main.rs with usage and help
+      - [ ] run monitor_deployment over a fixture stream
+      - [ ] add the twin-run byte-identical cli test and run it green
+      - [ ] run cargo fmt --check and make ticket-status
+
+2. [ ] **S2** — close: status flip
+   **Status:** ready-for-agent
+   **Verify:** make ci && make doc-check
+   **Micro-tasks:** (max 6)
+   1. [ ] **M1** — run the closing gates and flip
+      **Verify:** make ci && make doc-check
+      - [ ] run make ci and make doc-check
+      - [ ] flip Status to done and tick every box
 
 
 ## Comments

@@ -1,6 +1,6 @@
 # Real-corpus mission — repo docs as authorized corpus
 
-**Size:** micro task(s)
+**Size:** task
 
 **Blocked by:** None (can start immediately)
 
@@ -10,20 +10,39 @@
 
 **Covers:** 2
 
-**Micro-tasks:** (each ends in one commit and one push)
+**Small tasks:** (max 8)
 
-1. Micro — corpus ingest test over docs/ files
-   - nano: pick a fixed list of repo docs and write the ingest test
-   - nano: run cargo test --test e2e_real_corpus to red, then green
-   - nano: cargo fmt + ticket-status, commit and push
-2. Micro — grounded opportunities from real bytes
-   - nano: build span-cited TraceRecords from the ingested docs
-   - nano: assert at least one grounded opportunity plus twin-run identity
-   - nano: run the test to green, then commit and push
-3. Micro — close: allowlist, seal, status
-   - nano: runtime_allowlist entries + make seal
-   - nano: make ci + make doc-check
-   - nano: flip Status, tick boxes, commit and push
+1. [ ] **S1** — corpus ingest test over docs/ files
+   **Status:** ready-for-agent
+   **Verify:** cargo test --test e2e_real_corpus
+   **Micro-tasks:** (max 6)
+   1. [ ] **M1** — red-to-green cycle for ingest
+      **Verify:** cargo test --test e2e_real_corpus
+      - [ ] write the ingest test over a fixed list of repo docs
+      - [ ] run cargo test --test e2e_real_corpus to confirm red
+      - [ ] implement the ingest path
+      - [ ] run the test to green
+
+2. [ ] **S2** — grounded opportunities from real bytes
+   **Status:** ready-for-agent
+   **Verify:** cargo test --test e2e_real_corpus
+   **Micro-tasks:** (max 6)
+   1. [ ] **M1** — red-to-green cycle for grounded records
+      **Verify:** cargo test --test e2e_real_corpus
+      - [ ] build span-cited TraceRecords from the ingested docs
+      - [ ] assert one grounded opportunity plus twin-run identity
+      - [ ] run the test to green, then cargo fmt --check
+      - [ ] run make ticket-status
+
+3. [ ] **S3** — close: allowlist, seal, status
+   **Status:** ready-for-agent
+   **Verify:** make ci && make doc-check
+   **Micro-tasks:** (max 6)
+   1. [ ] **M1** — run the closing gates
+      **Verify:** make ci && make doc-check
+      - [ ] add runtime_allowlist entries as needed
+      - [ ] run make seal, then make ci and make doc-check
+      - [ ] flip Status to done and tick every box
 
 
 ## Comments

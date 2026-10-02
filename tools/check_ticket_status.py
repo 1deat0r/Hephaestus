@@ -6,13 +6,17 @@ direction. This tool makes them detectable and therefore stoppable:
 
   --format (fast; part of `make ci`):
     every issue file carries a valid Status;
-    every NOT-done ticket declares a `Verify:` command, a
-    `Covers:` list of spec acceptance-criteria numbers, and NESTED
-    decomposition under `**Micro-tasks:**` (micro tasks, each with
-    nano steps as indented bullets);
-    size caps hold for OPEN tickets (small tasks ONLY): at most 16
-    scope IDs (AT-NNN/R-NNN) and at most 8 unchecked boxes — landed
-    history is grandfathered;
+    every NOT-done ticket declares a `Verify:` command and a
+    `Covers:` list of spec acceptance-criteria numbers;
+    four-level nesting holds for OPEN tickets (skill rule 18):
+      TASK -> small tasks (cap 8) -> micro tasks (cap 6 per small)
+      -> nano bullets (cap 4 per micro);
+    every small task carries its own `**Status:**`, its own
+    `**Verify:**`, and either `**Micro-tasks:**` or the marker
+    `atomic`; every micro task carries a `**Verify:**` and either
+    nano bullets or `atomic`;
+    size caps hold for OPEN tickets: at most 16 scope IDs
+    (AT-NNN/R-NNN) per ticket — landed history is grandfathered;
     a feature with any open ticket covers EVERY spec AC through the
     union of its tickets' Covers lists (as many tickets as needed);
     Covers numbers must exist in that feature's spec;
@@ -43,7 +47,13 @@ VERIFY_RE = re.compile(r"^\*{0,2}Verify:\*{0,2}\s*(.+)$", re.MULTILINE)
 COVERS_RE = re.compile(r"^\*{0,2}Covers:\*{0,2}\s*(.+)$", re.MULTILINE)
 SCOPE_ID_RE = re.compile(r"AT-\d{3}|(?<![A-Z])R-\d{3}")
 MAX_SCOPE_IDS = 16
-MAX_BOXES = 8
+SMALL_RE = re.compile(r"^\d+\. \[ \] \*\*S\d+\*\*", re.M)
+MICRO_RE = re.compile(r"^\s{3,}\d+\. \[ \] \*\*M\d+\*\*", re.M)
+NANO_RE = re.compile(r"^ {3,}- \[ \] ", re.M)
+ATOM_RE = re.compile(r"^\s+atomic\s*$", re.M)
+MAX_SMALL = 8
+MAX_MICRO = 6
+MAX_NANO = 4
 
 
 def read(path: Path) -> str:
@@ -78,6 +88,85 @@ def verify_of(text: str):
     return m.group(1).strip() if m else None
 
 
+def check_nesting(path: Path, text: str) -> int:
+    """Validate the four-level hierarchy of one OPEN ticket (rule 18)."""
+    rel = path.relative_to(ROOT)
+    if "**Small tasks:**" not in text:
+        print(
+            f"ticket-status: FAIL {rel}: open ticket without a "
+            "`**Small tasks:** section — decompose the TASK (skill rule 18)"
+        )
+        return 1
+    problems = 0
+    smalls = SMALL_RE.findall(text)
+    if not smalls:
+        print(f"ticket-status: FAIL {rel}: `**Small tasks:**` but no `S<n>` items")
+        return 1
+    if len(smalls) > MAX_SMALL:
+        print(
+            f"ticket-status: FAIL {rel}: {len(smalls)} small tasks "
+            f"(max {MAX_SMALL}) — split the TASK"
+        )
+        problems += 1
+    if not MICRO_RE.search(text) and not ATOM_RE.search(text):
+        print(
+            f"ticket-status: FAIL {rel}: no micro tasks and no `atomic` "
+            "marker — every small task nests micro tasks or `atomic`"
+        )
+        return problems + 1
+    if MICRO_RE.search(text) and not NANO_RE.search(text) and not ATOM_RE.search(text):
+        print(
+            f"ticket-status: FAIL {rel}: micro tasks must nest nano "
+            "bullets (`- [ ]`) or the marker `atomic`"
+        )
+        problems += 1
+    # per-parent caps
+    for i, block in enumerate(
+        re.split(r"(?=^\d+\. \[ \] \*\*S\d+\*\*)", text, flags=re.M)[1:], 1
+    ):
+        micros = MICRO_RE.findall(block)
+        if len(micros) > MAX_MICRO:
+            print(
+                f"ticket-status: FAIL {rel}: small S{i} has {len(micros)} "
+                f"micro tasks (max {MAX_MICRO}) — split the small task"
+            )
+            problems += 1
+        for j, mblock in enumerate(
+            re.split(r"(?=^\s{3,}\d+\. \[ \] \*\*M\d+\*\*)", block, flags=re.M)[1:], 1
+        ):
+            nanos = NANO_RE.findall(mblock)
+            if len(nanos) > MAX_NANO:
+                print(
+                    f"ticket-status: FAIL {rel}: small S{i} micro M{j} has "
+                    f"{len(nanos)} nano steps (max {MAX_NANO}) — split the micro"
+                )
+                problems += 1
+    # per-level Verify + Status lines (indented, so TASK lines stay first)
+    for i, block in enumerate(
+        re.split(r"(?=^\d+\. \[ \] \*\*S\d+\*\*)", text, flags=re.M)[1:], 1
+    ):
+        m = re.search(r"^ {3}\*\*Status:\*\*\s*([A-Za-z-]+)", block, re.M)
+        if m is None:
+            print(f"ticket-status: FAIL {rel}: small S{i} without its own `**Status:**`")
+            problems += 1
+        elif m.group(1) not in VALID:
+            print(f"ticket-status: FAIL {rel}: small S{i} invalid status {m.group(1)!r}")
+            problems += 1
+        if not re.search(r"^ {3}\*\*Verify:\*\*\s*\S", block, re.M):
+            print(f"ticket-status: FAIL {rel}: small S{i} without its own `**Verify:**`")
+            problems += 1
+        for j, mblock in enumerate(
+            re.split(r"(?=^\s{3,}\d+\. \[ \] \*\*M\d+\*\*)", block, flags=re.M)[1:], 1
+        ):
+            if not re.search(r"^ {6}\*\*Verify:\*\*\s*\S", mblock, re.M):
+                print(
+                    f"ticket-status: FAIL {rel}: small S{i} micro M{j} "
+                    "without its own `**Verify:**`"
+                )
+                problems += 1
+    return problems
+
+
 def fmt_mode() -> int:
     problems = 0
     for path in ISSUES:
@@ -103,30 +192,10 @@ def fmt_mode() -> int:
                     f"(max {MAX_SCOPE_IDS}) — split into smaller tickets"
                 )
                 problems += 1
-            n_boxes = text.count("- [ ]")
-            if n_boxes > MAX_BOXES:
-                print(
-                    f"ticket-status: FAIL {path}: {n_boxes} unchecked boxes "
-                    f"(max {MAX_BOXES}) — split into smaller tickets"
-                )
-                problems += 1
+            problems += check_nesting(path, text)
         slug = path.relative_to(ROOT / ".scratch").parts[0]
         acs = spec_acs(slug)
         covers = covers_of(text)
-        if status != "done" and "**Micro-tasks:**" not in text:
-            print(
-                f"ticket-status: FAIL {path}: open ticket without a "
-                "`**Micro-tasks:** section — decompose into micro tasks"
-            )
-            problems += 1
-        elif status != "done" and "**Micro-tasks:**" in text and not re.search(
-            r"^\s+- ", text, re.M
-        ):
-            print(
-                f"ticket-status: FAIL {path}: micro tasks must nest nano "
-                "steps (indented `- ` bullets)"
-            )
-            problems += 1
         if status != "done" and covers is None:
             print(
                 f"ticket-status: FAIL {path}: open ticket without a "
@@ -168,8 +237,9 @@ def fmt_mode() -> int:
         return 1
     print(
         f"ticket-status: ok ({len(ISSUES)} issue files; statuses valid; "
-        "open tickets declare Verify+Covers+Micro-tasks with nano steps; "
-        "size caps hold; open features cover every spec AC)"
+        "open tickets declare Verify+Covers; four-level nesting holds "
+        "(small<=8, micro<=6, nano<=4, per-level Status/Verify, atomic "
+        "markers); scope-ID caps hold; open features cover every spec AC)"
     )
     return 0
 

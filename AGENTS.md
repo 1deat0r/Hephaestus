@@ -24,31 +24,39 @@ facts.
 
 ## Git cadence (standing user rule, 2026-10-02)
 
-Work task by task. Commit every completed small task locally, then
-push it to GitHub, before the next task starts. Local hooks and CI are
-the gates. A red gate blocks the next task until the fix lands.
-Never force-push. Never rewrite pushed history.
+Work task by task. The commit unit is the SMALL TASK: after its
+`Verify:` passes, commit it locally with the message
+`<task-id>.<n>: <imperative summary>` (subject 72 chars or fewer),
+flip its `**Status:**` in that same commit, and push to GitHub before
+the next small task starts. Local hooks and CI are the gates. A red
+gate blocks the next small task until the fix lands. Never force-push.
+Never rewrite pushed history.
 
 ## Ticket status (standing user rule, 2026-10-02)
 
-Flip the ticket Status in the same commit that lands its work. Every
-open ticket declares a `Verify:` command and a `Covers:` list of spec
-acceptance-criterion numbers. Keep open tickets small: at most 16
-scope IDs and at most 8 unchecked boxes per ticket. A feature with any
-open ticket must cover every spec AC through its tickets' Covers
-lists. `make ticket-status` runs in `make ci` and checks all of this.
-The scheduled sweep (`ticket-status-sweep`) fails any open ticket
-whose Verify is green. A red gate blocks the next task.
+Flip the ticket `**Status:**` in the same commit that lands its
+work. Every open ticket declares a `Verify:` command and a `Covers:`
+list of spec acceptance-criterion numbers. Keep open tickets small:
+at most 16 scope-ID occurrences per ticket. A feature with any open
+ticket must cover every spec AC through its tickets' Covers lists.
+Per-level child caps live in Task decomposition below. `make
+ticket-status` runs in `make ci` and checks all of this. The
+scheduled sweep (`ticket-status-sweep`) fails any open ticket whose
+Verify is green. A red gate blocks the next task.
 
 ## Task decomposition (standing user rule, 2026-10-02)
 
-Every small task nests micro tasks. Every micro task nests nano
-tasks.
-- Small task: one ticket, one unit of value, one push. The size caps
-  apply (16 scope IDs, 8 unchecked boxes).
-- Micro task: one seam or one red-to-green cycle. It ends in one
-  commit and one push.
-- Nano task: one file, one command, or one measurement. Minutes of
-  work; it never ships alone.
-Open tickets declare the nesting under `**Micro-tasks:**`, with nano
-steps as indented bullets. `make ticket-status` checks the structure.
+One hierarchy, four levels. A ticket file is a TASK.
+- TASK: `**Status:**`, `**Verify:**`, `**Covers:**` at file top.
+- Small task: one commit unit. Child of a TASK. Cap: 8 per TASK.
+  Own `**Status:**` and `**Verify:**` line and own checkbox.
+- Micro task: one red-to-green cycle. Child of a small task.
+  Cap: 6 per small task. Own `**Verify:**` line and own checkbox.
+- Nano task: one file, one command, or one measurement. Child of a
+  micro task. Cap: 4 per micro task. Indented `- [ ]` bullet.
+Open tickets carry the nesting under `**Small tasks:**` and
+`**Micro-tasks:**`. A unit with no children ends its branch with the
+marker `atomic` — never invent padding children. Roll-up: all
+children checked (or `atomic`) plus its Verify green makes the parent
+done when its commit lands. `make ticket-status` checks caps and
+structure.

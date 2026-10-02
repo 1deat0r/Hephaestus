@@ -75,10 +75,14 @@ def obligations_text() -> dict:
     return out
 
 
-def batch_mode(path: str) -> int:
+def batch_mode(path: str, min_disposed=None) -> int:
     """Check one triage-batch ticket: every listed AT must be cited in
     code scope OR listed in the ticket's own `Candidate goals:` section
-    (dispositioned, never silently skipped)."""
+    (dispositioned, never silently skipped).
+
+    `min_disposed` (optional int) turns the check into a count gate:
+    exit 0 once at least that many of the batch's ATs are disposed.
+    Small tasks use it for subset Verify lines without naming IDs."""
     text = Path(path).read_text(encoding="utf-8", errors="replace")
     ats_block = re.search(r"\*\*ATs:\*\*(.*?)(\n\n)", text, re.S)
     ats = re.findall(r"AT-\d{3}", ats_block.group(1)) if ats_block else []
@@ -95,6 +99,12 @@ def batch_mode(path: str) -> int:
     if not ats:
         print("  FAIL: no **ATs:** list found")
         return 1
+    if min_disposed is not None:
+        disposed = len(ats) - len(untriaged)
+        if disposed < min_disposed:
+            print(f"  FAIL: {disposed} disposed, need {min_disposed}")
+            return 1
+        return 0
     return 1 if untriaged else 0
 
 
@@ -132,10 +142,17 @@ def main() -> int:
 
 if __name__ == "__main__":
     argv = sys.argv[1:]
+    min_disposed = None
+    if "--min-disposed" in argv:
+        j = argv.index("--min-disposed")
+        if j + 1 >= len(argv):
+            print("usage: --min-disposed <n>")
+            sys.exit(2)
+        min_disposed = int(argv[j + 1])
     if "--batch" in argv:
         idx = argv.index("--batch")
         if idx + 1 >= len(argv):
             print("usage: --batch <ticket-file>")
             sys.exit(2)
-        sys.exit(batch_mode(argv[idx + 1]))
+        sys.exit(batch_mode(argv[idx + 1], min_disposed))
     sys.exit(main())

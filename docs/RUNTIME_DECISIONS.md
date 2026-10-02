@@ -220,3 +220,14 @@ and every micro task must contain nano steps as indented bullets —
 small tasks are recommended and built as nested small/micro/nano
 trees from now on. Missing-section and no-nano cases were demoed
 live (fail), nested content passes.
+Four-level decomposition (user correction, 2026-10-02): the earlier
+two-level Micro-tasks format is superseded by skill rule 18 —
+TASK -> small -> micro -> nano, with per-level caps (8 small / 6
+micro / 4 nano), a checkbox and Verify line per level, and the
+`atomic` marker for childless units. The format gate drops the old
+"8 unchecked boxes" cap and parses the four-level structure of every
+open ticket (live fail demos: missing `**Small tasks:**`, micro
+without nano bullets). Audit small tasks use count-based Verify
+lines through the new `report_at_citations.py --min-disposed N` flag,
+so the 16 scope-ID cap stays honest. The commit unit is the small
+task (skill rules 5, 19).

@@ -1,6 +1,6 @@
 # Docs domain pack qualified (R-006)
 
-**Size:** micro task(s)
+**Size:** task
 
 **Blocked by:** None (can start immediately)
 
@@ -10,17 +10,28 @@
 
 **Covers:** 3
 
-**Micro-tasks:** (each ends in one commit and one push)
+**Small tasks:** (max 8)
 
-1. Micro — docs DomainPack fixture + red qualify test
-   - nano: build the pack fixture (units, adjudicated oracle, execution class)
-   - nano: write the failing qualify test, run it red
-   - nano: make qualify pass, run the test green
-   - nano: cargo fmt + ticket-status, commit and push
-2. Micro — close: gates + status
-   - nano: runtime_allowlist + make seal
-   - nano: make ci + make doc-check
-   - nano: flip Status, tick boxes, commit and push
+1. [ ] **S1** — docs DomainPack fixture + qualify green
+   **Status:** ready-for-agent
+   **Verify:** cargo test --test docs_domain_pack
+   **Micro-tasks:** (max 6)
+   1. [ ] **M1** — red-to-green cycle for qualify
+      **Verify:** cargo test --test docs_domain_pack
+      - [ ] build the pack fixture with an adjudicated oracle
+      - [ ] write the failing qualify test and run it red
+      - [ ] make qualify pass
+      - [ ] run the test to green
+
+2. [ ] **S2** — close: gates + status
+   **Status:** ready-for-agent
+   **Verify:** make ci && make doc-check
+   **Micro-tasks:** (max 6)
+   1. [ ] **M1** — run the closing gates
+      **Verify:** make ci && make doc-check
+      - [ ] add runtime_allowlist entries as needed
+      - [ ] run make seal, then make ci and make doc-check
+      - [ ] flip Status to done and tick every box
 
 
 ## Comments

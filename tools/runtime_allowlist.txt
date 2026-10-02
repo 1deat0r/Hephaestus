@@ -362,3 +362,7 @@ crates/hephaestus/tests/mission_completion.rs
 .scratch/t056-citation-parity/grill.md
 .scratch/t056-citation-parity/spec.md
 .scratch/t056-citation-parity/issues/01-citation-retrofit.md
+crates/hephaestus/tests/evidence_class.rs
+.scratch/t057-evidence-kind-distinctness/grill.md
+.scratch/t057-evidence-kind-distinctness/spec.md
+.scratch/t057-evidence-kind-distinctness/issues/01-evidence-class-gate.md

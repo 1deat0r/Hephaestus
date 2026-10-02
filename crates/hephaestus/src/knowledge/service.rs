@@ -339,3 +339,21 @@ impl SourceAdapter for LocalFileAdapter {
         ))
     }
 }
+
+/// Evidence-class attestation (R-007/AT-007, MASTER_SPEC §3,
+/// Verification service): an Observation must be grounded in a source
+/// span — repetition of a model statement is seen and recorded in the
+/// rejection, never a promotion path. Other declared kinds stand
+/// ungrounded: they are what they are, however often they re-appear.
+pub fn attest_evidence_class(
+    declared: crate::contracts::generated::EvidenceEvidenceType,
+    ingestion: &super::record::StatementIngestion,
+) -> Result<(), super::record::ClassifyError> {
+    use crate::contracts::generated::EvidenceEvidenceType as K;
+    if declared == K::Observation && ingestion.grounded_span.is_none() {
+        return Err(super::record::ClassifyError::UngroundedObservation {
+            ingestions: ingestion.ingestions,
+        });
+    }
+    Ok(())
+}

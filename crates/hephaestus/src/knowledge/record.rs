@@ -181,3 +181,23 @@ impl Corpus {
         self.sources.iter().find(|s| s.id == id)
     }
 }
+
+/// One statement as the verification service sees it (R-007): its
+/// text, how often it has been ingested (repetition is DATA, never a
+/// promotion path), and whether a grounded source span backs it.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct StatementIngestion {
+    pub text: String,
+    pub ingestions: usize,
+    pub grounded_span: Option<Span>,
+}
+
+/// Why evidence-class attestation refused (typed-rejection
+/// convention, R-007/AT-007).
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum ClassifyError {
+    /// Declared Observation without a grounded span — the seen
+    /// repetition count is recorded in the rejection precisely because
+    /// it must never be the basis of promotion.
+    UngroundedObservation { ingestions: usize },
+}

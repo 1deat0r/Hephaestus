@@ -15,10 +15,10 @@
 pub mod record;
 pub mod service;
 pub use record::{
-    CapturedSource, Corpus, CorpusCoverage, Edge, EdgeError, EdgeType, ParserId, QueryCoverage,
-    SearchHit, Span, SpanError,
+    CapturedSource, ClassifyError, Corpus, CorpusCoverage, Edge, EdgeError, EdgeType, ParserId,
+    QueryCoverage, SearchHit, Span, SpanError, StatementIngestion,
 };
 pub use service::{
-    AdapterError, LocalFileAdapter, SourceAdapter, corpus_coverage, correct, count_origins,
-    ingest_bytes, link_edge, quarantine, search, sha256_hex, tokenize, verify_span,
+    AdapterError, LocalFileAdapter, SourceAdapter, attest_evidence_class, corpus_coverage, correct,
+    count_origins, ingest_bytes, link_edge, quarantine, search, sha256_hex, tokenize, verify_span,
 };

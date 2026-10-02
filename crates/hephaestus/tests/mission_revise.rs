@@ -1,4 +1,6 @@
-//! T-012 ticket 03: revise/versioning, impact report, budget-envelope binding (R-012).
+//! T-012 ticket 03: revise/versioning, impact report, budget-envelope binding
+//! (R-012/AT-012: a quality-margin change lands as a recorded constraint
+//! with a new version — never a silent edit).
 //!
 //! Red-first seam tests against `hephaestus::mission::{revise, ...}`.
 

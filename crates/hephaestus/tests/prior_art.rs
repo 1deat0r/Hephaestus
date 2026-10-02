@@ -1,6 +1,8 @@
 //! Prior-art investigation (T-018, R-028 (near-matching mechanism
 //! comparison with difference account), R-030 (confidentiality of
-//! external queries — redact_query), R-106, R-107, R-112/AT-112
+//! external queries — redact_query), R-009/AT-009 (a deliberately
+//! incomplete source yields no hits and never novelty language),
+//! R-106, R-107, R-112/AT-112
 //! (known/near-match/scoped-no-match labels + assessed claim chart),
 //! MASTER_SPEC §10).
 //!

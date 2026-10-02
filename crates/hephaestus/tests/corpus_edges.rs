@@ -1,5 +1,6 @@
 //! T-013 ticket 03: typed edges, shared-origin tallies, quarantine and
-//! corrections (R-016, R-018, R-098).
+//! corrections (R-016, R-018/AT-018 (three papers on one dataset: shared
+//! origins count once — count_origins), R-098).
 
 use hephaestus::knowledge::{
     Corpus, EdgeType, ParserId, corpus_coverage, correct, count_origins, ingest_bytes, link_edge,

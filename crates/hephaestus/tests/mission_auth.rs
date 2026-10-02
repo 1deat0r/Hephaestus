@@ -1,4 +1,6 @@
-//! T-012 ticket 02: ambiguity taxonomy, value frame, authorization requests (R-011).
+//! T-012 ticket 02: ambiguity taxonomy, value frame, authorization requests
+//! (R-011/AT-011: in-scope reversible work, then an unapproved disclosure
+//! is requested and named, never granted silently).
 //!
 //! Red-first seam tests: irreversible-operation and ambiguous-risk goals must
 //! come back as authorization requests with exact reason codes.

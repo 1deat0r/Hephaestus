@@ -1,4 +1,6 @@
-//! T-012 ticket 01: Mission record, autonomy profiles, compile happy path (R-001, R-010).
+//! T-012 ticket 01: Mission record, autonomy profiles, compile happy path
+//! (R-001, R-010/AT-010: the goal compiles under an existing authorized
+//! profile).
 //!
 //! Red-first seam tests against `hephaestus::mission::{compile, ...}`.
 

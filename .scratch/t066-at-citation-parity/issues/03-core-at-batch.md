@@ -17,7 +17,8 @@ AT-010 AT-011 AT-012 AT-016 AT-017 AT-018
 - [ ] All 14 dispositioned: cited (verified mirror) or goal candidate
 - [ ] Re-scan: batch absent from the silent-gap set; gates green
 
-**Candidate goals:** (none yet)
+**Candidate goals:**
+- AT-016 — citation with a matching title but no supporting passage: no test exercises that exact scenario (nearest is generic span verification) -> goal candidate, never a silent skip.
 
 
 **Micro-steps:**

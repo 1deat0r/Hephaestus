@@ -8,7 +8,7 @@ phase: 7
 fixed_point: 1941b83ae94532f197a7d88c020390dfa38e2875
 spec: .scratch/t066-at-citation-parity/spec.md
 baseline: 1941b83 [runs 15-35 staged uncommitted; workflow artifacts modified]
-tickets: 01=done, 02=done, 03=ready
+tickets: 01=done, 02=done, 03=ready, 04=ready, 05=ready, 06=ready
 edges: 01->02, 02->03
 attempts: 01=1
 phase_entries: 8=1, 2=1, 3=1, 4=1, 5=1, 6=1, 7=1

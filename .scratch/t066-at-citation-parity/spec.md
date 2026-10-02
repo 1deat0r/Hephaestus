@@ -24,7 +24,9 @@ burying).
 2. Ticket 02: audit AT-094..AT-119 (amendment family) against their
    negative cases → honest cites at mirrors; non-mirrors → goal
    candidates recorded (ticket + decisions).
-3. Ticket 03: same for the remaining core ATs.
+3. Ticket 03: same for the remaining core ATs — SPLIT 2026-10-02 into
+   four small batches (03: 14 ATs, 04: 16, 05: 16, 06: 9) so each step
+   is one small task with one commit and one push.
 
 ## Acceptance Criteria
 

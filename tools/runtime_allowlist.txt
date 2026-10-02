@@ -256,6 +256,9 @@ tools/report_at_citations.py
 .scratch/t066-at-citation-parity/issues/01-at-coverage-report.md
 .scratch/t066-at-citation-parity/issues/02-amendment-at-batch.md
 .scratch/t066-at-citation-parity/issues/03-core-at-batch.md
+.scratch/t066-at-citation-parity/issues/04-b2-discovery-experiment-at-batch.md
+.scratch/t066-at-citation-parity/issues/05-b3-advisory-backend-eval-at-batch.md
+.scratch/t066-at-citation-parity/issues/06-b4-requirements-release-at-batch.md
 docs/agents/auto-workflow/decisions-2026-10-02T00:04:46Z.md
 docs/agents/auto-workflow/report-2026-10-02T00:04:46Z.md
 docs/agents/auto-workflow/decisions-2026-10-02T00:45:28Z.md

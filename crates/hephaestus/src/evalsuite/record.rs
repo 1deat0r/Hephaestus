@@ -88,3 +88,29 @@ pub enum ArmError {
     DuplicateArmId,
     ZeroBudget,
 }
+
+/// A benchmark-supplied hypothesis with the lineage that makes it
+/// INDEPENDENTLY originated — opportunity + mechanism, never seeded
+/// only (R-073/AT-073).
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct OriginatedHypothesis {
+    pub hypothesis_id: String,
+    pub opportunity_id: String,
+    pub mechanism_id: String,
+}
+
+/// Why campaign admission refused (typed-rejection convention).
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum BenchmarkError {
+    /// The benchmark was started with no hypotheses (AT-073 negative).
+    NoSuppliedHypotheses,
+    /// A hypothesis lacks opportunity/mechanism lineage.
+    NotIndependentlyOriginated { hypothesis_id: String },
+}
+
+/// The admitted benchmark cohort — the observable evidence of what the
+/// generator is about to be evaluated on (R-073).
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct BenchmarkSession {
+    pub hypothesis_ids: Vec<String>,
+}

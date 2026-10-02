@@ -349,3 +349,6 @@ crates/hephaestus/tests/realization_gates.rs
 .scratch/t051-illustrative-unmeasured/grill.md
 .scratch/t051-illustrative-unmeasured/spec.md
 .scratch/t051-illustrative-unmeasured/issues/01-dossier-evidence-label.md
+.scratch/t052-domain-only-discovery/grill.md
+.scratch/t052-domain-only-discovery/spec.md
+.scratch/t052-domain-only-discovery/issues/01-benchmark-admission.md

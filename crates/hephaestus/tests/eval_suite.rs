@@ -1,10 +1,13 @@
-//! Evaluation suite (T-026, R-074/R-075).
+//! Evaluation suite (T-026, R-074/R-075; T-052 R-073 admission gate).
 //!
 //! Integration tests at the public seam: `define_baseline`,
 //! `check_matched`, `ablation`.
 
 use hephaestus::evalsuite::record::{AblationKind, ArmKind, ArmResult, BaselineArm, Envelope};
-use hephaestus::evalsuite::{EvalSuite, ablation, check_matched, define_baseline};
+use hephaestus::evalsuite::{
+    BenchmarkError, EvalSuite, OriginatedHypothesis, ablation, begin_benchmark, check_matched,
+    define_baseline,
+};
 
 fn s(v: &str) -> String {
     v.to_string()
@@ -131,5 +134,63 @@ fn twin_run_byte_identical() {
     assert_eq!(
         serde_json::to_string(&a).unwrap(),
         serde_json::to_string(&b).unwrap()
+    );
+}
+
+// ---- Ticket 01: R-073 domain-only discovery admission ----
+
+#[test]
+fn at_073_the_benchmark_refuses_to_run_without_supplied_hypotheses() {
+    // R-073 negative case: run the full benchmark without supplying
+    // hypotheses — the campaign evaluator refuses admission.
+    let err = begin_benchmark(&[]).expect_err("empty benchmark must not start");
+    assert!(
+        matches!(err, BenchmarkError::NoSuppliedHypotheses),
+        "{err:?}"
+    );
+}
+
+#[test]
+fn at_073_the_generator_is_evaluated_on_independently_originated_inputs() {
+    // Required outcome: evaluation runs on hypotheses with their own
+    // opportunity + mechanism lineage.
+    let ok = begin_benchmark(&[
+        OriginatedHypothesis {
+            hypothesis_id: s("h-1"),
+            opportunity_id: s("opp-7"),
+            mechanism_id: s("mech-3"),
+        },
+        OriginatedHypothesis {
+            hypothesis_id: s("h-2"),
+            opportunity_id: s("opp-9"),
+            mechanism_id: s("mech-5"),
+        },
+    ])
+    .expect("fully lineaged hypotheses admit");
+    assert_eq!(ok.hypothesis_ids, vec![s("h-1"), s("h-2")]);
+
+    // A hypothesis without an opportunity is not independently
+    // originated...
+    let err = begin_benchmark(&[OriginatedHypothesis {
+        hypothesis_id: s("h-seeded"),
+        opportunity_id: s(""),
+        mechanism_id: s("mech-3"),
+    }])
+    .expect_err("missing opportunity lineage refuses");
+    assert!(
+        matches!(err, BenchmarkError::NotIndependentlyOriginated { ref hypothesis_id } if hypothesis_id == "h-seeded"),
+        "{err:?}"
+    );
+
+    // ...and neither is one without a mechanism.
+    let err = begin_benchmark(&[OriginatedHypothesis {
+        hypothesis_id: s("h-nomech"),
+        opportunity_id: s("opp-7"),
+        mechanism_id: s(""),
+    }])
+    .expect_err("missing mechanism lineage refuses");
+    assert!(
+        matches!(err, BenchmarkError::NotIndependentlyOriginated { ref hypothesis_id } if hypothesis_id == "h-nomech"),
+        "{err:?}"
     );
 }

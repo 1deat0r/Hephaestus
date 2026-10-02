@@ -114,3 +114,28 @@ pub fn ablation(arm: &BaselineArm, kind: AblationKind) -> Result<AblationSpec, S
         kind,
     })
 }
+
+pub use record::{BenchmarkError, BenchmarkSession, OriginatedHypothesis};
+
+/// Campaign-evaluator admission (R-073/AT-073): the full benchmark
+/// never runs without supplied hypotheses, and every admitted
+/// hypothesis carries its own opportunity + mechanism lineage — the
+/// generator is evaluated on independently originated inputs, not on
+/// an empty or seeded-only run.
+pub fn begin_benchmark(
+    hypotheses: &[record::OriginatedHypothesis],
+) -> Result<record::BenchmarkSession, record::BenchmarkError> {
+    if hypotheses.is_empty() {
+        return Err(record::BenchmarkError::NoSuppliedHypotheses);
+    }
+    for h in hypotheses {
+        if h.opportunity_id.is_empty() || h.mechanism_id.is_empty() {
+            return Err(record::BenchmarkError::NotIndependentlyOriginated {
+                hypothesis_id: h.hypothesis_id.clone(),
+            });
+        }
+    }
+    Ok(record::BenchmarkSession {
+        hypothesis_ids: hypotheses.iter().map(|h| h.hypothesis_id.clone()).collect(),
+    })
+}

@@ -1,4 +1,5 @@
-//! Containment race guard (T-038, R-111).
+//! Containment race guard (T-038, R-111/AT-111: revocation/cancellation
+//! races stop safely, receipts preserved, no fabricated undo).
 //!
 //! Integration tests at the public seam: `race_outcome`,
 //! `record_violation`, `may_emit_authorized`.

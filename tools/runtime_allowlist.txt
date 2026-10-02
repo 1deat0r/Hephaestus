@@ -247,6 +247,12 @@ crates/hephaestus/src/missionrun.rs
 crates/hephaestus/tests/fixtures/e2e-trace.log
 docs/M2_M3_M4_EXIT_ASSESSMENT.md
 docs/M5_M6_EXIT_ASSESSMENT.md
+tools/report_at_citations.py
+.scratch/t066-at-citation-parity/grill.md
+.scratch/t066-at-citation-parity/spec.md
+.scratch/t066-at-citation-parity/issues/01-at-coverage-report.md
+.scratch/t066-at-citation-parity/issues/02-amendment-at-batch.md
+.scratch/t066-at-citation-parity/issues/03-core-at-batch.md
 .scratch/t064-trigger-and-canary-service/grill.md
 .scratch/t064-trigger-and-canary-service/spec.md
 .scratch/t064-trigger-and-canary-service/issues/01-triggers-cycle-monitor.md

@@ -1,4 +1,7 @@
-//! Self-improvement service (T-033, R-070-R-072, R-115-R-119).
+//! Self-improvement service (T-033, R-070-R-072, R-095/AT-095
+//! (self-attested records never gain protected trust), R-115-R-119,
+//! AT-117 (self-attested/inconclusive/confounded/leaked-holdout
+//! challengers stay undeployed)).
 //!
 //! Integration tests at the public seam: `evaluate_candidate`,
 //! `promote`, `rollback`, `ImprovementLedger`.
@@ -190,6 +193,7 @@ fn ledger_append_only_and_restart_survives() {
         challenger_id: s("challenger-prompt-v4"),
         challenger_digest: s("challenger-digest"),
         incumbent_id: s("champion-prompt-v3"),
+        incumbent_digest: s("incumbent-digest"),
         outcome: s("deployed"),
         reason: s("supported benefit, guardrails passing"),
         observations: s("fresh partition 7"),
@@ -200,6 +204,7 @@ fn ledger_append_only_and_restart_survives() {
         challenger_id: s("challenger-prompt-v5"),
         challenger_digest: s("digest-v5"),
         incumbent_id: s("champion-prompt-v3"),
+        incumbent_digest: s("incumbent-digest"),
         outcome: s("rejected"),
         reason: s("inconclusive"),
         observations: s("interval overlaps bound"),
@@ -209,7 +214,7 @@ fn ledger_append_only_and_restart_survives() {
     // §R-116: restart reconstructs from persisted JSON; learned
     // decisions are not lost.
     let json = ledger.to_json();
-    let restored = ImprovementLedger::from_json(&json);
+    let restored = ImprovementLedger::from_json(&json).expect("round-trip json recovers");
     assert_eq!(restored.entries().len(), 2);
     assert_eq!(restored.entries()[1].outcome, "rejected");
     assert_eq!(restored.entries()[1].reason, "inconclusive");

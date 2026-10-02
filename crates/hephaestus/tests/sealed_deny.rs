@@ -1,4 +1,6 @@
-//! Deny-first tests for sealed-data access rules (T-004).
+//! Deny-first tests for sealed-data access rules (T-004,
+//! R-101/AT-101: sealed access and confirmation are denied outside
+//! registration; exposure history preserved).
 
 use hephaestus::security::digest::record_digest;
 use hephaestus::security::sealed::{

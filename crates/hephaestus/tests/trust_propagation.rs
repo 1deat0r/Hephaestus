@@ -1,4 +1,5 @@
-//! R-108 trust-origin propagation (T-043).
+//! R-108/AT-108 trust-origin propagation (T-043): no transformation
+//! elevates untrusted content into policy, approval or evidence.
 //!
 //! Integration tests at the public seam: `derive_origin`,
 //! `DerivedTrust::derive`.

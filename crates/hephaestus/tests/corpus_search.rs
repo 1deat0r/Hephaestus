@@ -1,4 +1,6 @@
-//! T-013 ticket 02: deterministic search and coverage reports (R-106, R-015).
+//! T-013 ticket 02: deterministic search and coverage reports (R-106/AT-106
+//! (distinct retrieval metrics against reference sets — never global
+//! completeness), R-015).
 //!
 //! Red-first seam tests against `search`, `corpus_coverage`.
 

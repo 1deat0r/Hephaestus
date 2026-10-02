@@ -1,4 +1,6 @@
-//! R-102 import-closure oracle (T-042).
+//! R-102/AT-102 import-closure oracle (T-042): cycles, aliases,
+//! relative paths, stale names, and oracle disagreement block without
+//! omission.
 //!
 //! Integration tests at the public seam: `resolve_edges`,
 //! `detect_cycles`, `check_closure`, `oracle_agreement`.

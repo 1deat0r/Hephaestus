@@ -1,4 +1,5 @@
-//! Behavioral memory (T-039, R-109).
+//! Behavioral memory (T-039, R-109/AT-109: unauthorized writes denied,
+//! quarantine propagates to dependents, audit history survives).
 //!
 //! Integration tests at the public seam: `authorize_write`,
 //! `propagate_quarantine`.

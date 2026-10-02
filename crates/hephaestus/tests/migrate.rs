@@ -1,4 +1,5 @@
-//! T-002 migration registry tests: registered versions migrate and
+//! T-002 migration registry tests (R-114/AT-114: unsupported imports
+//! fail closed, identities preserved): registered versions migrate and
 //! revalidate; unregistered or unknown versions fail closed with reasons.
 
 use hephaestus::contracts::{ContractError, SCHEMA_VERSION};

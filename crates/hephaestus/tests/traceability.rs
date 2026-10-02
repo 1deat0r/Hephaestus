@@ -1,4 +1,6 @@
-//! Parity tests against `tests/test_traceability.py` (T-005).
+//! Parity tests against `tests/test_traceability.py` (T-005,
+//! R-113/AT-113: removed anchors, reversed mappings, or missing
+//! positive/negative cases fail the package checks).
 //!
 //! Mirrors every Python reference test with the same reason codes, plus
 //! extra negatives for codes the reference defines but does not exercise.

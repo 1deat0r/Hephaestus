@@ -1,4 +1,5 @@
-//! Learning-reuse gates (T-036, R-116 negative case).
+//! Learning-reuse gates (T-036, R-116/AT-116 negative case: stale or
+//! quarantined sources invalidate reuse; restart keeps valid learning).
 //!
 //! Integration tests at the public seam: `apply_state_change`,
 //! `usable_for_reuse`.

@@ -17,6 +17,13 @@ AT-070 AT-071 AT-072 AT-074 AT-075 AT-077 AT-078 AT-079
 
 **Candidate goals:** (none yet)
 
+
+**Micro-steps:**
+
+1. M1: audit the first eight listed IDs -> commit+push
+2. M2: audit the remaining eight listed IDs -> commit+push
+3. N: candidates + Verify + status flip -> commit+push
+
 ## Comments
 
 Grill: `.scratch/t066-at-citation-parity/grill.md`. Split 2026-10-02

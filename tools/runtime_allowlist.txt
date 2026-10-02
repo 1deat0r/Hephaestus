@@ -260,6 +260,12 @@ tools/check_ticket_status.py
 .scratch/t066-at-citation-parity/issues/04-b2-discovery-experiment-at-batch.md
 .scratch/t066-at-citation-parity/issues/05-b3-advisory-backend-eval-at-batch.md
 .scratch/t066-at-citation-parity/issues/06-b4-requirements-release-at-batch.md
+.scratch/dev-roadmap/spec.md
+.scratch/dev-roadmap/issues/01-fixture-campaign-driver.md
+.scratch/dev-roadmap/issues/02-real-corpus-mission.md
+.scratch/dev-roadmap/issues/03-docs-domain-pack.md
+.scratch/dev-roadmap/issues/04-cli-canary-watch.md
+.scratch/dev-roadmap/issues/05-campaign-exit-receipts.md
 docs/agents/auto-workflow/decisions-2026-10-02T00:04:46Z.md
 docs/agents/auto-workflow/report-2026-10-02T00:04:46Z.md
 docs/agents/auto-workflow/decisions-2026-10-02T00:45:28Z.md

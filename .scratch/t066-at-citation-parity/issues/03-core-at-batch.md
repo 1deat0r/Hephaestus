@@ -19,6 +19,13 @@ AT-010 AT-011 AT-012 AT-016 AT-017 AT-018
 
 **Candidate goals:** (none yet)
 
+
+**Micro-steps:**
+
+1. M1: extract negative cases for the first seven listed IDs from OBLIGATIONS; locate mirror tests; apply cites -> commit+push
+2. M2: same for the remaining seven listed IDs -> commit+push
+3. N: record any goal candidates, run batch Verify, flip status -> commit+push
+
 ## Comments
 
 Grill: `.scratch/t066-at-citation-parity/grill.md`.

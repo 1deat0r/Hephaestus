@@ -21,6 +21,13 @@ confirm and keep, do not silently cite)
 **Candidate goals:**
 - AT-097 — recorded goal candidate from ticket 02; confirm and keep.
 
+
+**Micro-steps:**
+
+1. M1: audit the first seven listed IDs; confirm the recorded candidate stays -> commit+push
+2. M2: audit the last listed ID + final worklist proof -> commit+push
+3. N: candidates + Verify + status flip (closes the AT-parity goal) -> commit+push
+
 ## Comments
 
 Grill: `.scratch/t066-at-citation-parity/grill.md`. Split 2026-10-02

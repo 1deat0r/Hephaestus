@@ -43,6 +43,10 @@ pub struct PilotPlan {
     pub intent: String,
     /// Budget reserved for the batch.
     pub budget: u64,
+    /// The DECLARED clustering unit the analysis must retain
+    /// (R-084/AT-084) — e.g. "repository"; non-empty, enforced by
+    /// `plan_pilot`.
+    pub clustering_unit: String,
 }
 
 /// Named plan errors.
@@ -56,6 +60,8 @@ pub enum PlanError {
     EpisodesNotPreSampled,
     /// Empty batch measures nothing.
     EmptyBatch,
+    /// The declared clustering unit is empty (R-084).
+    MissingClusteringUnit,
 }
 
 /// One pilot mission outcome (R-103 denominators: failures retained).
@@ -79,6 +85,9 @@ pub struct VarianceEstimate {
     /// Failure/blocked count — retained in the denominator (R-103).
     pub failures_retained: usize,
     pub total_missions: usize,
+    /// The plan's clustering unit, carried verbatim — the analysis
+    /// retains what was declared (R-084/AT-084).
+    pub clustering_unit: String,
 }
 
 /// Named confirmation blocks.
@@ -89,4 +98,21 @@ pub enum ConfirmationBlock {
     /// Pilot outcomes drawn from the confirmatory partition.
     PartitionContamination,
     UnqualifiedAnalysis,
+}
+
+/// Who is asking for a workload manifest (R-084): the protected
+/// context oracle/evaluator reads held-out work; workers never do.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum AccessScope {
+    ProtectedEvaluator,
+    Worker,
+}
+
+/// Why workload-manifest access refused (typed-rejection convention).
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum WorkloadAccessError {
+    /// A worker asked for a confirmatory (held-out) repo's manifest.
+    HeldOutManifestDenied { repo_id: String },
+    /// No assignment exists for the requested repository.
+    UnknownRepository { repo_id: String },
 }

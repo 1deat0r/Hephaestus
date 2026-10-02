@@ -1,4 +1,6 @@
-//! Pilot campaigns (T-027, R-103).
+//! Pilot campaigns (T-027, R-103/AT-103 (failed missions stay in the
+//! denominators; human/tuning costs explicit), AT-104 (confirmation
+//! blocks on unqualified methods or missing calculations)).
 //!
 //! Integration tests at the public seam: `plan_pilot`, `record_outcome`,
 //! `ready_for_confirmation`.
@@ -37,6 +39,7 @@ fn plan() -> PilotPlan {
         batch_size: 12, // FREE — twenty is not a threshold
         intent: s("debugging batch"),
         budget: 50,
+        clustering_unit: s("repository"),
     }
 }
 
@@ -125,7 +128,7 @@ fn variance_estimated_with_failures_retained() {
             failed_or_blocked: true,
         },
     ];
-    let est = record_outcome(&outcomes);
+    let est = record_outcome(&plan(), &outcomes);
     assert_eq!(est.total_missions, 6);
     // Failures retained in the denominator (R-103).
     assert_eq!(est.failures_retained, 2);
@@ -136,19 +139,22 @@ fn variance_estimated_with_failures_retained() {
     let pv = est.paired_difference_variance.expect("paired variance");
     assert!(pv > 0.0);
     // Empty outcomes -> explicit None, never zeros.
-    let empty = record_outcome(&[]);
+    let empty = record_outcome(&plan(), &[]);
     assert!(empty.per_arm.is_empty());
     assert!(empty.paired_difference_variance.is_none());
 }
 
 #[test]
 fn confirmation_gate_named_blocks() {
-    let est = record_outcome(&[MissionOutcome {
-        repo_id: s("r1"),
-        arm_id: s("cand"),
-        value: Some(0.1),
-        failed_or_blocked: false,
-    }]);
+    let est = record_outcome(
+        &plan(),
+        &[MissionOutcome {
+            repo_id: s("r1"),
+            arm_id: s("cand"),
+            value: Some(0.1),
+            failed_or_blocked: false,
+        }],
+    );
     // Happy path.
     assert_eq!(ready_for_confirmation(Some(&est), true, true, true), Ok(()));
     // Missing variance.
@@ -180,5 +186,72 @@ fn twin_run_byte_identical() {
     assert_eq!(
         serde_json::to_string(&a).unwrap(),
         serde_json::to_string(&b).unwrap()
+    );
+}
+
+// ---- Ticket 01: R-084 held-out manifests + clustering unit ----
+
+#[test]
+fn at_084_worker_access_to_a_held_out_workload_manifest_is_denied() {
+    // R-084 negative case: attempt worker access to held-out
+    // workload manifests — access is denied; the protected evaluator
+    // (oracle side) reads it.
+    use hephaestus::pilot::{AccessScope, WorkloadAccessError, request_workload_manifest};
+
+    let mut p = plan();
+    p.assignments
+        .push(assignment("repo-heldout", Partition::Confirmatory));
+
+    let err = request_workload_manifest(AccessScope::Worker, &p, "repo-heldout")
+        .expect_err("workers must never read held-out workload manifests");
+    assert!(
+        matches!(err, WorkloadAccessError::HeldOutManifestDenied { ref repo_id } if repo_id == "repo-heldout"),
+        "{err:?}"
+    );
+
+    // The protected evaluator reads it (the oracle side)...
+    request_workload_manifest(AccessScope::ProtectedEvaluator, &p, "repo-heldout")
+        .expect("the evaluator is the oracle");
+    // ...and a worker reads its own (non-held-out) workload.
+    request_workload_manifest(AccessScope::Worker, &p, "repo-b")
+        .expect("pilot partitions are not held out");
+
+    // Unknown repositories are named, not guessed.
+    let err = request_workload_manifest(AccessScope::Worker, &p, "repo-???")
+        .expect_err("unknown repo must be named");
+    assert!(
+        matches!(err, WorkloadAccessError::UnknownRepository { ref repo_id } if repo_id == "repo-???"),
+        "{err:?}"
+    );
+}
+
+#[test]
+fn at_084_the_analysis_retains_the_declared_clustering_unit() {
+    // Required outcome: the analysis retains the DECLARED clustering
+    // unit — declared in the plan, refused when empty, transported
+    // verbatim into the variance estimate.
+    use hephaestus::pilot::record_outcome;
+
+    let p = plan_pilot(plan(), &preregs()).expect("planned");
+    assert_eq!(p.clustering_unit, "repository");
+
+    let outcomes = [MissionOutcome {
+        repo_id: s("r1"),
+        arm_id: s("cand"),
+        value: Some(0.1),
+        failed_or_blocked: false,
+    }];
+    let est = record_outcome(&p, &outcomes);
+    assert_eq!(
+        est.clustering_unit, "repository",
+        "the estimate carries the declared unit verbatim"
+    );
+
+    // An undeclared clustering unit refuses at plan time.
+    let mut unitless = plan();
+    unitless.clustering_unit = s("");
+    assert_eq!(
+        plan_pilot(unitless, &preregs()),
+        Err(PlanError::MissingClusteringUnit)
     );
 }

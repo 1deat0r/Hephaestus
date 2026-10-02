@@ -9,8 +9,8 @@
 pub mod record;
 
 pub use record::{
-    ConfirmationBlock, MissionOutcome, Partition, PilotPlan, PlanError, RepositoryAssignment,
-    Stratification, VarianceEstimate,
+    AccessScope, ConfirmationBlock, MissionOutcome, Partition, PilotPlan, PlanError,
+    RepositoryAssignment, Stratification, VarianceEstimate, WorkloadAccessError,
 };
 
 use std::collections::BTreeMap;
@@ -26,6 +26,10 @@ pub fn plan_pilot(
     }
     if plan.assignments.is_empty() {
         return Err(PlanError::EmptyBatch);
+    }
+    // R-084: the analysis's clustering unit must be declared.
+    if plan.clustering_unit.trim().is_empty() {
+        return Err(PlanError::MissingClusteringUnit);
     }
     // Partition separation BY REPOSITORY (campaign).
     let mut seen: BTreeMap<&str, &Partition> = BTreeMap::new();
@@ -49,9 +53,13 @@ pub fn plan_pilot(
 /// population variance, paired-difference variance across repositories,
 /// failures retained in the denominator. Empty input -> explicit None
 /// fields, never zeros (no fabricated variance).
-pub fn record_outcome(outcomes: &[MissionOutcome]) -> VarianceEstimate {
+pub fn record_outcome(plan: &PilotPlan, outcomes: &[MissionOutcome]) -> VarianceEstimate {
+    let clustering_unit = plan.clustering_unit.clone();
     if outcomes.is_empty() {
-        return VarianceEstimate::default();
+        return VarianceEstimate {
+            clustering_unit,
+            ..Default::default()
+        };
     }
     // Group by arm.
     let mut by_arm: BTreeMap<String, Vec<Option<f64>>> = BTreeMap::new();
@@ -99,7 +107,34 @@ pub fn record_outcome(outcomes: &[MissionOutcome]) -> VarianceEstimate {
         paired_difference_variance: paired,
         failures_retained: failures,
         total_missions: outcomes.len(),
+        clustering_unit,
     }
+}
+
+/// Workload-manifest access (R-084/AT-084): the confirmatory
+/// partition IS the held-out set — workers are denied its manifests
+/// by name; the protected evaluator (the oracle side) reads them;
+/// non-held-out partitions are ordinary workload.
+pub fn request_workload_manifest(
+    scope: record::AccessScope,
+    plan: &PilotPlan,
+    repo_id: &str,
+) -> Result<(), record::WorkloadAccessError> {
+    let assignment = plan
+        .assignments
+        .iter()
+        .find(|a| a.repo_id == repo_id)
+        .ok_or_else(|| record::WorkloadAccessError::UnknownRepository {
+            repo_id: repo_id.to_string(),
+        })?;
+    if assignment.partition == record::Partition::Confirmatory
+        && scope == record::AccessScope::Worker
+    {
+        return Err(record::WorkloadAccessError::HeldOutManifestDenied {
+            repo_id: repo_id.to_string(),
+        });
+    }
+    Ok(())
 }
 
 /// Gate into confirmation (campaign: predeclare metrics and analysis

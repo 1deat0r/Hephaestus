@@ -53,6 +53,9 @@ pub enum ReasonCode {
     GrantInvalidInterval,
     /// Outside the validity window, or the injected clock is unknown.
     GrantExpiredOrTimeUnknown,
+    /// A retrieved directive was evaluated: inert by origin, no effect
+    /// (R-058/AT-058). Appended last to keep declaration order stable.
+    RetrievedInstructionInert,
 }
 
 /// What the operation wants: the enumerated request facts, nothing else.
@@ -225,6 +228,30 @@ impl PolicyEngine {
         PolicyDecision {
             allowed: reasons.is_empty(),
             reasons,
+        }
+    }
+}
+
+/// A directive recovered from retrieved content (R-058/AT-058):
+/// untrusted BY ORIGIN — its type carries text and locator only, and
+/// no conversion into a [`PolicyRequest`] exists anywhere, so it can
+/// never become an operation the engine would allow.
+#[derive(Debug, Clone, PartialEq, Serialize)]
+pub struct RetrievedDirective {
+    pub text: String,
+    pub source_locator: String,
+}
+
+impl PolicyEngine {
+    /// Retrieved instructions are INERT (R-058/AT-058, §20): a
+    /// directive from retrieved content always evaluates to a single
+    /// inert denial. The function is pure and takes no mission, grant,
+    /// or trust context — the security test records no effect because
+    /// there is structurally nothing to affect.
+    pub fn evaluate_retrieved_directive(_directive: &RetrievedDirective) -> PolicyDecision {
+        PolicyDecision {
+            allowed: false,
+            reasons: vec![ReasonCode::RetrievedInstructionInert],
         }
     }
 }

@@ -366,3 +366,6 @@ crates/hephaestus/tests/evidence_class.rs
 .scratch/t057-evidence-kind-distinctness/grill.md
 .scratch/t057-evidence-kind-distinctness/spec.md
 .scratch/t057-evidence-kind-distinctness/issues/01-evidence-class-gate.md
+.scratch/t058-untrusted-retrieval/grill.md
+.scratch/t058-untrusted-retrieval/spec.md
+.scratch/t058-untrusted-retrieval/issues/01-inert-directives.md

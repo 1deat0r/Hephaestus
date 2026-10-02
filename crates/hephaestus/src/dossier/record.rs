@@ -117,4 +117,55 @@ pub struct Dossier {
     /// For negative dossiers: which of the five kinds (§15:300).
     pub negative_kind: Option<NegativeResultKind>,
     pub lineage: Lineage,
+    /// Required evidence label (R-082): synthetic/illustrative content
+    /// can never be rendered as real experimental evidence.
+    pub evidence_label: EvidenceLabel,
+}
+
+/// Why a dossier's evidence is unmeasured (R-082/AT-082): the two
+/// §28 illustrative sources — a packaged synthetic fixture or an
+/// illustrative worked example.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub enum UnmeasuredReason {
+    SyntheticFixture,
+    IllustrativeExample,
+}
+
+/// The dossier's required evidence label (R-082): `Measured` must
+/// carry its version-bound receipt; `Unmeasured` carries why the
+/// content is not real experimental evidence. There is no unlabeled
+/// dossier — the field is not optional.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub enum EvidenceLabel {
+    Measured {
+        run_receipt: String,
+    },
+    Unmeasured {
+        reason: UnmeasuredReason,
+        source: String,
+    },
+}
+
+/// One record in a classified bundle export (R-092/AT-092): status
+/// and reproduction are TYPED fields — structurally always present —
+/// while evidence and scope are enforced non-empty by the gate.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct ClassifiedRecord {
+    pub record_id: String,
+    pub status: crate::lifecycle::HypothesisState,
+    pub evidence_ids: Vec<String>,
+    pub scope: String,
+    pub reproduction: ReproductionOutcome,
+}
+
+/// Why a bundle export refused (typed-rejection convention).
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum BundleExportError {
+    /// A record carries no evidence ids.
+    MissingEvidence { record_id: String },
+    /// A record carries no scope.
+    MissingScope { record_id: String },
+    /// The bundle could not be serialized (never mislabeled as a
+    /// classification problem).
+    Serialization,
 }

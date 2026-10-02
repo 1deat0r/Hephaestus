@@ -10,8 +10,9 @@
 pub mod record;
 
 pub use record::{
-    CostReceipt, Deviation, Dossier, Environment, FailureEntry, Lineage, NegativeResultKind,
-    ReproductionOutcome, RunRecord,
+    BundleExportError, ClassifiedRecord, CostReceipt, Deviation, Dossier, Environment,
+    EvidenceLabel, FailureEntry, Lineage, NegativeResultKind, ReproductionOutcome, RunRecord,
+    UnmeasuredReason,
 };
 
 use serde::{Deserialize, Serialize};
@@ -26,6 +27,9 @@ pub enum ExportError {
     MissingReproCommands,
     /// A human-time cost with an invented conversion price (R-103).
     PricedHumanTime,
+    /// A measured evidence label without its version-bound receipt
+    /// (R-082): a target dressed as a benchmark, dossier edition.
+    MeasuredWithoutReceipt,
 }
 
 /// Clean-environment reproduction (§15:298): compare the record's pinned
@@ -89,5 +93,36 @@ pub fn validate_for_export(d: &Dossier) -> Result<(), ExportError> {
 /// twin runs byte-identical (serde_json on ordered structures).
 pub fn export(d: &Dossier) -> Result<String, ExportError> {
     validate_for_export(d)?;
+    // R-082: a measured label must carry its receipt; unmeasured
+    // labels export WITH the label serialized — the output can never
+    // hide why the evidence is not real.
+    if let record::EvidenceLabel::Measured { run_receipt } = &d.evidence_label
+        && run_receipt.is_empty()
+    {
+        return Err(ExportError::MeasuredWithoutReceipt);
+    }
     serde_json::to_string(d).map_err(|_| ExportError::MissingRawData)
+}
+
+/// Classified bundle export (R-092/AT-092): records of MIXED lifecycle
+/// states export together only when each carries its own status
+/// (typed), evidence ids (non-empty), scope (non-empty), and
+/// reproduction state (typed) — the negative case (unclassified
+/// togetherness) refuses by record name.
+pub fn export_bundle(
+    records: &[record::ClassifiedRecord],
+) -> Result<String, record::BundleExportError> {
+    for r in records {
+        if r.evidence_ids.is_empty() {
+            return Err(record::BundleExportError::MissingEvidence {
+                record_id: r.record_id.clone(),
+            });
+        }
+        if r.scope.is_empty() {
+            return Err(record::BundleExportError::MissingScope {
+                record_id: r.record_id.clone(),
+            });
+        }
+    }
+    serde_json::to_string(records).map_err(|_| record::BundleExportError::Serialization)
 }

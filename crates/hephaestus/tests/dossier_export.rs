@@ -1,8 +1,8 @@
-//! Dossier capture, reproduction, export (T-023, R-044, R-103, §15).
+//! Dossier capture, reproduction, export (T-023, R-044, R-103, §15; T-051 R-082 evidence label).
 
 use hephaestus::dossier::record::{
-    CostReceipt, Deviation, Dossier, Environment, FailureEntry, Lineage, NegativeResultKind,
-    ReproductionOutcome, RunRecord,
+    CostReceipt, Deviation, Dossier, Environment, EvidenceLabel, FailureEntry, Lineage,
+    NegativeResultKind, ReproductionOutcome, RunRecord, UnmeasuredReason,
 };
 use hephaestus::dossier::{ExportError, export, reproduce, validate_for_export};
 
@@ -94,6 +94,9 @@ fn dossier() -> Dossier {
             hypothesis_version: s("h1.0.0"),
             plan_id: s("plan-1"),
             result_id: s("res-1"),
+        },
+        evidence_label: EvidenceLabel::Measured {
+            run_receipt: s("run-rcpt-1"),
         },
     }
 }
@@ -214,4 +217,155 @@ fn lineage_recorded_and_export_twin_identical() {
     assert!(a.contains("raw_data"));
     assert!(a.contains("cost_ledger"));
     assert!(a.contains("repro_commands"));
+}
+
+// ---- Ticket 01: R-082 evidence label ----
+
+#[test]
+fn at_082_packaged_example_exports_with_unmeasured_synthetic_label() {
+    // R-082 negative case: load and export the packaged
+    // context-assembly example — no synthetic fixture is rendered as
+    // real experimental evidence (AT-082).
+    let raw = std::fs::read_to_string(concat!(
+        env!("CARGO_MANIFEST_DIR"),
+        "/../../examples/software-mission.json"
+    ))
+    .expect("packaged example present");
+    let example: serde_json::Value = serde_json::from_str(&raw).expect("example parses");
+    let records = example["records"].as_array().expect("example records");
+    assert!(!records.is_empty());
+    for (i, record) in records.iter().enumerate() {
+        assert_eq!(
+            record["data_origin"], "synthetic_fixture",
+            "record {i} of the packaged example is a synthetic fixture at the source"
+        );
+    }
+
+    let mut d = dossier();
+    d.evidence_label = EvidenceLabel::Unmeasured {
+        reason: UnmeasuredReason::SyntheticFixture,
+        source: s("examples/software-mission.json"),
+    };
+    let out = export(&d).expect("unmeasured dossiers export");
+    let exported: serde_json::Value = serde_json::from_str(&out).expect("export json");
+    let label = &exported["evidence_label"];
+    assert!(
+        label.get("Unmeasured").is_some(),
+        "export must carry the unmeasured label: {label:?}"
+    );
+    assert_eq!(
+        label["Unmeasured"]["reason"], "SyntheticFixture",
+        "export must carry the synthetic-fixture reason: {label:?}"
+    );
+}
+
+#[test]
+fn at_082_a_measured_label_without_receipt_is_refused() {
+    // A measured claim must carry its version-bound receipt.
+    let mut d = dossier();
+    d.evidence_label = EvidenceLabel::Measured { run_receipt: s("") };
+    let err = export(&d).expect_err("measured-without-receipt must refuse");
+    assert!(
+        matches!(err, ExportError::MeasuredWithoutReceipt),
+        "{err:?}"
+    );
+
+    // The honest case exports and keeps the receipt visible.
+    let mut d = dossier();
+    d.evidence_label = EvidenceLabel::Measured {
+        run_receipt: s("run-rcpt-77"),
+    };
+    let out = export(&d).expect("measured with receipt exports");
+    assert!(out.contains("run-rcpt-77"), "receipt visible in output");
+}
+
+// ---- Ticket 01: R-092 classified bundle exports ----
+
+#[test]
+fn at_092_an_unclassified_mixed_bundle_is_refused_by_record() {
+    // R-092 negative case: export exploratory, test-ready, and
+    // validated records together — without per-record evidence/scope
+    // classification the bundle refuses, naming the offender.
+    use hephaestus::dossier::export_bundle;
+    use hephaestus::dossier::record::{BundleExportError, ClassifiedRecord};
+    use hephaestus::lifecycle::HypothesisState;
+
+    let bundle = [
+        ClassifiedRecord {
+            record_id: s("r-exploratory"),
+            status: HypothesisState::Exploratory,
+            evidence_ids: vec![],
+            scope: s("context-assembly"),
+            reproduction: hephaestus::dossier::record::ReproductionOutcome::Reproduced,
+        },
+        ClassifiedRecord {
+            record_id: s("r-test-ready"),
+            status: HypothesisState::TestReady,
+            evidence_ids: vec![s("ev-1")],
+            scope: s(""),
+            reproduction: hephaestus::dossier::record::ReproductionOutcome::Disagrees,
+        },
+    ];
+    let err = export_bundle(&bundle).expect_err("unclassified records must refuse");
+    match err {
+        BundleExportError::MissingEvidence { record_id } => {
+            assert_eq!(record_id, "r-exploratory");
+        }
+        other => panic!("expected MissingEvidence, got {other:?}"),
+    }
+
+    // The second record is caught on its own axis (empty scope).
+    let err = export_bundle(&bundle[1..]).expect_err("missing scope must refuse");
+    assert!(
+        matches!(err, BundleExportError::MissingScope { ref record_id } if record_id == "r-test-ready"),
+        "{err:?}"
+    );
+}
+
+#[test]
+fn at_092_a_classified_mixed_bundle_exports_with_per_record_facts() {
+    // Required outcome: each record carries its own status, evidence,
+    // scope, and reproduction state — mixed togetherness without
+    // collapse into one label.
+    use hephaestus::dossier::export_bundle;
+    use hephaestus::dossier::record::{ClassifiedRecord, ReproductionOutcome};
+    use hephaestus::lifecycle::HypothesisState;
+
+    let bundle = [
+        ClassifiedRecord {
+            record_id: s("r-exploratory"),
+            status: HypothesisState::Exploratory,
+            evidence_ids: vec![s("ev-a")],
+            scope: s("context-assembly"),
+            reproduction: ReproductionOutcome::Reproduced,
+        },
+        ClassifiedRecord {
+            record_id: s("r-test-ready"),
+            status: HypothesisState::TestReady,
+            evidence_ids: vec![s("ev-b")],
+            scope: s("context-assembly"),
+            reproduction: ReproductionOutcome::Disagrees,
+        },
+        ClassifiedRecord {
+            record_id: s("r-validated"),
+            status: HypothesisState::Assessed,
+            evidence_ids: vec![s("ev-c")],
+            scope: s("context-assembly"),
+            reproduction: ReproductionOutcome::Reproduced,
+        },
+    ];
+    let out = export_bundle(&bundle).expect("classified mixed bundle exports");
+    let json: serde_json::Value = serde_json::from_str(&out).expect("bundle json");
+    let records = json.as_array().expect("array bundle");
+    assert_eq!(records.len(), 3);
+    let statuses: Vec<&str> = records
+        .iter()
+        .map(|r| r["status"].as_str().expect("status present"))
+        .collect();
+    assert_eq!(statuses, vec!["Exploratory", "TestReady", "Assessed"]);
+    for r in records {
+        assert!(!r["evidence_ids"].as_array().expect("eids").is_empty());
+        assert!(!r["scope"].as_str().expect("scope").is_empty());
+        assert!(r["reproduction"].is_string() || r["reproduction"].is_object());
+    }
 }

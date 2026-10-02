@@ -346,3 +346,6 @@ crates/hephaestus/tests/realization_gates.rs
 .scratch/t050-context-caching-baseline/grill.md
 .scratch/t050-context-caching-baseline/spec.md
 .scratch/t050-context-caching-baseline/issues/01-caching-review-gate.md
+.scratch/t051-illustrative-unmeasured/grill.md
+.scratch/t051-illustrative-unmeasured/spec.md
+.scratch/t051-illustrative-unmeasured/issues/01-dossier-evidence-label.md

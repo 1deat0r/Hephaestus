@@ -100,6 +100,37 @@ fn help_documents_both_subcommands() {
     let text = String::from_utf8_lossy(&out.stdout);
     assert!(text.contains("fixture run"), "{text}");
     assert!(text.contains("fixture recover"), "{text}");
+    assert!(text.contains("fixture mission-run"), "{text}");
+}
+
+#[test]
+fn mission_run_prints_byte_identical_receipts_twice() {
+    // T-061 ticket 03: the E2E chain as a command — twin runs over the
+    // world-derived trace fixture are byte-identical and carry both the
+    // supported and the honest-negative receipts.
+    let trace = format!(
+        "{}/tests/fixtures/e2e-trace.log",
+        env!("CARGO_MANIFEST_DIR")
+    );
+    let run_once = || {
+        bin()
+            .args(["fixture", "mission-run", "--trace"])
+            .arg(&trace)
+            .output()
+            .expect("spawn")
+    };
+    let a = run_once();
+    assert!(
+        a.status.success(),
+        "mission-run exits 0: {}",
+        String::from_utf8_lossy(&a.stderr)
+    );
+    let text = String::from_utf8_lossy(&a.stdout);
+    assert!(text.contains("Supported"), "supported receipt: {text}");
+    assert!(text.contains("Contradicted"), "negative receipt: {text}");
+    assert!(text.contains("receipt_sha256"), "bound receipt: {text}");
+    let b = run_once();
+    assert_eq!(a.stdout, b.stdout, "twin runs byte-identical");
 }
 
 #[test]

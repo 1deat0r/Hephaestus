@@ -1,4 +1,6 @@
-//! Typed result interpreter (T-022, R-026, MASTER_SPEC §14).
+//! Typed result interpreter (T-022, R-026, R-042 (inconclusive results
+//! preserved; noninferiority explicit — lower-bound margin test),
+//! MASTER_SPEC §14).
 //!
 //! Integration tests at the public seam: `interpret`, `check_guardrails`.
 

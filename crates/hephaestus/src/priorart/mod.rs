@@ -2,6 +2,8 @@
 //!
 //! Atomic claims, the closed five-conclusion enum, passage references
 //! verified against captured bytes (R-107), and confidentiality-aware
+//! (R-030: external prior-art queries never carry mechanism details
+//! outside the approved boundary implicitly)
 //! redacted queries (section 10:205). Pure logic: no I/O, no retrieval.
 
 pub mod record;

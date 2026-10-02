@@ -1,4 +1,6 @@
-//! Domain packs (T-032, M6 exit).
+//! Domain packs (T-032, R-006: domain-specific validation before any
+//! pack is enabled — qualify() -> QualifiedPack is the only input).
+//! M6 exit.
 //!
 //! Integration tests at the public seam: `qualify`, `validate_measurement`,
 //! `check_execution_class`.

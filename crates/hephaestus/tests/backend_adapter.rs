@@ -1,4 +1,6 @@
-//! Execution backend adapter contract (T-030, R-051/R-057/R-066).
+//! Execution backend adapter contract (T-030, R-051/R-057/R-064 (the
+//! initial runtime is the bounded local adapter — workers isolated by
+//! the sandbox), R-066).
 //!
 //! Integration tests at the public seam: `ExecutionBackend` (LocalProcess),
 //! `check_contract`, `tachyon_status`.

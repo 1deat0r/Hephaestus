@@ -1,4 +1,5 @@
-//! Advisory provider contract layer (T-029, R-005/R-090).
+//! Advisory provider contract layer (T-029, R-005, R-053 (calibration
+//! and abstention evaluated from known-outcome fixture cases), R-090).
 //!
 //! Integration tests at the public seam: `evaluate_provider`,
 //! `assert_control_authority`, NullProvider.

@@ -2,6 +2,8 @@
 //!
 //! Transforms replay in verify_span; search spans index raw bytes;
 //! supersedes stores the source id; coverage carries inaccessible.
+//! R-088: verified source identity plus corrections of prior records
+//! (`correct`).
 
 use hephaestus::knowledge::{
     Corpus, EdgeType, ParserId, Span, corpus_coverage, correct, count_origins, ingest_bytes,

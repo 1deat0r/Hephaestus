@@ -1,4 +1,5 @@
-//! Prototype worker (T-020, R-094/R-095, MASTER_SPEC §15).
+//! Prototype worker (T-020, R-043 (composed artifacts verified against
+//! global invariants — assemble), R-094/R-095, MASTER_SPEC §15).
 //!
 //! Integration tests at the public seam: `authorize`, `assemble`.
 

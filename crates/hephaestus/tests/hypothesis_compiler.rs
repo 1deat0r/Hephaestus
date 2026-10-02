@@ -1,3 +1,4 @@
+//! R-008 (mechanism support kept separate from the engineering target).
 //! Hypothesis compiler + semantic validators (T-016, R-025/026/027).
 //!
 //! Integration tests at the public seam: `genesis::hypothesis::compile` /

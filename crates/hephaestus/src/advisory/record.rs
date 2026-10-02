@@ -13,7 +13,8 @@ pub enum Recommendation {
 
 /// Confidence as a MODEL JUDGMENT (§16 continuity: uncalibrated model
 /// probabilities are stored as model judgments, never scientific
-/// posteriors). The label travels with the number forever.
+/// posteriors — R-048: uncalibrated model confidence is judgment, not
+/// posterior belief). The label travels with the number forever.
 #[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
 pub struct ModelJudgment {
     pub value: f64,

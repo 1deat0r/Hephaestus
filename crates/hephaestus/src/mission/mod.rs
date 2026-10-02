@@ -17,7 +17,34 @@ pub mod record;
 
 pub use compiler::{compile, revise};
 pub use record::{
-    Assumption, AssumptionKind, AuthReason, AuthorizationRequest, AutonomyProfile, CompileError,
-    Compiled, ImpactReport, Intake, Mission, MissionChange, ResourceEnvelope, ResourceProfile,
-    ReviseError, default_guardrails, forbidden_actions,
+    AgentAgreement, Assumption, AssumptionKind, AuthReason, AuthorizationRequest, AutonomyProfile,
+    CompileError, Compiled, CompletionError, EvidenceRef, ImpactReport, Intake, Mission,
+    MissionChange, MissionCompletion, ResourceEnvelope, ResourceProfile, ReviseError,
+    default_guardrails, forbidden_actions,
 };
+
+/// Mission completion gate (R-091/AT-091, MASTER_SPEC §31): a mission
+/// completes with USABLE version-bound evidence — unanimous agent
+/// agreement is recorded but structurally never consulted, so approval
+/// without evidence cannot produce a completion record (hence no
+/// validated-invention-candidate claim can rest on it).
+pub fn complete_mission(
+    mission_id: &str,
+    _agreement: &record::AgentAgreement,
+    evidence: &[record::EvidenceRef],
+) -> Result<record::MissionCompletion, record::CompletionError> {
+    if evidence.is_empty() {
+        return Err(record::CompletionError::AgreementWithoutEvidence);
+    }
+    for r in evidence {
+        if r.evidence_id.is_empty() || r.version.is_empty() {
+            return Err(record::CompletionError::UnusableEvidence {
+                evidence_id: r.evidence_id.clone(),
+            });
+        }
+    }
+    Ok(record::MissionCompletion {
+        mission_id: mission_id.to_string(),
+        evidence: evidence.to_vec(),
+    })
+}

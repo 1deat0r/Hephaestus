@@ -241,3 +241,37 @@ impl std::fmt::Display for ReviseError {
 }
 
 impl std::error::Error for ReviseError {}
+
+/// Agent agreement offered at completion — reviewers' opinions,
+/// recorded but NEVER consulted for eligibility (R-091/AT-091:
+/// evidence rather than agent agreement).
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct AgentAgreement {
+    pub reviewers: Vec<String>,
+}
+
+/// A version-bound evidence reference — the only input that can
+/// complete a mission (R-091).
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct EvidenceRef {
+    pub evidence_id: String,
+    pub version: String,
+}
+
+/// Why mission completion refused (typed-rejection convention).
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum CompletionError {
+    /// Unanimous approval but no usable evidence (AT-091 negative).
+    AgreementWithoutEvidence,
+    /// An evidence ref is missing its id or version.
+    UnusableEvidence { evidence_id: String },
+}
+
+/// A completed mission: every accepted evidence ref carried,
+/// version-bound — the record a validated-candidate claim would need
+/// (R-091). Without it, no claim exists.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct MissionCompletion {
+    pub mission_id: String,
+    pub evidence: Vec<EvidenceRef>,
+}

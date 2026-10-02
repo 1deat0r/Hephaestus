@@ -352,3 +352,7 @@ crates/hephaestus/tests/realization_gates.rs
 .scratch/t052-domain-only-discovery/grill.md
 .scratch/t052-domain-only-discovery/spec.md
 .scratch/t052-domain-only-discovery/issues/01-benchmark-admission.md
+crates/hephaestus/tests/mission_completion.rs
+.scratch/t053-mission-completion/grill.md
+.scratch/t053-mission-completion/spec.md
+.scratch/t053-mission-completion/issues/01-mission-completion-gate.md

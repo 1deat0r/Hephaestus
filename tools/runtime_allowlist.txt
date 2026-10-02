@@ -340,3 +340,6 @@ crates/hephaestus/tests/realization_gates.rs
 .scratch/t048-adoption-authorization/grill.md
 .scratch/t048-adoption-authorization/spec.md
 .scratch/t048-adoption-authorization/issues/01-external-act-gate.md
+.scratch/t049-provisional-targets/grill.md
+.scratch/t049-provisional-targets/spec.md
+.scratch/t049-provisional-targets/issues/01-release-target-gate.md

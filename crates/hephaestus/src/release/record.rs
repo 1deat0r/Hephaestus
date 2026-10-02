@@ -105,6 +105,9 @@ pub enum ReleaseBlock {
     MissingReproducibility,
     /// Cost/latency entries must be quantities (no priced conversions).
     PricedMeasurement,
+    /// A performance claim presented as achieved without a recorded
+    /// benchmark receipt / value / reference machine (R-076).
+    UnmeasuredTargetDisplayed(String),
 }
 
 /// The release packet.
@@ -118,6 +121,32 @@ pub struct ReleasePacket {
     pub cost_latency: Vec<Measurement>,
     pub reproducibility: ReproducibilityReport,
     /// Unresolved research questions — explicitly recorded (honesty;
-    /// may be empty but is present).
+    /// may be empty but is present — R-085: they stay visible).
     pub unresolved_questions: Vec<String>,
+    /// Performance claims: provisional section-26 targets or pinned
+    /// measured benchmarks — never anything in between (R-076).
+    pub performance_claims: Vec<PerformanceClaim>,
+}
+
+/// A performance claim (R-076/AT-076): a section-26 target is
+/// PROVISIONAL by construction — it can never be rendered as an
+/// achieved benchmark; a measurement pins value, receipt, and the
+/// recorded reference machine.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub enum PerformanceClaim {
+    /// Section-26 engineering budget: provisional until measured.
+    ProvisionalTarget {
+        feature: String,
+        metric_label: String,
+        target_value: String,
+    },
+    /// A benchmark actually run on a recorded reference machine.
+    MeasuredBenchmark {
+        feature: String,
+        metric_label: String,
+        measured_value: String,
+        unit: String,
+        benchmark_receipt: String,
+        reference_machine: String,
+    },
 }

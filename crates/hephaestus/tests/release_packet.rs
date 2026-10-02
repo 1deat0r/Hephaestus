@@ -1,12 +1,15 @@
-//! Release packet (T-028, R-077/R-078/R-080).
+//! Release packet (T-028, R-077/R-078/R-080, R-093 (release stays
+//! EXPERIMENTAL unless qualification holds — scope_label,
+//! AT-105 (positive/negative yield, originality and economics stay
+//! independent with explicit costs)); T-049 R-076 target labeling).
 //!
 //! Integration tests at the public seam: `scope_label`, `assemble_release`.
 
-use hephaestus::release::assemble_release;
 use hephaestus::release::record::{
-    Finding, Measurement, OutcomeCounts, QualificationInputs, ReleaseBlock, ReleasePacket,
-    ReproducibilityReport, ScopeLabel, Severity, Uncertainty, scope_label,
+    Finding, Measurement, OutcomeCounts, PerformanceClaim, QualificationInputs, ReleaseBlock,
+    ReleasePacket, ReproducibilityReport, ScopeLabel, Severity, Uncertainty, scope_label,
 };
+use hephaestus::release::{achieved_benchmarks, assemble_release};
 
 fn s(v: &str) -> String {
     v.to_string()
@@ -44,6 +47,7 @@ fn packet() -> ReleasePacket {
             artifact_verifications: vec![(s("artifact-1"), true)],
         },
         unresolved_questions: vec![s("does the mechanism hold on deep topologies?")],
+        performance_claims: vec![],
     }
 }
 
@@ -162,5 +166,66 @@ fn twin_run_byte_identical() {
     assert_eq!(
         serde_json::to_string(&a).unwrap(),
         serde_json::to_string(&b).unwrap()
+    );
+}
+
+// ---- Ticket 01: R-076 provisional targets vs measured benchmarks ----
+
+#[test]
+fn at_076_a_provisional_p95_target_never_reaches_the_achieved_funnel() {
+    // R-076 negative case: render an unimplemented feature with a p95
+    // target — the dossier or UI cannot display it as an achieved
+    // benchmark (AT-076).
+    let mut p = packet();
+    p.performance_claims = vec![PerformanceClaim::ProvisionalTarget {
+        feature: s("unimplemented-widget"),
+        metric_label: s("p95 latency"),
+        target_value: s("<100 ms"),
+    }];
+    // Recording a section-26 provisional target is legal...
+    assemble_release(p.clone()).expect("provisional targets may be recorded");
+    // ...but the single achieved-display funnel never emits it.
+    assert!(
+        achieved_benchmarks(&p).is_empty(),
+        "provisional target leaked into the achieved-benchmark display"
+    );
+}
+
+#[test]
+fn at_076_a_measured_claim_without_receipt_or_machine_is_refused() {
+    // A target dressed up as a measurement must not pass the verifier.
+    let mut p = packet();
+    p.performance_claims = vec![PerformanceClaim::MeasuredBenchmark {
+        feature: s("state-operations"),
+        metric_label: s("p95 latency"),
+        measured_value: s("7"),
+        unit: s("ms"),
+        benchmark_receipt: s(""),
+        reference_machine: s(""),
+    }];
+    let err = assemble_release(p).expect_err("unmeasured target cannot pass as achieved");
+    assert!(
+        matches!(err, ReleaseBlock::UnmeasuredTargetDisplayed(ref f) if f == "state-operations"),
+        "{err:?}"
+    );
+}
+
+#[test]
+fn at_076_a_fully_pinned_measured_claim_passes_and_is_funneled() {
+    let mut p = packet();
+    p.performance_claims = vec![PerformanceClaim::MeasuredBenchmark {
+        feature: s("state-operations"),
+        metric_label: s("p95 latency"),
+        measured_value: s("7"),
+        unit: s("ms"),
+        benchmark_receipt: s("bench-918"),
+        reference_machine: s("ref-machine-7 (recorded)"),
+    }];
+    assemble_release(p.clone()).expect("fully pinned measurement passes");
+    let achieved = achieved_benchmarks(&p);
+    assert_eq!(
+        achieved.len(),
+        1,
+        "measured claim is displayable as achieved"
     );
 }

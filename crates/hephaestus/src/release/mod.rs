@@ -8,8 +8,8 @@
 pub mod record;
 
 pub use record::{
-    Finding, Measurement, OutcomeCounts, QualificationInputs, ReleaseBlock, ReleasePacket,
-    ReproducibilityReport, ScopeLabel, Severity, Uncertainty, scope_label,
+    Finding, Measurement, OutcomeCounts, PerformanceClaim, QualificationInputs, ReleaseBlock,
+    ReleasePacket, ReproducibilityReport, ScopeLabel, Severity, Uncertainty, scope_label,
 };
 
 /// Assemble the release packet (R-077 gate + completeness).
@@ -33,6 +33,24 @@ pub fn assemble_release(packet: ReleasePacket) -> Result<ReleasePacket, ReleaseB
     if packet.reproducibility.repro_commands.is_empty() {
         return Err(ReleaseBlock::MissingReproducibility);
     }
+    // R-076: a claim presented as achieved must pin receipt, measured
+    // value, AND the recorded reference machine (section 26) — a
+    // provisional target dressed up as a benchmark is refused by name.
+    for claim in &packet.performance_claims {
+        if let record::PerformanceClaim::MeasuredBenchmark {
+            feature,
+            measured_value,
+            benchmark_receipt,
+            reference_machine,
+            ..
+        } = claim
+            && (benchmark_receipt.is_empty()
+                || measured_value.is_empty()
+                || reference_machine.is_empty())
+        {
+            return Err(ReleaseBlock::UnmeasuredTargetDisplayed(feature.clone()));
+        }
+    }
     // R-103 continuity: measurements are quantities; a priced entry (a
     // "$" in the unit) is an invented conversion — refused.
     for m in &packet.cost_latency {
@@ -41,4 +59,15 @@ pub fn assemble_release(packet: ReleasePacket) -> Result<ReleasePacket, ReleaseB
         }
     }
     Ok(packet)
+}
+
+/// The single achieved-benchmark display funnel (R-076): only fully
+/// pinned measurements can reach the dossier/UI as achieved results;
+/// provisional section-26 targets are structurally excluded.
+pub fn achieved_benchmarks(packet: &ReleasePacket) -> Vec<&record::PerformanceClaim> {
+    packet
+        .performance_claims
+        .iter()
+        .filter(|c| matches!(c, record::PerformanceClaim::MeasuredBenchmark { .. }))
+        .collect()
 }

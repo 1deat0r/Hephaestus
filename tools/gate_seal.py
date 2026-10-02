@@ -17,7 +17,11 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 SEAL = ROOT / "tools" / "gate_seal.sha256"
 
-EXTRA_DATA_FILES = ("tools/runtime_allowlist.txt", "tools/md_links_baseline.txt")
+EXTRA_DATA_FILES = (
+    "tools/runtime_allowlist.txt",
+    "tools/md_links_baseline.txt",
+    "tools/requirement_citations.txt",
+)
 
 
 def gate_paths() -> list:

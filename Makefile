@@ -8,7 +8,7 @@ CARGO := cargo
 .PHONY: ci ci-fast fmt fmt-check clippy test-rust test-py verify test-package gen-check conflict-staged conflict-tree manifest-check md-links readme-fences report-unreferenced gate-seal seal hooks hooks-check setup clean doc-check
 
 ## Run every environment-independent gate (mirrors CI; the single gate registry).
-ci: fmt-check clippy test-rust test-py conflict-tree manifest-check md-links readme-fences report-unreferenced gate-seal ci-fast hooks-check
+ci: fmt-check clippy test-rust test-py conflict-tree manifest-check req-coverage md-links readme-fences report-unreferenced gate-seal ci-fast hooks-check
 
 ## Fast spec/doc freshness gates (.githooks/pre-commit runs exactly these).
 ## manifest-check joins the tier (ADR-025): a tracked-but-uncovered file
@@ -71,6 +71,14 @@ conflict-tree:
 ## Tracked files ⊆ MANIFEST ∪ allowlist, MANIFEST ⊆ tracked (ADR-024 L4).
 manifest-check:
 	$(PY) tools/check_manifest_coverage.py
+
+## Every requirement cited in code scope or reasoned in the allowlist (ADR-027).
+req-coverage:
+	$(PY) tools/check_requirement_citations.py
+
+## Advisory AT-citation worklist (ADR-024 tier — NOT in `ci` yet; see ADR-027 lineage).
+at-coverage:
+	$(PY) tools/report_at_citations.py
 
 ## Offline internal markdown links/anchors (ADR-024 L3 slice; shrink-only baseline).
 md-links:

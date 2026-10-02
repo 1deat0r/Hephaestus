@@ -156,3 +156,26 @@ local `make ci` — the exact honesty hole ADR-024 exists to close); pinning
 an older runner image (image pins rot and mask the real incompatibility);
 AppArmor profile surgery instead of one sysctl (more surface, no stronger
 guarantee on a throwaway VM).
+
+## ADR-027 — Requirement citation coverage is a sealed, fail-closed gate
+
+Every derivation ran an ad-hoc coverage scan whose scope decided the
+answer: crates+python alone manufactured 25 phantom "uncited"
+requirements (most audited as implemented elsewhere across runs
+17–26), while including requirements data yields a tautology (the
+requirements cite themselves). `tools/check_requirement_citations.py`
+now scans CODE ONLY (crates, python, tests, tools, validation py,
+.githooks) and gates `make ci` via the new `req-coverage` registry
+entry: an uncited id fails until triaged — cited honestly, or listed
+in `tools/requirement_citations.txt` with a written reason — and a
+stale allowlist entry (id since cited) also fails, mirroring
+manifest-check's stale detection. The allowlist joins gate_seal's
+EXTRA_DATA_FILES so gap-entries cannot be silently added or dropped.
+Initial content: R-054 (no cache exists; views rebuildable by
+construction — gates any future cache) and R-079 (build-order
+process obligation with no code form). Five honest cites (R-081,
+R-085, R-087, R-088, R-089) cleared the rest of the code-scope
+remainder. Rejected: scanning requirements/validation data
+(tautology); leaving the scan ad-hoc (phantom-gap re-audits cost a
+full grill every run); an advisory-only report (a gap in the
+derivation signal is exactly what a gate should stop).

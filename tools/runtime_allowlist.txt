@@ -369,3 +369,8 @@ crates/hephaestus/tests/evidence_class.rs
 .scratch/t058-untrusted-retrieval/grill.md
 .scratch/t058-untrusted-retrieval/spec.md
 .scratch/t058-untrusted-retrieval/issues/01-inert-directives.md
+tools/check_requirement_citations.py
+tools/requirement_citations.txt
+.scratch/t059-requirement-coverage-report/grill.md
+.scratch/t059-requirement-coverage-report/spec.md
+.scratch/t059-requirement-coverage-report/issues/01-req-coverage-tool.md

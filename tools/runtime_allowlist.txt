@@ -331,9 +331,13 @@ docs/agents/auto-workflow/state-archive-20261001T064500Z-run13.md
 docs/agents/auto-workflow/state-archive-20261001T065000Z-run14.md
 crates/hephaestus/tests/e2e_m2.rs
 crates/hephaestus/tests/e2e_m3.rs
+crates/hephaestus/tests/champion_reuse.rs
 crates/hephaestus/src/missionrun.rs
 crates/hephaestus/tests/fixtures/e2e-trace.log
 docs/M2_M3_M4_EXIT_ASSESSMENT.md
+.scratch/t062-t033-champion-reuse-demo/grill.md
+.scratch/t062-t033-champion-reuse-demo/spec.md
+.scratch/t062-t033-champion-reuse-demo/issues/01-champion-loop.md
 crates/synthetic-evaluator/src/trace_fixture.rs
 crates/synthetic-evaluator/tests/e2e_trace_fixture.rs
 .scratch/t061-e2e-mission-driver/grill.md

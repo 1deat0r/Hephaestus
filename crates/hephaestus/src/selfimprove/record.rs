@@ -152,6 +152,9 @@ pub struct LedgerEntry {
     pub challenger_id: String,
     pub challenger_digest: String,
     pub incumbent_id: String,
+    /// Provenance of the retained incumbent this entry supersedes or
+    /// restores (R-116: both identities carried with digests).
+    pub incumbent_digest: String,
     pub outcome: String,
     pub reason: String,
     pub observations: String,
@@ -164,6 +167,11 @@ pub struct LedgerEntry {
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, Default)]
 pub struct ImprovementLedger {
     entries: Vec<LedgerEntry>,
+    /// Recorded triggers (R-115: triggers ARE recorded, durable with
+    /// the ledger). `serde(default)` keeps pre-trigger ledgers valid
+    /// while entries stay strict.
+    #[serde(default)]
+    triggers: Vec<TriggerRecord>,
 }
 
 impl ImprovementLedger {
@@ -175,12 +183,315 @@ impl ImprovementLedger {
         &self.entries
     }
 
-    /// Reconstruct from persisted JSON (restart recovery, §R-116).
-    pub fn from_json(json: &str) -> Self {
-        serde_json::from_str(json).unwrap_or_default()
+    /// Reconstruct from persisted JSON (restart recovery, §R-116/118).
+    /// FAIL-CLOSED: a corrupt or truncated ledger REFUSES — returning an
+    /// empty ledger would silently erase every learned decision, which
+    /// the obligations forbid. Callers must handle the error.
+    pub fn from_json(json: &str) -> Result<Self, RecoverError> {
+        serde_json::from_str(json).map_err(|e| RecoverError::CorruptLedger(e.to_string()))
+    }
+
+    /// Atomic persist (R-118): write a temp file, then rename — a crash
+    /// mid-write can never leave a half-state behind as the main file
+    /// (the leftover temp is ignored + noted by `recover`).
+    pub fn persist(&self, path: &std::path::Path) -> Result<(), RecoverError> {
+        let tmp = path.with_extension("json.tmp");
+        std::fs::write(&tmp, self.to_json()).map_err(|e| RecoverError::Io(e.to_string()))?;
+        std::fs::rename(&tmp, path).map_err(|e| RecoverError::Io(e.to_string()))?;
+        Ok(())
     }
 
     pub fn to_json(&self) -> String {
         serde_json::to_string(self).unwrap_or_default()
     }
+
+    /// The recorded triggers, in order (R-115).
+    pub fn triggers(&self) -> &[TriggerRecord] {
+        &self.triggers
+    }
+
+    /// Append a recorded trigger (crate-internal: record_trigger owns
+    /// validation).
+    pub(crate) fn push_trigger(&mut self, trigger: TriggerRecord) {
+        self.triggers.push(trigger);
+    }
 }
+
+/// What fired a cycle (R-115: mission completion, predeclared
+/// batch/interval, independently measured drift, repeated failure
+/// class, or an owner request — recorded, never inferred).
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum TriggerKind {
+    MissionCompletion,
+    BatchInterval,
+    DriftMeasured,
+    RepeatedFailure,
+    OwnerRequest,
+}
+
+/// One recorded trigger on the ledger (R-115). `cycle_index` feeds the
+/// cycle's declared deadline.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct TriggerRecord {
+    pub kind: TriggerKind,
+    pub subject: String,
+    pub detail: String,
+    pub cycle_index: u64,
+}
+
+/// Why trigger recording refused.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum TriggerError {
+    EmptySubject,
+}
+
+impl std::fmt::Display for TriggerError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            TriggerError::EmptySubject => write!(f, "trigger subject is empty"),
+        }
+    }
+}
+
+impl std::error::Error for TriggerError {}
+
+/// What one improvement cycle is allowed to do (R-115: reserved
+/// budget, candidate cap, deadline, stop rule — declared, never
+/// interpreted as model prose).
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct CyclePolicy {
+    pub max_candidates: usize,
+    pub reserved_budget: u64,
+    pub deadline_cycle: u64,
+    pub stop_rules: Vec<String>,
+}
+
+/// The outcome of a bounded cycle (R-115): a proposal, or the
+/// RECORDED absence of a justified change.
+#[derive(Debug, Clone, PartialEq)]
+pub enum CycleOutcome {
+    /// Boxed: the candidate outweighs the no-change arm by ~20x
+    /// (clippy large_enum_variant — box, never pad the common path).
+    Proposed {
+        candidate: Box<ImprovementCandidate>,
+    },
+    NoJustifiedChange {
+        reason: String,
+    },
+}
+
+/// Why a cycle refused to run (typed-rejection convention).
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum CycleError {
+    MissingStopRule,
+    CandidateCapExceeded,
+    BudgetCapExceeded,
+    DeadlinePassed,
+    /// The single proposal edge refused the input.
+    ProposalRefused {
+        reason: String,
+    },
+}
+
+impl std::fmt::Display for CycleError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            CycleError::MissingStopRule => write!(f, "cycle has no stop rule"),
+            CycleError::CandidateCapExceeded => write!(f, "cycle exceeds its candidate cap"),
+            CycleError::BudgetCapExceeded => write!(f, "cycle exceeds its reserved budget"),
+            CycleError::DeadlinePassed => write!(f, "cycle is past its declared deadline"),
+            CycleError::ProposalRefused { reason } => write!(f, "proposal edge refused: {reason}"),
+        }
+    }
+}
+
+impl std::error::Error for CycleError {}
+
+/// The monitor's declared bounds (R-118): how many checks it may run,
+/// its stop rules, and the incumbent digest the caller has VERIFIED
+/// (rollback refuses without this proof).
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct MonitorPolicy {
+    pub max_checks: u64,
+    pub stop_rules: Vec<String>,
+    pub verified_incumbent_digest: String,
+}
+
+/// Result of monitoring a deployment to its bound (R-118): either the
+/// stream completed inside the bound, or a breach stopped the rollout
+/// with a real rollback receipt.
+#[derive(Debug, Clone, PartialEq)]
+pub enum MonitorOutcome {
+    Completed {
+        checks: u64,
+    },
+    Stopped {
+        checks: u64,
+        rollback: RollbackReceipt,
+    },
+}
+
+/// Why monitoring refused to start (typed-rejection convention).
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum MonitorError {
+    MissingStopRule,
+    InvalidPolicy,
+    /// The caller could not prove the incumbent — checked BEFORE any
+    /// observation (never a vacuous rollback).
+    UnverifiedIncumbent {
+        expected: String,
+        found: String,
+    },
+    /// The rollback itself refused (pre-checked digest mismatch).
+    RollbackRefused {
+        reason: String,
+    },
+}
+
+impl std::fmt::Display for MonitorError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            MonitorError::MissingStopRule => write!(f, "monitor has no stop rule"),
+            MonitorError::InvalidPolicy => write!(f, "monitor policy is invalid"),
+            MonitorError::UnverifiedIncumbent { expected, found } => write!(
+                f,
+                "unverified incumbent: policy {expected} != deployment {found}"
+            ),
+            MonitorError::RollbackRefused { reason } => write!(f, "rollback refused: {reason}"),
+        }
+    }
+}
+
+impl std::error::Error for MonitorError {}
+
+/// The bounded, evidence-attached proposal input (R-115): the service
+/// constructs a candidate FROM recorded observations — never from a
+/// guess, never budgeted from itself.
+#[derive(Debug, Clone, PartialEq)]
+pub struct ProposalInput {
+    pub target: String,
+    pub incumbent_id: String,
+    pub incumbent_digest: String,
+    pub challenger_id: String,
+    pub challenger_digest: String,
+    pub supporting_observation_ids: Vec<String>,
+    pub fresh_partition_id: String,
+    pub budget_from: String,
+    pub intended_primary_benefit: String,
+    pub guardrails: Vec<String>,
+    pub rollout_artifact_digest: String,
+    pub rollback_artifact_digest: String,
+    pub manifest: EvaluationManifest,
+}
+
+/// Why proposal construction refused (typed-rejection convention).
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum ProposalError {
+    /// No (or blank) supporting observations — a guess, not evidence.
+    UnseededProposal,
+    /// The candidate would budget itself (R-115 envelope rule).
+    SelfBudgeting,
+}
+
+impl std::fmt::Display for ProposalError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            ProposalError::UnseededProposal => {
+                write!(f, "proposal has no supporting observations")
+            }
+            ProposalError::SelfBudgeting => write!(f, "proposal budgets itself"),
+        }
+    }
+}
+
+impl std::error::Error for ProposalError {}
+
+/// The ACTIVE champion for a target, resolved from the append-only
+/// ledger: last `deployed` entry wins until a `rolled_back` entry
+/// restores that deployment's incumbent (R-118/R-119).
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct Champion {
+    pub id: String,
+    pub digest: String,
+}
+
+/// Why ledger persistence/recovery refused (typed-rejection convention).
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum RecoverError {
+    /// The persisted ledger is corrupt/truncated — never silently
+    /// replaced with an empty one (R-116: restart loses nothing).
+    CorruptLedger(String),
+    Io(String),
+}
+
+impl std::fmt::Display for RecoverError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            RecoverError::CorruptLedger(m) => write!(f, "corrupt improvement ledger: {m}"),
+            RecoverError::Io(m) => write!(f, "ledger io: {m}"),
+        }
+    }
+}
+
+impl std::error::Error for RecoverError {}
+
+/// One thing recovery noticed while reconstructing state (R-118:
+/// interrupted deployments are RECONCILED, never guessed away).
+#[derive(Debug, Clone, PartialEq)]
+pub enum RecoveryAction {
+    /// No main file yet — a fresh start, recorded not assumed.
+    FreshStart,
+    /// Leftover temp from an interrupted atomic persist — ignored.
+    StaleTempIgnored,
+    /// A deployment was decided but never committed: the exact entry
+    /// is returned for exactly-once replay by the caller.
+    DeploymentInterrupted { entry: LedgerEntry },
+    /// A torn pending file was discarded LOUDLY (reason retained).
+    PendingDiscarded { reason: String },
+}
+
+/// Predeclared canary indicator (R-118): observed value against its
+/// declared bound; a breach stops the rollout.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct Indicator {
+    pub name: String,
+    pub kind: BoundKind,
+    pub observed: f64,
+    pub limit: f64,
+}
+
+/// Which side of `limit` is acceptable.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum BoundKind {
+    /// Lower bound: breach when observed < limit.
+    AtLeast,
+    /// Upper bound: breach when observed > limit.
+    AtMost,
+}
+
+/// The predeclared indicator set a deployment is monitored against.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct GuardrailIndicators {
+    pub indicators: Vec<Indicator>,
+}
+
+/// A breached guardrail — names the indicator (R-118 stop condition).
+#[derive(Debug, Clone, PartialEq)]
+pub struct CanaryViolation {
+    pub indicator: String,
+    pub observed: f64,
+    pub limit: f64,
+    pub challenger_id: String,
+}
+
+impl std::fmt::Display for CanaryViolation {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(
+            f,
+            "guardrail '{}' breached: observed {} vs limit {} (challenger {})",
+            self.indicator, self.observed, self.limit, self.challenger_id
+        )
+    }
+}
+
+impl std::error::Error for CanaryViolation {}

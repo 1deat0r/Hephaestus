@@ -39,3 +39,16 @@ open ticket must cover every spec AC through its tickets' Covers
 lists. `make ticket-status` runs in `make ci` and checks all of this.
 The scheduled sweep (`ticket-status-sweep`) fails any open ticket
 whose Verify is green. A red gate blocks the next task.
+
+## Task decomposition (standing user rule, 2026-10-02)
+
+Every small task nests micro tasks. Every micro task nests nano
+tasks.
+- Small task: one ticket, one unit of value, one push. The size caps
+  apply (16 scope IDs, 8 unchecked boxes).
+- Micro task: one seam or one red-to-green cycle. It ends in one
+  commit and one push.
+- Nano task: one file, one command, or one measurement. Minutes of
+  work; it never ships alone.
+Open tickets declare the nesting under `**Micro-tasks:**`, with nano
+steps as indented bullets. `make ticket-status` checks the structure.

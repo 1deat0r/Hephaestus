@@ -19,11 +19,23 @@ sequential frontier).
 **Candidate goals:** (none yet)
 
 
-**Micro-steps:**
+**Micro-tasks:** (each ends in one commit and one push)
 
-1. M1: audit the first eight listed IDs: negative case vs test, cites -> commit+push
-2. M2: audit the remaining eight listed IDs -> commit+push
-3. N: candidates + Verify + status flip -> commit+push
+1. Micro — audit the first eight listed IDs
+   - nano: extract the listed negative cases from OBLIGATIONS.md
+   - nano: locate one mirror test per ID (grep by concept, read both sides)
+   - nano: apply cite edits only at verified mirrors; never force a match
+   - nano: cargo fmt --check + ticket-status, then commit and push
+2. Micro — audit the remaining eight listed IDs
+   - nano: extract the listed negative cases from OBLIGATIONS.md
+   - nano: locate one mirror test per ID (grep by concept, read both sides)
+   - nano: apply cite edits only at verified mirrors; never force a match
+   - nano: cargo fmt --check + ticket-status, then commit and push
+3. Micro — close the batch
+   - nano: run the batch Verify command
+   - nano: record goal candidates under Candidate goals (never silent)
+   - nano: flip Status, tick every box, commit and push
+
 
 ## Comments
 

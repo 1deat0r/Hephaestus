@@ -214,3 +214,9 @@ lists, so "as many tickets as needed" is a checkable invariant rather
 than a hope. Covers numbers must exist in the spec — phantom coverage
 fails. Live demos: an oversized open ticket (17 IDs) and an open
 ticket without Covers both fail; removal restores green.
+The format gate grew one more requirement after the user's nesting
+rule (2026-10-02): every open ticket must declare `**Micro-tasks:**`
+and every micro task must contain nano steps as indented bullets —
+small tasks are recommended and built as nested small/micro/nano
+trees from now on. Missing-section and no-nano cases were demoed
+live (fail), nested content passes.

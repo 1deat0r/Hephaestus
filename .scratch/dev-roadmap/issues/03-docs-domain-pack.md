@@ -10,10 +10,18 @@
 
 **Covers:** 3
 
-**Micro-steps:**
+**Micro-tasks:** (each ends in one commit and one push)
 
-1. M1: build the DomainPack fixture for the docs domain (units, oracle adjudicated, execution class) + red qualify test -> commit+push
-2. N: gates + status flip -> commit+push
+1. Micro — docs DomainPack fixture + red qualify test
+   - nano: build the pack fixture (units, adjudicated oracle, execution class)
+   - nano: write the failing qualify test, run it red
+   - nano: make qualify pass, run the test green
+   - nano: cargo fmt + ticket-status, commit and push
+2. Micro — close: gates + status
+   - nano: runtime_allowlist + make seal
+   - nano: make ci + make doc-check
+   - nano: flip Status, tick boxes, commit and push
+
 
 ## Comments
 

@@ -10,9 +10,13 @@
 
 **Covers:** 5
 
-**Micro-steps:**
+**Micro-tasks:** (each ends in one commit and one push)
 
-1. N: add 'campaign receipts' section citing tasks 01+02 evidence; adjust dispositions honestly -> commit+push
+1. Micro — campaign receipts section in the exit assessment
+   - nano: write the section citing tasks 01 and 02 receipts exactly
+   - nano: run the grep Verify command
+   - nano: adjust dispositions honestly, flip Status, commit and push
+
 
 ## Comments
 

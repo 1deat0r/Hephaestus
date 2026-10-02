@@ -10,11 +10,21 @@
 
 **Covers:** 2
 
-**Micro-steps:**
+**Micro-tasks:** (each ends in one commit and one push)
 
-1. M1: test ingests docs/ files via knowledge::ingest_bytes (fixed file list) + span-cited TraceRecords -> commit+push
-2. M2: run discovery chain over that corpus; assert >=1 grounded opportunity from REAL bytes + twin-run identical -> commit+push
-3. N: allowlist + reseal + status flip -> commit+push
+1. Micro — corpus ingest test over docs/ files
+   - nano: pick a fixed list of repo docs and write the ingest test
+   - nano: run cargo test --test e2e_real_corpus to red, then green
+   - nano: cargo fmt + ticket-status, commit and push
+2. Micro — grounded opportunities from real bytes
+   - nano: build span-cited TraceRecords from the ingested docs
+   - nano: assert at least one grounded opportunity plus twin-run identity
+   - nano: run the test to green, then commit and push
+3. Micro — close: allowlist, seal, status
+   - nano: runtime_allowlist entries + make seal
+   - nano: make ci + make doc-check
+   - nano: flip Status, tick boxes, commit and push
+
 
 ## Comments
 

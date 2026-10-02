@@ -22,11 +22,22 @@ confirm and keep, do not silently cite)
 - AT-097 — recorded goal candidate from ticket 02; confirm and keep.
 
 
-**Micro-steps:**
+**Micro-tasks:** (each ends in one commit and one push)
 
-1. M1: audit the first seven listed IDs; confirm the recorded candidate stays -> commit+push
-2. M2: audit the last listed ID + final worklist proof -> commit+push
-3. N: candidates + Verify + status flip (closes the AT-parity goal) -> commit+push
+1. Micro — audit the first seven listed IDs and confirm the recorded candidate stays
+   - nano: extract the listed negative cases from OBLIGATIONS.md
+   - nano: locate one mirror test per ID (grep by concept, read both sides)
+   - nano: apply cite edits only at verified mirrors; never force a match
+   - nano: cargo fmt --check + ticket-status, then commit and push
+2. Micro — audit the last listed ID and produce the final worklist proof
+   - nano: extract the final negative case
+   - nano: re-run the full AT report and save the worklist proof
+   - nano: fmt + ticket-status, then commit and push
+3. Micro — close the AT-parity goal
+   - nano: run the batch Verify command
+   - nano: record goal candidates under Candidate goals (never silent)
+   - nano: flip Status, tick every box, commit and push
+
 
 ## Comments
 

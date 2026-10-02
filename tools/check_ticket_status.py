@@ -6,8 +6,10 @@ direction. This tool makes them detectable and therefore stoppable:
 
   --format (fast; part of `make ci`):
     every issue file carries a valid Status;
-    every NOT-done ticket declares a `Verify:` command and a
-    `Covers:` list of spec acceptance-criteria numbers;
+    every NOT-done ticket declares a `Verify:` command, a
+    `Covers:` list of spec acceptance-criteria numbers, and NESTED
+    decomposition under `**Micro-tasks:**` (micro tasks, each with
+    nano steps as indented bullets);
     size caps hold for OPEN tickets (small tasks ONLY): at most 16
     scope IDs (AT-NNN/R-NNN) and at most 8 unchecked boxes — landed
     history is grandfathered;
@@ -111,6 +113,20 @@ def fmt_mode() -> int:
         slug = path.relative_to(ROOT / ".scratch").parts[0]
         acs = spec_acs(slug)
         covers = covers_of(text)
+        if status != "done" and "**Micro-tasks:**" not in text:
+            print(
+                f"ticket-status: FAIL {path}: open ticket without a "
+                "`**Micro-tasks:** section — decompose into micro tasks"
+            )
+            problems += 1
+        elif status != "done" and "**Micro-tasks:**" in text and not re.search(
+            r"^\s+- ", text, re.M
+        ):
+            print(
+                f"ticket-status: FAIL {path}: micro tasks must nest nano "
+                "steps (indented `- ` bullets)"
+            )
+            problems += 1
         if status != "done" and covers is None:
             print(
                 f"ticket-status: FAIL {path}: open ticket without a "
@@ -152,7 +168,8 @@ def fmt_mode() -> int:
         return 1
     print(
         f"ticket-status: ok ({len(ISSUES)} issue files; statuses valid; "
-        "open tickets declare Verify+Covers; size caps hold; open features cover every spec AC)"
+        "open tickets declare Verify+Covers+Micro-tasks with nano steps; "
+        "size caps hold; open features cover every spec AC)"
     )
     return 0
 

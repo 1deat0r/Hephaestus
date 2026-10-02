@@ -1,4 +1,6 @@
-//! Advisory provider contract layer (T-029, R-005, R-053 (calibration
+//! Advisory provider contract layer (T-029, R-005/AT-005 (optional
+//! backends disabled: the local reference providers keep the workflow
+//! executable — NullProvider/FixtureProvider), R-053 (calibration
 //! and abstention evaluated from known-outcome fixture cases), R-090).
 //!
 //! Integration tests at the public seam: `evaluate_provider`,

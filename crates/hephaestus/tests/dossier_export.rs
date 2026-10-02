@@ -1,4 +1,6 @@
-//! Dossier capture, reproduction, export (T-023, R-044, R-103, §15; T-051 R-082 evidence label).
+//! Dossier capture, reproduction, export (T-023, R-044, R-103, §15; T-051 R-082
+//! evidence label; AT-002 (no dossier before an experiment — missing raw
+//! data refuses export, output stays exploratory)).
 
 use hephaestus::dossier::record::{
     CostReceipt, Deviation, Dossier, Environment, EvidenceLabel, FailureEntry, Lineage,

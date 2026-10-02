@@ -1,4 +1,6 @@
-//! E2E mission driver — M3 chain (T-061 ticket 02; IMPLEMENTATION_PLAN:82).
+//! E2E mission driver — M3 chain (T-061 ticket 02; IMPLEMENTATION_PLAN:82;
+//! R-003/AT-003 (a contradicted outcome exports as an honest negative —
+//! a completed investigation, never invention success)).
 //!
 //! Assertions over the shared chain in `hephaestus::missionrun`:
 //! trace fixture -> qualified interval -> experiment plan -> typed result

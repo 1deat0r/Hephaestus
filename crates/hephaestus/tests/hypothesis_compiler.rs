@@ -1,4 +1,6 @@
-//! R-008 (mechanism support kept separate from the engineering target).
+//! R-008/AT-008 (mechanism support kept separate from the engineering
+//! target — results supporting the mechanism but missing the speed
+//! target leave the two statuses differing).
 //! Hypothesis compiler + semantic validators (T-016, R-025/026/027).
 //!
 //! Integration tests at the public seam: `genesis::hypothesis::compile` /

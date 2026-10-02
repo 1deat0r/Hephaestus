@@ -1,4 +1,6 @@
-//! E2E mission driver — M2 chain (T-061 ticket 01; IMPLEMENTATION_PLAN:64).
+//! E2E mission driver — M2 chain (T-061 ticket 01; IMPLEMENTATION_PLAN:64;
+//! R-001/AT-001 (domain-only goal, no seed — the runtime originates the
+//! opportunities and the test-ready hypothesis)).
 //!
 //! goal -> mission compile -> hidden-world fixture traces -> discovery ->
 //! genesis -> test-ready hypothesis. Receipts for the M2-M4 exit

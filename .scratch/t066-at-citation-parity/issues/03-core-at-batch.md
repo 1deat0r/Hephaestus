@@ -11,8 +11,12 @@ AT-010 AT-011 AT-012 AT-016 AT-017 AT-018
 
 **Status:** ready-for-agent
 
+**Verify:** python3 tools/report_at_citations.py --batch .scratch/t066-at-citation-parity/issues/03-core-at-batch.md
+
 - [ ] All 14 dispositioned: cited (verified mirror) or goal candidate
 - [ ] Re-scan: batch absent from the silent-gap set; gates green
+
+**Candidate goals:** (none yet)
 
 ## Comments
 

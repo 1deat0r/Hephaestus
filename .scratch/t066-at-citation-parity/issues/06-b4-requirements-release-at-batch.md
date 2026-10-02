@@ -10,10 +10,15 @@ confirm and keep, do not silently cite)
 
 **Status:** ready-for-agent
 
+**Verify:** python3 tools/report_at_citations.py --batch .scratch/t066-at-citation-parity/issues/06-b4-requirements-release-at-batch.md
+
 - [ ] All 9 dispositioned: cited or goal candidate (AT-097 keeps its
       recorded candidate status unless a true mirror appears)
 - [ ] Final re-scan: the worklist equals the recorded goal candidates
       exactly; gates green
+
+**Candidate goals:**
+- AT-097 — recorded goal candidate from ticket 02; confirm and keep.
 
 ## Comments
 

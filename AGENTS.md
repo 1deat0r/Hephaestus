@@ -28,3 +28,11 @@ Work task by task. Commit every completed small task locally, then
 push it to GitHub, before the next task starts. Local hooks and CI are
 the gates. A red gate blocks the next task until the fix lands.
 Never force-push. Never rewrite pushed history.
+
+## Ticket status (standing user rule, 2026-10-02)
+
+Flip the ticket Status in the same commit that lands its work. Every
+open ticket declares a `Verify:` command. `make ticket-status` runs in
+`make ci` and checks the structure. The scheduled sweep
+(`ticket-status-sweep`) fails any open ticket whose Verify is green.
+A red gate blocks the next task.

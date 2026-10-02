@@ -251,6 +251,7 @@ docs/agents/auto-workflow/decisions-2026-10-02T03:35:10Z.md
 docs/agents/auto-workflow/report-2026-10-02T03:35:10Z.md
 docs/agents/auto-workflow/TASK_COMMITS.md
 tools/report_at_citations.py
+tools/check_ticket_status.py
 .scratch/t066-at-citation-parity/grill.md
 .scratch/t066-at-citation-parity/spec.md
 .scratch/t066-at-citation-parity/issues/01-at-coverage-report.md

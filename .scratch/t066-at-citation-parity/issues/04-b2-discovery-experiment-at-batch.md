@@ -10,8 +10,12 @@ sequential frontier).
 
 **Status:** ready-for-agent
 
+**Verify:** python3 tools/report_at_citations.py --batch .scratch/t066-at-citation-parity/issues/04-b2-discovery-experiment-at-batch.md
+
 - [ ] All 16 dispositioned: cited or goal candidate
 - [ ] Re-scan: batch absent; gates green
+
+**Candidate goals:** (none yet)
 
 ## Comments
 

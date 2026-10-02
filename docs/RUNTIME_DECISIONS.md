@@ -179,3 +179,28 @@ remainder. Rejected: scanning requirements/validation data
 (tautology); leaving the scan ad-hoc (phantom-gap re-audits cost a
 full grill every run); an advisory-only report (a gap in the
 derivation signal is exactly what a gate should stop).
+
+## ADR-028 — Ticket status is a gate: format in ci, stale-open sweep in the periodic audit
+
+The 2026-10-02 audit found 28 tickets whose work had landed long ago
+while their Status still read `ready-for-agent` — the dangerous stale
+direction (green work, red label). Labels that live in files nobody is
+forced to flip cannot be trusted to discipline alone, so status became
+machinery. `tools/check_ticket_status.py --format` joins `make ci` and
+enforces structure in seconds: every issue file carries a valid Status
+enum, and every non-done ticket must declare a `Verify:` command — the
+command that proves its work green. `tools/check_ticket_status.py
+--sweep` runs in the scheduled `periodic` workflow (ADR-024 tier T3):
+an open ticket whose Verify passes is STALE-OPEN and fails the sweep
+until the label flips in the commit that landed the work; a done
+ticket whose declared Verify fails is BROKEN; done tickets without
+Verify rely on push CI for regression coverage. Triage batches verify
+through `report_at_citations.py --batch`, which passes only when every
+listed AT is cited in code scope or listed under that ticket's own
+Candidate goals section — a disposition, never a silent skip. The
+workflow rule lands in AGENTS.md and skill rule 13: flip Status in the
+SAME commit that lands the work. Rejected: auto-flipping from green
+gates (a green sub-test does not prove the whole ticket's
+acceptance); retroactive Verify on the 111 done tickets (unverifiable
+claims — push CI already covers their regressions); a manual checklist
+(exactly what went stale 28 times).

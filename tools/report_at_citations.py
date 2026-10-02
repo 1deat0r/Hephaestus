@@ -75,6 +75,29 @@ def obligations_text() -> dict:
     return out
 
 
+def batch_mode(path: str) -> int:
+    """Check one triage-batch ticket: every listed AT must be cited in
+    code scope OR listed in the ticket's own `Candidate goals:` section
+    (dispositioned, never silently skipped)."""
+    text = Path(path).read_text(encoding="utf-8", errors="replace")
+    ats_block = re.search(r"\*\*ATs:\*\*(.*?)(\n\n)", text, re.S)
+    ats = re.findall(r"AT-\d{3}", ats_block.group(1)) if ats_block else []
+    cands_block = re.search(r"Candidate goals:\s*(.*?)(?=\n## |\Z)", text, re.S)
+    cands = set(re.findall(r"AT-\d{3}", cands_block.group(1))) if cands_block else set()
+    cited = at_cited(code_files())
+    untriaged = [a for a in ats if a not in cited and a not in cands]
+    print(
+        f"at-batch {path}: {len(ats)} ATs, {len(cands)} candidate(s) listed, "
+        f"{len(ats) - len(untriaged) - len([a for a in ats if a in cands and a not in cited])} cited"
+    )
+    for a in untriaged:
+        print(f"  UNTRIAGED {a} — cite at a verified mirror or list it under Candidate goals")
+    if not ats:
+        print("  FAIL: no **ATs:** list found")
+        return 1
+    return 1 if untriaged else 0
+
+
 def main() -> int:
     reqs = json.loads((ROOT / "requirements.json").read_text())["requirements"]
     files = code_files()
@@ -108,4 +131,11 @@ def main() -> int:
 
 
 if __name__ == "__main__":
+    argv = sys.argv[1:]
+    if "--batch" in argv:
+        idx = argv.index("--batch")
+        if idx + 1 >= len(argv):
+            print("usage: --batch <ticket-file>")
+            sys.exit(2)
+        sys.exit(batch_mode(argv[idx + 1]))
     sys.exit(main())

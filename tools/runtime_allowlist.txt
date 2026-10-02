@@ -343,3 +343,6 @@ crates/hephaestus/tests/realization_gates.rs
 .scratch/t049-provisional-targets/grill.md
 .scratch/t049-provisional-targets/spec.md
 .scratch/t049-provisional-targets/issues/01-release-target-gate.md
+.scratch/t050-context-caching-baseline/grill.md
+.scratch/t050-context-caching-baseline/spec.md
+.scratch/t050-context-caching-baseline/issues/01-caching-review-gate.md

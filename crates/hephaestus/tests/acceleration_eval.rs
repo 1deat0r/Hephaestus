@@ -1,10 +1,13 @@
-//! Advanced search evaluation (T-031).
+//! Advanced search evaluation (T-031; T-050 R-083 caching review).
 //!
 //! Integration tests at the public seam: `matched_ablation`,
 //! `evaluate_pair`.
 
 use hephaestus::acceleration::record::{MechanismKind, PairMeasurement, PromotionVerdict};
-use hephaestus::acceleration::{CandidateMechanism, evaluate_pair, matched_ablation};
+use hephaestus::acceleration::{
+    CachingComparator, CachingComparison, CachingReview, CachingReviewError, CandidateMechanism,
+    evaluate_pair, matched_ablation, review_caching_comparison,
+};
 
 fn s(v: &str) -> String {
     v.to_string()
@@ -121,4 +124,64 @@ fn twin_run_byte_identical() {
         serde_json::to_string(&a).unwrap(),
         serde_json::to_string(&b).unwrap()
     );
+}
+
+// ---- Ticket 01: R-083 context-caching benchmark review ----
+
+#[test]
+fn at_083_full_reconstruction_alone_without_justification_is_refused() {
+    // R-083 negative case: use only full reconstruction despite a
+    // stronger exact-cache implementation — benchmark review must
+    // request the stronger comparator or justify the exclusion.
+    let comparison = CachingComparison {
+        comparators_used: vec![CachingComparator::FullReconstruction],
+        exclusion_justification: None,
+    };
+    let err = review_caching_comparison(&comparison)
+        .expect_err("an unjustified straw-baseline-only review must be refused");
+    assert!(
+        matches!(
+            err,
+            CachingReviewError::MissingStrongerComparatorOrJustification
+        ),
+        "{err:?}"
+    );
+
+    // An empty justification is no justification.
+    let comparison = CachingComparison {
+        comparators_used: vec![CachingComparator::FullReconstruction],
+        exclusion_justification: Some(s("")),
+    };
+    review_caching_comparison(&comparison)
+        .expect_err("an empty exclusion justification must be refused");
+}
+
+#[test]
+fn at_083_using_the_stronger_comparator_satisfies_review() {
+    let comparison = CachingComparison {
+        comparators_used: vec![
+            CachingComparator::FullReconstruction,
+            CachingComparator::ExactCache,
+        ],
+        exclusion_justification: None,
+    };
+    let outcome = review_caching_comparison(&comparison).expect("stronger comparator used");
+    assert!(matches!(outcome, CachingReview::StrongerComparatorUsed));
+}
+
+#[test]
+fn at_083_a_justified_exclusion_satisfies_review_and_carries_the_reason() {
+    let comparison = CachingComparison {
+        comparators_used: vec![CachingComparator::FullReconstruction],
+        exclusion_justification: Some(s(
+            "exact-cache prototype lacks the pinned implementation digest (recorded gap)",
+        )),
+    };
+    let outcome = review_caching_comparison(&comparison).expect("justified exclusion");
+    match outcome {
+        CachingReview::ExclusionJustified { justification } => {
+            assert!(justification.contains("pinned implementation digest"));
+        }
+        other => panic!("expected ExclusionJustified, got {other:?}"),
+    }
 }

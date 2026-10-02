@@ -66,3 +66,20 @@ pub enum PromotionVerdict {
     /// Infrastructure absent: honestly not evaluated.
     NotEvaluable,
 }
+
+/// The two comparators named by R-083's negative case: the straw
+/// baseline and the stronger exact-cache implementation (§28: "a
+/// full-rebuild straw baseline alone is inadequate").
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum CachingComparator {
+    FullReconstruction,
+    ExactCache,
+}
+
+/// What a context-caching benchmark review actually ran, plus any
+/// recorded reason for excluding a comparator (R-083/AT-083).
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct CachingComparison {
+    pub comparators_used: Vec<CachingComparator>,
+    pub exclusion_justification: Option<String>,
+}

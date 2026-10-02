@@ -90,3 +90,41 @@ pub fn evaluate_pair(
     }
     PromotionVerdict::Promoted
 }
+
+pub use record::{CachingComparator, CachingComparison};
+
+/// The outcome of a context-caching benchmark review (R-083): either
+/// the stronger comparator ran, or its exclusion is on the record.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum CachingReview {
+    StrongerComparatorUsed,
+    ExclusionJustified { justification: String },
+}
+
+/// Why benchmark review refused a caching comparison (typed-rejection
+/// convention): neither the stronger comparator nor a justification.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum CachingReviewError {
+    MissingStrongerComparatorOrJustification,
+}
+
+/// Benchmark review for proposed context caching (R-083/AT-083):
+/// requests the stronger exact-cache comparator OR a recorded
+/// exclusion justification — full reconstruction alone never passes
+/// review (§28 straw-baseline rule).
+pub fn review_caching_comparison(
+    comparison: &CachingComparison,
+) -> Result<CachingReview, CachingReviewError> {
+    if comparison
+        .comparators_used
+        .contains(&record::CachingComparator::ExactCache)
+    {
+        return Ok(CachingReview::StrongerComparatorUsed);
+    }
+    match comparison.exclusion_justification.as_deref() {
+        Some(j) if !j.is_empty() => Ok(CachingReview::ExclusionJustified {
+            justification: j.to_string(),
+        }),
+        _ => Err(CachingReviewError::MissingStrongerComparatorOrJustification),
+    }
+}

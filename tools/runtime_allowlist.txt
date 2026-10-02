@@ -507,3 +507,4 @@ tools/requirement_citations.txt
 .scratch/t060-scratch-trail-completion/grill.md
 .scratch/t060-scratch-trail-completion/issues/01-stage-and-allowlist.md
 .scratch/t060-scratch-trail-completion/spec.md
+docs/M5_M6_EXIT_ASSESSMENT.md

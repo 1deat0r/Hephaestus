@@ -335,3 +335,8 @@ crates/hephaestus/tests/review_service.rs
 .scratch/t047-review-authority/grill.md
 .scratch/t047-review-authority/spec.md
 .scratch/t047-review-authority/issues/01-review-authority-service.md
+crates/hephaestus/src/realization/mod.rs
+crates/hephaestus/tests/realization_gates.rs
+.scratch/t048-adoption-authorization/grill.md
+.scratch/t048-adoption-authorization/spec.md
+.scratch/t048-adoption-authorization/issues/01-external-act-gate.md

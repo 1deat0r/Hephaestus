@@ -33,6 +33,8 @@ def main() -> int:
         errors.append('DUPLICATE_TRACEABILITY_ID')
     sections = {int(s) for s in re.findall(r'^# (\d+)\.', (ROOT/'MASTER_SPEC.md').read_text(), re.M)}
     for req in requirements:
+        # R-081: every normative requirement carries owner, milestone,
+        # and acceptance tests — validated here, not merely declared.
         if not req['owner'] or not req['milestone'] or req['spec_section'] not in sections:
             errors.append(f"INCOMPLETE_REQUIREMENT: {req['id']}")
         if not req['acceptance_tests'] or not set(req['acceptance_tests']).issubset(test_ids):

@@ -1,4 +1,7 @@
-//! Evidence lifecycle (T-024, R-017, R-097, MASTER_SPEC §16).
+//! Evidence lifecycle (T-024, R-017, R-047 (corrected/retracted
+//! evidence propagates to dependents — invalidate traverses),
+//! R-097, R-098/AT-098 (stale/retracted/quarantined dependencies
+//! invalidate dependent labels, history intact), MASTER_SPEC §16).
 //!
 //! Integration tests at the public seam: `advance_*`, `invalidate`,
 //! `queue`, `reactivate`.

@@ -1,4 +1,8 @@
-//! Experiment Compiler (T-019, R-040, R-096, R-094/095, MASTER_SPEC §13).
+//! Experiment Compiler (T-019, R-038 (discrimination against competing
+//! explanations), R-039 (blockers precise, never imagined outcomes),
+//! R-040, R-096/AT-096 (incomplete plans block qualification with the
+//! specific reason), R-094/AT-094 (draft plans and arbitrary digests
+//! never promote), R-095, MASTER_SPEC §13).
 //!
 //! Red-first integration tests at the public seam: `compile`, `validate`,
 //! `check_digest`, `discrimination_matrix`.

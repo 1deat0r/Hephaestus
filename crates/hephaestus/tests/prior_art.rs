@@ -1,4 +1,8 @@
-//! Prior-art investigation (T-018, R-106/R-107/R-112, MASTER_SPEC §10).
+//! Prior-art investigation (T-018, R-028 (near-matching mechanism
+//! comparison with difference account), R-030 (confidentiality of
+//! external queries — redact_query), R-106, R-107, R-112/AT-112
+//! (known/near-match/scoped-no-match labels + assessed claim chart),
+//! MASTER_SPEC §10).
 //!
 //! Red-first integration tests at the public seam: `verify_span`,
 //! `redact_query`, `investigate`, `claim_chart`, labeling.

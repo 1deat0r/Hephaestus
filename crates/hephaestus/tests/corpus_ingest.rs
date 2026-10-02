@@ -1,4 +1,6 @@
-//! T-013 ticket 01: ingest local files, capture bytes, verify spans (R-017, R-107).
+//! T-013 ticket 01: ingest local files, capture bytes, verify spans
+//! (R-017, R-088 verified source identity — verify_span, R-107/AT-107
+//! (stale coordinates and transform drift rejected)).
 //!
 //! Red-first seam tests against `hephaestus::knowledge::{...}`.
 

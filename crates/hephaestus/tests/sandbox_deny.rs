@@ -1,8 +1,10 @@
 //! T-010 ticket 01 — sandbox refusals and boundary probes (deny-first,
 //! seam: `hephaestus::sandbox`).
 //!
-//! Obligations: R-059/AT-059 (sandbox escape, secret leakage, undeclared
-//! networking), R-110/AT-110 (attestation denies dispatch). MASTER_SPEC:389
+//! Obligations: R-004 (default execution scope computational and
+//! sandboxed — NetworkPolicy::Off is the only posture), R-059/AT-059
+//! (sandbox escape, secret leakage, undeclared networking), R-110/AT-110
+//! (attestation denies dispatch). MASTER_SPEC:389
 //! failure classes. Tests HARD-REQUIRE bwrap — absence fails, never skips.
 
 use hephaestus::sandbox::{IsolationSpec, NetworkPolicy, RunSpec, SandboxError, SandboxProvider};
@@ -244,21 +246,27 @@ fn fork_bomb_stops_at_the_nproc_allowance() {
     // spec.nproc NEW threads beyond what the host already runs.
     let mut spec = base_spec();
     spec.nproc = 8;
-    let out = provider()
-        .run(RunSpec {
-            argv: vec![
-                "python3".to_string(),
-                "-c".to_string(),
-                "import subprocess, sys\nok=0\nfail=0\n\
-                 for i in range(200):\n\
+    let out = provider().run(RunSpec {
+        argv: vec![
+            "python3".to_string(),
+            "-c".to_string(),
+            "import subprocess, sys\nfrom concurrent.futures import ThreadPoolExecutor\n\
+                 ok=0\nfail=0\n\
+                 def one(_):\n\
                  \x20 try:\n\
-                 \x20  subprocess.run([sys.executable,'-c','pass'],capture_output=True,timeout=5); ok+=1\n\
-                 \x20 except Exception: fail+=1\n\
-                 print(f'OK={{ok}} FAIL={{fail}}')".to_string(),
-            ],
-            spec,
-            input_files: vec![],
-        });
+                 \x20  subprocess.run([sys.executable,'-c','pass'],capture_output=True,timeout=5)\n\
+                 \x20  return True\n\
+                 \x20 except Exception:\n\
+                 \x20  return False\n\
+                 with ThreadPoolExecutor(max_workers=4) as ex:\n\
+                 \x20 for good in ex.map(one, range(64)):\n\
+                 \x20  ok, fail = (ok+1, fail) if good else (ok, fail+1)\n\
+                 \x20 print(f'OK={ok} FAIL={fail}')"
+                .to_string(),
+        ],
+        spec,
+        input_files: vec![],
+    });
     match out {
         Ok(o) => {
             let fail = o
@@ -267,7 +275,7 @@ fn fork_bomb_stops_at_the_nproc_allowance() {
                 .nth(1)
                 .and_then(|s| s.split_whitespace().next())
                 .and_then(|s| s.parse::<u32>().ok())
-                .expect("FAIL count printed");
+                .unwrap_or_else(|| panic!("FAIL count printed; stdout={:?} exit-shape", o.stdout));
             assert!(fail > 0, "fork bomb ran unbounded: {:?}", o.stdout);
         }
         // The bomb may also exhaust the wall/cpu bound — still BOUNDED.

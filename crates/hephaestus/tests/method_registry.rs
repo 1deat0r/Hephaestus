@@ -1,4 +1,9 @@
-//! Method registry + preregistration (T-021, R-100/R-103, campaign M3).
+//! Method registry + preregistration (T-021, R-041 (multiple endpoints
+//! and related tests tracked as a fixed family — bonferroni_alpha
+//! allocation), R-100/AT-100 (registered family + qualified method
+//! enforce the error envelope), R-089 (guarantees never inherited without their
+//! assumptions — assumptions bound in the registry), R-100/R-103,
+//! campaign M3).
 
 use hephaestus::methods::record::{
     ClippingPolicy, Estimand, MethodSpec, MissingnessPolicy, RegistryError, bonferroni_alpha,
@@ -179,5 +184,34 @@ fn twin_run_byte_identical() {
     assert_eq!(
         serde_json::to_string(&a).unwrap(),
         serde_json::to_string(&b).unwrap()
+    );
+}
+
+// ---- Ticket 02 (T-061): qualified mean-difference interval ----
+
+#[test]
+fn mean_difference_interval_matches_a_hand_computed_fixture() {
+    // R-033 continuity: the formula's output is checked against numbers
+    // worked by hand, not against a re-derivation of the same formula.
+    // light [10, 20]: mean 15, sample var 50. heavy [60, 80]: mean 70,
+    // sample var 200. SE = sqrt(200/2 + 50/2) = sqrt(125) = 11.18033989 ms.
+    // margin = 1.96 * SE = 21.91346618 ms. diff = 55 ms -> seconds:
+    let (lo, hi) = hephaestus::methods::mean_difference_interval(&[60, 80], &[10, 20])
+        .expect("two samples a side");
+    assert!(
+        (lo - 0.033086533821).abs() < 1e-9,
+        "lower bound hand-computed, got {lo}"
+    );
+    assert!(
+        (hi - 0.076913466179).abs() < 1e-9,
+        "upper bound hand-computed, got {hi}"
+    );
+
+    // Refusal: a single sample has no variance to offer.
+    let err = hephaestus::methods::mean_difference_interval(&[60], &[10, 20])
+        .expect_err("one heavy sample refuses");
+    assert!(
+        matches!(err, hephaestus::methods::IntervalError::TooFewSamples { ref side } if side == "heavy"),
+        "{err:?}"
     );
 }

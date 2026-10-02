@@ -1,5 +1,6 @@
 #!/bin/sh
-# ADR-024 convention: any change to gate machinery must cite an ADR.
+# ADR-024 convention: any change to gate machinery must cite an ADR
+# (R-087: architectural departures require a recorded decision).
 # Gates define what "green" means; changing them is an architectural decision.
 gate_changed=$(git diff --cached --name-only | grep -E \
   '^(Makefile$|\.github/workflows/|\.githooks/|tools/[^/]+\.py$|tools/(runtime_allowlist|md_links_baseline)\.txt$|tools/gate_seal\.sha256$)' \

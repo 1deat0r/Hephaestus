@@ -359,3 +359,6 @@ crates/hephaestus/tests/mission_completion.rs
 .scratch/t055-context-oracle-workloads/grill.md
 .scratch/t055-context-oracle-workloads/spec.md
 .scratch/t055-context-oracle-workloads/issues/01-heldout-manifest-gate.md
+.scratch/t056-citation-parity/grill.md
+.scratch/t056-citation-parity/spec.md
+.scratch/t056-citation-parity/issues/01-citation-retrofit.md

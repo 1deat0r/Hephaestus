@@ -9,6 +9,7 @@ AT-041 AT-042 AT-043 AT-044 AT-046 AT-047 AT-048 AT-051
 sequential frontier).
 
 **Status:** ready-for-agent
+**Covers:** 3
 
 **Verify:** python3 tools/report_at_citations.py --batch .scratch/t066-at-citation-parity/issues/04-b2-discovery-experiment-at-batch.md
 

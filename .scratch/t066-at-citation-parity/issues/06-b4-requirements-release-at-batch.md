@@ -9,6 +9,7 @@ confirm and keep, do not silently cite)
 **Blocked by:** None (run after 05).
 
 **Status:** ready-for-agent
+**Covers:** 3, 4
 
 **Verify:** python3 tools/report_at_citations.py --batch .scratch/t066-at-citation-parity/issues/06-b4-requirements-release-at-batch.md
 

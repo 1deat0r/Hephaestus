@@ -32,7 +32,10 @@ Never force-push. Never rewrite pushed history.
 ## Ticket status (standing user rule, 2026-10-02)
 
 Flip the ticket Status in the same commit that lands its work. Every
-open ticket declares a `Verify:` command. `make ticket-status` runs in
-`make ci` and checks the structure. The scheduled sweep
-(`ticket-status-sweep`) fails any open ticket whose Verify is green.
-A red gate blocks the next task.
+open ticket declares a `Verify:` command and a `Covers:` list of spec
+acceptance-criterion numbers. Keep open tickets small: at most 16
+scope IDs and at most 8 unchecked boxes per ticket. A feature with any
+open ticket must cover every spec AC through its tickets' Covers
+lists. `make ticket-status` runs in `make ci` and checks all of this.
+The scheduled sweep (`ticket-status-sweep`) fails any open ticket
+whose Verify is green. A red gate blocks the next task.

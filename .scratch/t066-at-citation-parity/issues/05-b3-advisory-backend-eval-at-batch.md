@@ -8,6 +8,7 @@ AT-070 AT-071 AT-072 AT-074 AT-075 AT-077 AT-078 AT-079
 **Blocked by:** None (run after 04).
 
 **Status:** ready-for-agent
+**Covers:** 3
 
 **Verify:** python3 tools/report_at_citations.py --batch .scratch/t066-at-citation-parity/issues/05-b3-advisory-backend-eval-at-batch.md
 

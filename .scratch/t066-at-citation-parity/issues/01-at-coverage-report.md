@@ -8,6 +8,7 @@ command. R-gate untouched.
 **Blocked by:** None (can start immediately).
 
 **Status:** done
+**Covers:** 1
 
 - [x] `make at-coverage` prints the full worklist (77 ATs) with
       negative cases parsed from OBLIGATIONS

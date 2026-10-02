@@ -10,6 +10,7 @@ AT-010 AT-011 AT-012 AT-016 AT-017 AT-018
 **Blocked by:** None (01 and 02 are done).
 
 **Status:** ready-for-agent
+**Covers:** 3
 
 **Verify:** python3 tools/report_at_citations.py --batch .scratch/t066-at-citation-parity/issues/03-core-at-batch.md
 

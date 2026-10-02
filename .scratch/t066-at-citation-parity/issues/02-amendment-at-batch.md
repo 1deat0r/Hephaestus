@@ -8,6 +8,7 @@ ticket + a decisions row; re-scan shows the batch fully dispositioned.
 **Blocked by:** 01 (the report is the worklist).
 
 **Status:** done
+**Covers:** 2
 
 - [x] All AT-094..119 dispositioned: cited (verified mirror) or
       recorded goal candidate — none silently skipped

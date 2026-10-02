@@ -203,4 +203,14 @@ SAME commit that lands the work. Rejected: auto-flipping from green
 gates (a green sub-test does not prove the whole ticket's
 acceptance); retroactive Verify on the 111 done tickets (unverifiable
 claims — push CI already covers their regressions); a manual checklist
-(exactly what went stale 28 times).
+(exactly what went stale 28 times). The same format gate then grew
+the decomposition rules the skill only advises: open tickets must also
+declare a `Covers:` list of spec acceptance-criterion numbers; caps of
+16 scope IDs and 8 unchecked boxes enforce "small tasks only" for OPEN
+tickets (landed tickets are grandfathered — one closed ticket sits at
+28 IDs; history is not rewritten); and any feature with an open ticket
+must cover EVERY spec AC through the union of its tickets' Covers
+lists, so "as many tickets as needed" is a checkable invariant rather
+than a hope. Covers numbers must exist in the spec — phantom coverage
+fails. Live demos: an oversized open ticket (17 IDs) and an open
+ticket without Covers both fail; removal restores green.

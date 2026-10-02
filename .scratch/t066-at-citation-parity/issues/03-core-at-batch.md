@@ -9,13 +9,13 @@ AT-010 AT-011 AT-012 AT-016 AT-017 AT-018
 
 **Blocked by:** None (01 and 02 are done).
 
-**Status:** ready-for-agent
+**Status:** done
 **Covers:** 3
 
 **Verify:** python3 tools/report_at_citations.py --batch .scratch/t066-at-citation-parity/issues/03-core-at-batch.md
 
-- [ ] All 14 dispositioned: cited (verified mirror) or goal candidate
-- [ ] Re-scan: batch absent from the silent-gap set; gates green
+- [x] All 14 dispositioned: cited (verified mirror) or goal candidate
+- [x] Re-scan: batch absent from the silent-gap set; gates green
 
 **Candidate goals:**
 - AT-016 — citation with a matching title but no supporting passage: no test exercises that exact scenario (nearest is generic span verification) -> goal candidate, never a silent skip.

@@ -249,6 +249,7 @@ docs/M2_M3_M4_EXIT_ASSESSMENT.md
 docs/M5_M6_EXIT_ASSESSMENT.md
 docs/agents/auto-workflow/decisions-2026-10-02T03:35:10Z.md
 docs/agents/auto-workflow/report-2026-10-02T03:35:10Z.md
+docs/agents/auto-workflow/TASK_COMMITS.md
 tools/report_at_citations.py
 .scratch/t066-at-citation-parity/grill.md
 .scratch/t066-at-citation-parity/spec.md

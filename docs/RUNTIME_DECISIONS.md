@@ -348,3 +348,40 @@ label inverts the gate); dropping the ticket from the sweep (silent);
 accepting exit 0 as green without reading the output (the defect that
 shipped). `make ci` is unaffected: the fast `--format` leg never executes
 a Verify, and only `--sweep` runs commands.
+
+## ADR-032 — MANIFEST.sha256 must verify, not just list
+
+Closing out the 2026-10-03 session, a routine `git status` showed a
+parallel edit: `AGENTS.md` gained the agent-skills section and
+`CLAUDE.md` became a symlink to it. Content compared byte-identical — no
+loss, a clean single-sourcing of one rule set. The repo reseals
+MANIFEST's `AGENTS.md` line in every commit that touches `AGENTS.md`
+(six of six in history), so that line was stale.
+
+Checking all 81 entries found two more rotted lines:
+`tests/test_qualification.py` and `tools/verify_package.py`. No tool
+read those hashes. `check_manifest_coverage.py` proved coverage (is the
+path listed?) and nothing proved integrity (do the bytes still match?).
+The file is named an integrity manifest and was a claim nobody checked.
+The same defect class as ADR-029 (an About nobody read) and ADR-031 (a
+green nobody earned).
+
+Decision: `tools/check_manifest_coverage.py` now verifies every recorded
+digest against the bytes on disk and fails closed on a mismatch, a
+missing path, or a symlink where a file is expected. The three stale
+lines were resealed in this change, so all 81 entries verify. A mismatch
+prints the file, both digests, and the repair: reseal that one line,
+deliberately.
+
+Rejected: an auto-reseal command that rewrites every hash (it would
+bless any change to a spec-package file, which is the tampering the
+manifest exists to detect); hashing only the files CI touches (rot hides
+in the files nobody touches); dropping the hashes and keeping coverage
+alone (the name would then be a lie). Rebalancing which files belong in
+the envelope at all — gate files cannot join it (ADR-024) while
+`tools/verify_package.py` has sat in it since the baseline — is a
+separate decision and stays untouched here.
+
+Live demo: appending one byte to `AGENTS.md` fails with
+`MANIFEST hash mismatch: AGENTS.md — recorded 0f81d9f9b710..., actual
+5750741ce6d4...`; removing the byte returns green.

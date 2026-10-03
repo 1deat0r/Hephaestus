@@ -20,6 +20,12 @@ jobs:
           python-version: "3.14"
       - name: External link audit (online, stdlib only)
         run: python tools/check_links_online.py
+      # The About lives on GitHub, so push CI alone cannot catch a UI edit
+      # made while no push happens — this weekly leg can (ADR-029).
+      - name: GitHub About drift audit (online, ADR-029)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python tools/check_repo_about.py --live
       - name: Audit-artifact cadence watchdog
         run: python tools/check_audit_age.py
       # Ticket Verify commands may be cargo tests (ADR-028).

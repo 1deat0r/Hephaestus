@@ -46,6 +46,7 @@ crates/synthetic-evaluator/tests/evaluate_scenarios.rs
 docs/RUNTIME_DECISIONS.md
 .githooks/commit-msg
 .githooks/pre-commit
+.github/repo-about.json
 .github/workflows/ci.yml
 .github/workflows/periodic.yml
 .gitignore
@@ -63,6 +64,7 @@ tools/check_links_online.py
 tools/check_manifest_coverage.py
 tools/check_md_links.py
 tools/check_readme_fences.py
+tools/check_repo_about.py
 tools/gate_seal.py
 tools/gate_seal.sha256
 tools/gen_digest_vectors.py

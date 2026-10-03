@@ -5,10 +5,10 @@
 PY := .venv/bin/python
 CARGO := cargo
 
-.PHONY: ci ci-fast fmt fmt-check clippy test-rust test-py verify test-package gen-check conflict-staged conflict-tree manifest-check md-links readme-fences report-unreferenced gate-seal seal hooks hooks-check setup clean doc-check
+.PHONY: ci ci-fast fmt fmt-check clippy test-rust test-py verify test-package gen-check conflict-staged conflict-tree manifest-check req-coverage about-check about-live about-sync md-links readme-fences report-unreferenced gate-seal seal hooks hooks-check setup clean doc-check
 
 ## Run every environment-independent gate (mirrors CI; the single gate registry).
-ci: fmt-check clippy test-rust test-py conflict-tree manifest-check req-coverage ticket-status md-links readme-fences report-unreferenced gate-seal ci-fast hooks-check
+ci: fmt-check clippy test-rust test-py conflict-tree manifest-check req-coverage about-check ticket-status md-links readme-fences report-unreferenced gate-seal ci-fast hooks-check
 
 ## Fast spec/doc freshness gates (.githooks/pre-commit runs exactly these).
 ## manifest-check joins the tier (ADR-025): a tracked-but-uncovered file
@@ -79,6 +79,18 @@ req-coverage:
 ## Advisory AT-citation worklist (ADR-024 tier — NOT in `ci` yet; see ADR-027 lineage).
 at-coverage:
 	$(PY) tools/report_at_citations.py
+
+## GitHub About (description/homepage/topics) vs README (ADR-029; offline).
+about-check:
+	$(PY) tools/check_repo_about.py
+
+## Live GitHub About vs the canonical file (ADR-029; online, CI + periodic).
+about-live:
+	$(PY) tools/check_repo_about.py --live
+
+## Push the canonical About to GitHub and stamp `verified` (ADR-029; owner auth).
+about-sync:
+	$(PY) tools/check_repo_about.py --sync
 
 ## Ticket status structure (ADR-028): valid Status; open tickets declare Verify.
 ticket-status:

@@ -1,0 +1,15 @@
+{
+  "description": "Hephaestus — Autonomous Invention Harness master-spec package v1.2. 119 obligations with acceptance-test specs, plus a gate-checked Rust control plane and Python sandbox workers. Reference checks only; no invention runtime has been executed.",
+  "homepage": "",
+  "topics": [
+    "autonomous-invention",
+    "specification",
+    "rust",
+    "python",
+    "reproducibility",
+    "research-automation"
+  ],
+  "source": "README.md",
+  "verified": "2026-10-03",
+  "max_age_days": 365
+}

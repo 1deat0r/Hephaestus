@@ -231,3 +231,51 @@ without nano bullets). Audit small tasks use count-based Verify
 lines through the new `report_at_citations.py --min-disposed N` flag,
 so the 16 scope-ID cap stays honest. The commit unit is the small
 task (skill rules 5, 19).
+
+## ADR-029 — The GitHub About is repository data: canonical file, offline gate, live audit
+
+The 2026-10-03 user report found the GitHub About stale. The live
+description did not start with the repository name, carried no spec
+version, and the website and topics fields were empty. Nothing could
+notice, because the About exists only on GitHub and no gate reads it.
+ADR-027's discipline — the repository's own claims must be checkable from
+the repository — applies to the About as well.
+
+Decision: the About becomes repository data. `.github/repo-about.json`
+holds the canonical description, homepage and topics, plus the README it
+is derived from, the date it was last confirmed against GitHub, and a
+maximum age. Three checks enforce it.
+
+1. `tools/check_repo_about.py` (offline, no network) joins `make ci` as
+   `about-check`. It fails when the file is missing or malformed, when the
+   description exceeds GitHub's 350-character limit, when it does not
+   start with the project name in README's H1, when it does not carry
+   `v<x.y>` from README's `Version` line, when a topic breaks GitHub's
+   token rules, or when `verified` is older than `max_age_days` (365). Two
+   facts therefore force an About review: a repository rename and a spec
+   version bump. An unconfirmed About expires instead of aging out of
+   sight.
+2. `tools/check_repo_about.py --live` (online) runs as a separate `about`
+   job on every push and pull request in `.github/workflows/ci.yml`, and
+   weekly in `.github/workflows/periodic.yml`. It compares the live
+   description and homepage byte-for-byte and the topics as a set (GitHub
+   returns them sorted) with the canonical file. Three attempts, then
+   failure: an unreachable API reads as FAIL, never as pass, so a broken
+   check cannot hide a stale About. The weekly
+   leg exists because an About edited in the web UI while no push happens
+   would otherwise stay invisible for months.
+3. `make about-sync` is the repair command. It needs owner auth (`gh`),
+   PATCHes the live About from the canonical file, re-verifies against the
+   API, and stamps `verified` to today; the stamp is committed with the
+   fix.
+
+The CI token is the default `GITHUB_TOKEN` with `contents: read`, which
+cannot edit repository settings. Detection is the CI leg's job; the repair
+stays local and owner-authenticated. Rejected: writing the About back from
+CI (the default token has no `administration` permission, and a stored
+admin token would be a standing credential held for a cosmetic field);
+editing the About once and trusting it to stay put (exactly the failure
+that shipped); putting the live check inside `make ci` (network inside the
+local latency budget, and a GitHub outage would block every commit);
+README-only wording rules (the About is not printed in the README, so
+nothing read it).

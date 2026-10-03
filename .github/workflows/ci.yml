@@ -52,3 +52,20 @@ jobs:
       # `make doc-check` (ADR-025); doc-check itself is in no tier.
       - name: cargo doc with warnings denied
         run: make doc-check
+
+  # Live GitHub About vs the canonical file (ADR-029) — the online leg.
+  # `make ci` covers the offline leg in `gates`; this leg needs the network
+  # and a token, so it stays a separate job with read-only permissions.
+  about:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+      - name: Live About matches .github/repo-about.json (ADR-029)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python tools/check_repo_about.py --live

@@ -30,6 +30,9 @@ direction. This tool makes them detectable and therefore stoppable:
     done ticket + Verify fails    -> BROKEN (regression or false-done)
                                      -> exit 1
     done tickets without Verify   -> covered by push CI regression.
+    Verify that RAN NOTHING (exit 0, zero tests) -> VACUOUS: it proves
+    nothing in either direction, so it never counts as green and never
+    reads as a landed label (ADR-031).
 
   python tools/check_ticket_status.py --format
   python tools/check_ticket_status.py --sweep
@@ -54,6 +57,12 @@ ATOM_RE = re.compile(r"^\s+atomic\s*$", re.M)
 MAX_SMALL = 8
 MAX_MICRO = 6
 MAX_NANO = 4
+# A Verify that executed nothing is not a green Verify: `cargo test --test
+# t <filter>` exits 0 when no test matches, and unittest/pytest print an
+# empty summary. Never read that as "the work landed" (ADR-031).
+VACUOUS_RE = re.compile(
+    r"running 0 tests|test result: ok\. 0 passed|Ran 0 tests|collected 0 items"
+)
 
 
 def read(path: Path) -> str:
@@ -247,6 +256,7 @@ def fmt_mode() -> int:
 def sweep_mode() -> int:
     stale = 0
     broken = 0
+    vacuous = 0
     open_ok = 0
     for path in ISSUES:
         text = read(path)
@@ -259,10 +269,19 @@ def sweep_mode() -> int:
             proc = subprocess.run(
                 cmd, shell=True, cwd=ROOT, capture_output=True, text=True, timeout=900
             )
-            green = proc.returncode == 0
+            output = (proc.stdout or "") + (proc.stderr or "")
+            ran_nothing = proc.returncode == 0 and VACUOUS_RE.search(output) is not None
+            green = proc.returncode == 0 and not ran_nothing
         except subprocess.TimeoutExpired:
             green = False
-        if status == "done":
+            ran_nothing = False
+        if ran_nothing:
+            print(
+                f"ticket-status: VACUOUS {rel}: Verify exited 0 with zero "
+                f"tests run — it proves nothing: {cmd}"
+            )
+            vacuous += 1
+        elif status == "done":
             if not green:
                 print(f"ticket-status: BROKEN {rel}: Verify fails: {cmd}")
                 broken += 1
@@ -278,9 +297,9 @@ def sweep_mode() -> int:
                 open_ok += 1
     print(
         f"ticket-status-sweep: {stale} stale-open, {broken} broken-done, "
-        f"{open_ok} honestly open"
+        f"{vacuous} vacuous, {open_ok} honestly open"
     )
-    return 1 if (stale or broken) else 0
+    return 1 if (stale or broken or vacuous) else 0
 
 
 def main() -> int:

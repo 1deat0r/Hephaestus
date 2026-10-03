@@ -314,3 +314,37 @@ cannot wake a workflow GitHub already stopped).
 Live demo: a temporary workflow file declaring a cron that GitHub does
 not know about fails with `not present in the live workflow list`; the
 file is removed and the check is green again.
+
+## ADR-031 — A Verify that runs nothing is not a green Verify
+
+Closing out the 2026-10-03 session, `ticket-status --sweep` reported
+`STALE-OPEN .scratch/dev-roadmap/issues/04-cli-canary-watch.md: Verify is
+green`. Its Verify was `cargo test --test cli canary_watch`. The command
+exited 0 — with `running 0 tests` and `9 filtered out`, because no test
+carries that name. `canary_watch` appears in no source file; the feature
+is not built. The sweep had read an empty run as landed work, and the
+only action it recommends is flipping Status to done. Following it would
+have recorded a completion that never happened.
+
+Decision: the sweep never counts an empty run as green. It captures the
+output and, on exit 0, requires a non-empty result — cargo's `running 0
+tests` or `test result: ok. 0 passed`, unittest's `Ran 0 tests`, pytest's
+`collected 0 items` all mean nothing executed. Such a Verify prints
+`VACUOUS` with the command, counts against the sweep (exit 1), and can
+never satisfy STALE-OPEN or pass a done ticket's proof. A vacuous Verify
+is a gate defect, so it fails loudly in both directions.
+
+The defective ticket got an honest command in the same commit:
+`cargo test --test cli -- --list | grep canary_watch && cargo test --test
+cli canary_watch` — it must FIND the test before it can RUN it, so it is
+red until the work exists and green only after it passes. Its Status stays
+`ready-for-agent`, which is the true label.
+
+Rejected: flipping the ticket to done (the sweep's green was false, so
+the flip would have been a manufactured completion — the exact failure
+AGENTS.md forbids); building the feature to make the sweep green (that is
+roadmap work, not this session's scope, and building work to satisfy a
+label inverts the gate); dropping the ticket from the sweep (silent);
+accepting exit 0 as green without reading the output (the defect that
+shipped). `make ci` is unaffected: the fast `--format` leg never executes
+a Verify, and only `--sweep` runs commands.

@@ -69,3 +69,19 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: python tools/check_repo_about.py --live
+
+  # A scheduled workflow that GitHub auto-disabled is silent: no run, no
+  # red job. This job turns it loud on the next push (ADR-030).
+  scheduled:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+      - name: Scheduled workflows are active (ADR-030)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python tools/check_scheduled_workflows.py

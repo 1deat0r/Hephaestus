@@ -5,7 +5,7 @@
 PY := .venv/bin/python
 CARGO := cargo
 
-.PHONY: ci ci-fast fmt fmt-check clippy test-rust test-py verify test-package gen-check conflict-staged conflict-tree manifest-check req-coverage about-check about-live about-sync md-links readme-fences report-unreferenced gate-seal seal hooks hooks-check setup clean doc-check
+.PHONY: ci ci-fast fmt fmt-check clippy test-rust test-py verify test-package gen-check conflict-staged conflict-tree manifest-check req-coverage about-check about-live about-sync scheduled-check md-links readme-fences report-unreferenced gate-seal seal hooks hooks-check setup clean doc-check
 
 ## Run every environment-independent gate (mirrors CI; the single gate registry).
 ci: fmt-check clippy test-rust test-py conflict-tree manifest-check req-coverage about-check ticket-status md-links readme-fences report-unreferenced gate-seal ci-fast hooks-check
@@ -91,6 +91,10 @@ about-live:
 ## Push the canonical About to GitHub and stamp `verified` (ADR-029; owner auth).
 about-sync:
 	$(PY) tools/check_repo_about.py --sync
+
+## Scheduled workflows still active (ADR-030; online — GitHub's 60-day rule).
+scheduled-check:
+	$(PY) tools/check_scheduled_workflows.py
 
 ## Ticket status structure (ADR-028): valid Status; open tickets declare Verify.
 ticket-status:

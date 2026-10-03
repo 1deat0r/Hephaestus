@@ -65,6 +65,7 @@ tools/check_manifest_coverage.py
 tools/check_md_links.py
 tools/check_readme_fences.py
 tools/check_repo_about.py
+tools/check_scheduled_workflows.py
 tools/gate_seal.py
 tools/gate_seal.sha256
 tools/gen_digest_vectors.py

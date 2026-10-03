@@ -279,3 +279,38 @@ that shipped); putting the live check inside `make ci` (network inside the
 local latency budget, and a GitHub outage would block every commit);
 README-only wording rules (the About is not printed in the README, so
 nothing read it).
+
+## ADR-030 — A disabled scheduler must fail the next push, not stay silent
+
+ADR-029's note recorded the risk: GitHub auto-disables scheduled
+workflows in a public repository after 60 days with no repository
+activity. The `periodic` workflow is the only thing that audits link
+freshness, audit age and stale ticket labels, so its own death would be
+invisible — no run, no red job, just the first email. The risk was
+written down with no machinery behind it.
+
+Decision: `tools/check_scheduled_workflows.py` reads every workflow file
+that declares a `- cron:` schedule, fetches the live workflow list, and
+fails unless each one is `active`. It runs as the `scheduled` job in
+`.github/workflows/ci.yml` on every push and pull request, and locally as
+`make scheduled-check`. A workflow auto-disabled for inactivity reports
+as `disabled_inactivity` with the repair command (`gh workflow enable
+<file>`, then push so the 60-day clock restarts). Finding no scheduled
+file at all also fails, so deleting the cron cannot pass silently.
+Network or API failure retries three times and then fails — the same
+fail-closed rule as ADR-029: an unreachable check must never read as a
+passing one.
+
+The detector lives in push CI because a disabled scheduled workflow
+cannot run its own detecting job. Push CI is the trigger this repository
+already exercises. The GitHub inactivity email stays the second signal.
+Rejected: checking inside `make ci` (network in the local tier, ADR-029's
+reasoning); a self-checking step inside `periodic.yml` (dead code the
+moment it matters); a 60-day calendar reminder (exactly the discipline
+ADR-028 rejected as a checklist); an automatic re-enable from CI (the
+default token has no `administration` permission, and a scheduled job
+cannot wake a workflow GitHub already stopped).
+
+Live demo: a temporary workflow file declaring a cron that GitHub does
+not know about fails with `not present in the live workflow list`; the
+file is removed and the check is green again.

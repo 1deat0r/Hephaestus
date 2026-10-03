@@ -1,4 +1,7 @@
-//! Amendment gates + holdout discipline (T-035).
+//! Amendment gates + holdout discipline (T-035, R-041/AT-041 (family
+//! binding preserves selection lineage, family identity, and error
+//! allocation; a challenger needs a fresh or separately qualified
+//! holdout; exposure stays monotonic)).
 //!
 //! Integration tests at the public seam: `check_migration`,
 //! `record_access`, `admit_for_challenger`, `check_family`.

@@ -192,7 +192,7 @@ fn negative_dossier_distinguishes_five_kinds() {
         NegativeResultKind::ResourceLimitedInvestigation,
     ];
     assert_eq!(kinds.len(), 5);
-    // R-044 negative case: failed implementation + valid negative test,
+    // R-044/AT-044 negative case: failed implementation + valid negative test,
     // BOTH histories present with SEPARATE conclusions.
     let mut d = dossier();
     d.negative_kind = Some(NegativeResultKind::FailedImplementation);

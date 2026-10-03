@@ -8,16 +8,17 @@ phase: 7
 fixed_point: 1941b83ae94532f197a7d88c020390dfa38e2875
 spec: .scratch/t066-at-citation-parity/spec.md
 baseline: 1941b83 [runs 15-35 staged uncommitted; workflow artifacts modified]
-tasks: 01=done, 02=done, 03=done, 04=ready, 05=ready, 06=ready
+tasks: 01=done, 02=done, 03=done, 04=done, 05=ready, 06=ready
 edges: 01->02, 02->03
 attempts: 01=1
 phase_entries: 8=1, 2=1, 3=1, 4=1, 5=1, 6=1, 7=1
 exec_count: 226
 polls: 0
 skills_pin: 1.7.0
-updated: 2026-10-02T04:05:00Z
+updated: 2026-10-03T01:50:00Z
 
 ## LOG
+2026-10-03T01:50:00Z EVENT T-066 ticket 04 done: batch B2 (16 ATs) cited at verified mirrors, read both sides — prior_art 028/029/030, multi_objective_archive 033, test_qualification 037, experiment_compiler 038/039, semantic_parity 040/046/048, amendment_gates 041, result_interpreter 042/046, prototype_worker 043, dossier_export 044, evidence_lifecycle 047, backend_adapter 051; no goal candidates, 4 residual facets in the ticket; batch Verify 16/16 cited, fmt + ticket-status green
 2026-10-02T10:45:00Z EVENT FOUR-LEVEL: skill rules 18/19 in force — TASK to small to micro to nano; 7 open tickets rebuilt; per-level caps 8/6/4 gated; STATE field renamed tasks; 03 reconciled done — docs/RUNTIME_DECISIONS.md
 2026-10-02T03:35:10Z EVENT ROTATION: t065 outcome success — report-2026-10-02T03:35:10Z.md written, decisions rotated (suffix 2026-10-02T03:35:10Z); work left STAGED, no commit (rule 5)
 2026-10-02T03:35:10Z EXEC 218 8-rotate

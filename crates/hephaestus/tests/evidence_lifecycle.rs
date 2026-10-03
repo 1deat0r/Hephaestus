@@ -1,5 +1,6 @@
-//! Evidence lifecycle (T-024, R-017, R-047 (corrected/retracted
-//! evidence propagates to dependents — invalidate traverses),
+//! Evidence lifecycle (T-024, R-017, R-047/AT-047 (corrected/retracted
+//! evidence propagates to dependents — invalidate traverses, marks
+//! stale, and queues re-evaluation behind budget and permission),
 //! R-097, R-098/AT-098 (stale/retracted/quarantined dependencies
 //! invalidate dependent labels, history intact), MASTER_SPEC §16).
 //!

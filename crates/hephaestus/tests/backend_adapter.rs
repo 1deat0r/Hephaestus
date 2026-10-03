@@ -1,4 +1,6 @@
-//! Execution backend adapter contract (T-030, R-051/R-057/R-064 (the
+//! Execution backend adapter contract (T-030, R-051/AT-051 (replay
+//! re-derives the digest from recorded bytes — no external contact;
+//! twin runs are byte-identical), R-057/R-064 (the
 //! initial runtime is the bounded local adapter — workers isolated by
 //! the sandbox), R-066).
 //!

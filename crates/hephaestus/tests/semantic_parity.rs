@@ -222,6 +222,8 @@ fn test_abstention_has_no_selected_choice() {
     has(&validate_bundle(&bundle), "ABSTENTION_CONFLICT");
 }
 
+// R-048/AT-048: a calibration claim without a calibration receipt is
+// rejected — uncalibrated model confidence never labels as scientific.
 #[test]
 fn test_model_calibration_needs_receipt() {
     let mut bundle = base();
@@ -244,6 +246,8 @@ fn test_promotion_requires_reproduction() {
     has(&validate_bundle(&bundle), "REPRODUCTION_MISSING");
 }
 
+// R-046/AT-046: novelty stays its own gate — a validated dossier
+// status never converts it into a single success label.
 #[test]
 fn test_promotion_does_not_ignore_novelty_scope() {
     let mut bundle = base();

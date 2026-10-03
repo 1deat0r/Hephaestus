@@ -28,6 +28,9 @@ fn change(to: EntryState, reason: &str) -> StateChange {
     }
 }
 
+// AT-054: the source hash IS the reuse key. Alter it and the recorded
+// result turns stale, so reuse is refused and no replication credit
+// carries over from the old key. (Entry 054 of batch B3.)
 #[test]
 fn altered_source_becomes_stale_and_is_not_reusable() {
     // Source unchanged: usable.

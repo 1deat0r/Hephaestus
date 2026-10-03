@@ -1,6 +1,8 @@
 //! Dossier capture, reproduction, export (T-023, R-044, R-103, §15; T-051 R-082
 //! evidence label; AT-002 (no dossier before an experiment — missing raw
-//! data refuses export, output stays exploratory)).
+//! data refuses export, output stays exploratory)), R-065/AT-065 (a
+//! rerun after a dependency change is an environment mismatch — typed,
+//! never silent, so no reproduction credit).
 
 use hephaestus::dossier::record::{
     CostReceipt, Deviation, Dossier, Environment, EvidenceLabel, FailureEntry, Lineage,
@@ -122,6 +124,9 @@ fn capture_binds_raw_data_and_quantity_costs() {
     assert_eq!(record.failure_history.len(), 1);
 }
 
+// R-065/AT-065 negative case: rerun an artifact after a dependency
+// changes. The environment mismatch is detected and typed, so the
+// rerun earns no reproduction credit.
 #[test]
 fn reproduce_typed_outcomes() {
     let record = run_record();

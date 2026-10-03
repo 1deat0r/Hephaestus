@@ -1,4 +1,7 @@
-//! Workspace core (T-025, R-067/R-068/R-069, MASTER_SPEC §2:42).
+//! Workspace core (T-025, R-067/AT-067 (progress reads persisted
+//! state — unknown stays unknown), R-068/AT-068 (event-cursor recovery
+//! resumes a session), R-069/AT-069 (one authorization gate for the
+//! local and the gateway path), MASTER_SPEC §2:42).
 //!
 //! Integration tests at the public seam: `progress`, `compare`,
 //! `drill_down`, `command`, `gateway_event`.
@@ -64,6 +67,9 @@ fn workspace() -> Workspace {
 fn progress_reads_persisted_state_unknown_stays_unknown() {
     let ws = workspace();
     let p = ws.progress();
+    // R-067/AT-067: a stalled mission with no active workers shows the
+    // persisted counts only — the view invents no activity, no
+    // percentage, and no completed work.
     // R-067: counts FROM persisted state.
     assert_eq!(
         p.entity_counts,
@@ -96,6 +102,9 @@ fn compare_and_drill_down() {
 
 // ---- Ticket 02: controls + gateway ----
 
+// R-069/AT-069: an operation refused on the local path is refused the
+// same way through the gateway — the remote client cannot bypass the
+// local authorization gate.
 #[test]
 fn shared_authorization_gates_both_paths_identically() {
     let mut ws = workspace();
@@ -117,6 +126,8 @@ fn shared_authorization_gates_both_paths_identically() {
     assert_eq!(ack.new_event_id, 42);
 }
 
+// R-068/AT-068: pause, resume, cancellation, and steering are typed
+// controls; each refusal names its own state error.
 #[test]
 fn intervention_state_rules() {
     let mut ws = workspace();
@@ -143,6 +154,10 @@ fn intervention_state_rules() {
     .unwrap();
 }
 
+// R-068/AT-068: a client that disconnects, changes priorities, and
+// reconnects resumes from its cursor — duplicates and stale cursors get
+// replay recommendations, and the reopened session reads the persisted
+// event id.
 #[test]
 fn event_cursor_recovery() {
     let mut ws = workspace();

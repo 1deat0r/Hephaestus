@@ -1,8 +1,11 @@
 //! Execution backend adapter contract (T-030, R-051/AT-051 (replay
 //! re-derives the digest from recorded bytes — no external contact;
-//! twin runs are byte-identical), R-057/R-064 (the
-//! initial runtime is the bounded local adapter — workers isolated by
-//! the sandbox), R-066).
+//! twin runs are byte-identical), R-057, R-064/AT-064 (the
+//! initial runtime is the bounded local adapter: the first vertical
+//! slice runs in-process with no distributed service and reports its
+//! actual resources — workers isolated by the sandbox), R-066/AT-066
+//! (every backend is contract-tested on cancellation and receipts; no
+//! protocol inspected means no compatibility claim).
 //!
 //! Integration tests at the public seam: `ExecutionBackend` (LocalProcess),
 //! `check_contract`, `tachyon_status`.
@@ -39,6 +42,9 @@ fn backend() -> LocalProcess {
 
 // ---- Ticket 01: trait + adapter + durable receipts ----
 
+// R-064/AT-064: the first vertical slice starts with no distributed
+// service — the in-process local adapter runs it and the receipt
+// reports the actual budget spent, restored on restart.
 #[test]
 fn dispatch_executes_and_records_durable_receipt() {
     let mut b = backend();
@@ -88,6 +94,8 @@ fn policy_and_budget_refusals_named() {
 
 // ---- Ticket 02: contract checks + tachyon status ----
 
+// R-066/AT-066: contract-test before any compatibility claim — the
+// five clauses cover cancellation and receipt semantics explicitly.
 #[test]
 fn contract_check_covers_all_clauses() {
     let mut b = backend();
@@ -130,6 +138,9 @@ fn cancellation_states() {
     assert!(b.cancel("t8").is_err());
 }
 
+// R-066/AT-066 negative case: an incompatible backend installed as if
+// compatible is refused — with no inspected protocol the adapter stays
+// blocked and claims no compatibility.
 #[test]
 fn tachyon_blocked_no_compatibility_claim() {
     // R-066: no protocol inspected -> no integration, no claim.

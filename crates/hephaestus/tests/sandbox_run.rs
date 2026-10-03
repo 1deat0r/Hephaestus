@@ -278,6 +278,9 @@ fn worker_spec() -> IsolationSpec {
 fn scheduler_runs_real_sandboxed_work_with_budget_settled() {
     // The integrated execution path: T-009 DAG -> SandboxExecutor ->
     // bwrap -> worker -> outcomes -> BudgetLedger (R-055/AT-055).
+    // R-064/AT-064: the supported workflow runs locally inside the
+    // sandbox — no distributed service — and the ledger reports the
+    // actual resources spent (150), with nothing left reserved.
     let mut dag = TaskDag::new(vec!["T1".to_string(), "T2".to_string()]);
     for (id, cost) in [("T1", 100), ("T2", 50)] {
         let mut t = Task {

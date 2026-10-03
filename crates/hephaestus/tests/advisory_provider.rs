@@ -1,7 +1,9 @@
 //! Advisory provider contract layer (T-029, R-005/AT-005 (optional
 //! backends disabled: the local reference providers keep the workflow
-//! executable — NullProvider/FixtureProvider), R-053 (calibration
-//! and abstention evaluated from known-outcome fixture cases), R-090).
+//! executable — NullProvider/FixtureProvider), R-053/AT-053 (calibration
+//! and abstention evaluated from known-outcome fixture cases; a
+//! provider with no calibration record gets no automatic authority),
+//! R-090).
 //!
 //! Integration tests at the public seam: `evaluate_provider`,
 //! `assert_control_authority`, NullProvider.
@@ -26,6 +28,8 @@ fn case(id: &str, correct: bool) -> KnownOutcomeCase {
 
 // ---- Ticket 01: trait + NullProvider + identity ----
 
+// AT-053: unknowns can abstain. With no calibration record the
+// provider declines every case — no advisory decision is minted.
 #[test]
 fn null_provider_always_abstains_core_runs_without_it() {
     let p = NullProvider;
@@ -103,6 +107,9 @@ fn calibration_abstention_rejection_measured_from_known_outcomes() {
     assert!((report.end_to_end_quality.unwrap() - 2.0 / 3.0).abs() < 1e-12);
 }
 
+// AT-053 negative case: a decision provider with no domain
+// calibration record produces NOT MEASURED — no invented calibration,
+// quality, or abstention numbers to drive automatic advisory use.
 #[test]
 fn empty_fixtures_yield_not_measured_not_zeros() {
     let p = NullProvider;
@@ -113,6 +120,9 @@ fn empty_fixtures_yield_not_measured_not_zeros() {
     assert!(report.abstention_rate.is_none());
 }
 
+// AT-053 required outcome: automatic advisory use is limited — the
+// advisory plane cannot change gates, mint budget, or qualify methods,
+// and the core runs without any provider at all.
 #[test]
 fn control_authority_attestation() {
     let att = assert_control_authority();

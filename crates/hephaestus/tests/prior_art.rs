@@ -1,6 +1,8 @@
-//! Prior-art investigation (T-018, R-028 (near-matching mechanism
-//! comparison with difference account), R-030 (confidentiality of
-//! external queries — redact_query), R-009/AT-009 (a deliberately
+//! Prior-art investigation (T-018, R-028/AT-028 (near-matching mechanism
+//! comparison with difference account — a renamed claim charts as a
+//! match, never novelty), R-030/AT-030 (confidentiality of external
+//! queries — redact_query strips mechanism tokens; the disclosure gate
+//! defaults to not approved), R-009/AT-009 (a deliberately
 //! incomplete source yields no hits and never novelty language),
 //! R-106, R-107, R-112/AT-112
 //! (known/near-match/scoped-no-match labels + assessed claim chart),
@@ -207,7 +209,8 @@ fn scoped_no_match_never_yields_novelty_language() {
         .find(|(id, _)| id == "C3")
         .expect("C3 conclusion");
     assert_eq!(*conclusion, Conclusion::NoMatchWithinSearchScope);
-    // Meta carries scopes + missing access (R-029).
+    // The report carries coverage and queries; the verdict stays
+    // scoped — never an exhaustive claim (R-029/AT-029).
     assert!(!report.meta.scopes_covered.is_empty());
     assert!(!report.meta.query_families.is_empty());
 }

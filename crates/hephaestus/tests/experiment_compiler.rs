@@ -1,5 +1,8 @@
-//! Experiment Compiler (T-019, R-038 (discrimination against competing
-//! explanations), R-039 (blockers precise, never imagined outcomes),
+//! Experiment Compiler (T-019, R-038/AT-038 (discrimination against
+//! competing explanations: a plan with no controls fails validation
+//! with a named MissingControl denial; indistinguishable predictions
+//! are flagged), R-039/AT-039 (blockers precise, never imagined
+//! outcomes: unavailable inputs return the exact Blocker variant),
 //! R-040, R-096/AT-096 (incomplete plans block qualification with the
 //! specific reason), R-094/AT-094 (draft plans and arbitrary digests
 //! never promote), R-095, MASTER_SPEC §13).

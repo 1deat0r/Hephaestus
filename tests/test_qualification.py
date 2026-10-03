@@ -121,6 +121,9 @@ class QualificationContracts(unittest.TestCase):
         self.rejects('METHOD_BINDING_MISMATCH')
 
     def test_changed_registered_payload_rejected(self):
+        # R-037/AT-037: endpoints and analysis are registered immutably
+        # before confirmation; a change to the frozen payload is
+        # rejected by digest mismatch.
         self.record('experiment_plan')['comparator'] = 'Weakened baseline'
         self.rejects('REGISTRATION_DIGEST_MISMATCH')
 

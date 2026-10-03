@@ -102,6 +102,9 @@ fn test_fixed_sample_requires_n() {
 }
 
 #[test]
+// R-040/AT-040: optional stopping (repeated looks) requires a
+// separately approved anytime-valid method; without it the plan is
+// rejected at validation, before data access.
 fn test_optional_stopping_requires_method() {
     let mut bundle = base();
     let p = record_mut(&mut bundle, "experiment_plan");

@@ -1,4 +1,6 @@
-//! R-032 / AT-032 multi-objective archive (T-044).
+//! R-032 / AT-032 multi-objective archive (T-044); R-033/AT-033
+//! (alternatives with no calibrated model are discriminated by
+//! qualitative value bands — no fabricated probabilities).
 //!
 //! Integration tests at the public seam: `MultiObjectiveArchive`,
 //! `ValueBand`, dominance, audited eviction.

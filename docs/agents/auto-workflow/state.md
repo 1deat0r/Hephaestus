@@ -15,9 +15,10 @@ phase_entries: 8=1, 2=1, 3=1, 4=1, 5=1, 6=1, 7=1
 exec_count: 226
 polls: 0
 skills_pin: 1.7.0
-updated: 2026-10-03T01:50:00Z
+updated: 2026-10-03T02:59:26Z
 
 ## LOG
+2026-10-03T02:59:26Z EVENT ADR-029 (out-of-band, user report): GitHub About was stale — description started with no project name, carried no spec version, website and topics empty, and no gate read it. Canonical file `.github/repo-about.json` + `tools/check_repo_about.py`; offline `about-check` joins `make ci`, online `--live` runs as the `about` job on push/PR and weekly in `periodic` (3 retries then FAIL, never pass); `make about-sync` repairs with owner auth and stamps `verified`. Live About now 241 chars / 6 topics, verified by `gh` and by `--live`; negative demo failed both legs; `make ci` green; CI gates/docs/about all success at c5aa665
 2026-10-03T01:50:00Z EVENT T-066 ticket 04 done: batch B2 (16 ATs) cited at verified mirrors, read both sides — prior_art 028/029/030, multi_objective_archive 033, test_qualification 037, experiment_compiler 038/039, semantic_parity 040/046/048, amendment_gates 041, result_interpreter 042/046, prototype_worker 043, dossier_export 044, evidence_lifecycle 047, backend_adapter 051; no goal candidates, 4 residual facets in the ticket; batch Verify 16/16 cited, fmt + ticket-status green
 2026-10-02T10:45:00Z EVENT FOUR-LEVEL: skill rules 18/19 in force — TASK to small to micro to nano; 7 open tickets rebuilt; per-level caps 8/6/4 gated; STATE field renamed tasks; 03 reconciled done — docs/RUNTIME_DECISIONS.md
 2026-10-02T03:35:10Z EVENT ROTATION: t065 outcome success — report-2026-10-02T03:35:10Z.md written, decisions rotated (suffix 2026-10-02T03:35:10Z); work left STAGED, no commit (rule 5)

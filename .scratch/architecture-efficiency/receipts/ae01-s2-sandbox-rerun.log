@@ -1,0 +1,24 @@
+    Blocking waiting for file lock on package cache
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.12s
+     Running tests/sandbox_deny.rs (target/debug/deps/sandbox_deny-b4ca7f69e1301299)
+
+running 17 tests
+test attestation_denies_before_any_spawn ... ok
+test attestation_refuses_host_exposing_binds ... ok
+test undeclared_tools_never_spawn ... ok
+test fork_bomb_stops_at_the_nproc_allowance ... ok
+test dependency_installation_cannot_succeed_without_network ... ok
+test path_qualified_declared_tools_normalize_to_basenames ... ok
+test host_environment_never_leaks_inside ... ok
+test memory_bomb_dies_at_the_declared_bound ... ok
+test traversal_cannot_reach_host_bound_trees ... ok
+test huge_writes_hit_the_fsize_bound ... ok
+test subprocess_children_stay_inside_the_network_namespace ... ok
+test dependency_install_failure_has_a_pinned_cause ... ok
+test only_the_sandbox_python_environment_is_visible ... ok
+test mounts_are_read_only_except_workdir ... ok
+test network_is_unreachable_inside_the_sandbox ... ok
+test wall_timeout_kills_a_runaway ... ok
+test cpu_runaway_dies_at_the_rlimit_within_the_wall_deadline ... ok
+
+test result: ok. 17 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.08s

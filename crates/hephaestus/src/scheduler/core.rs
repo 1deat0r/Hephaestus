@@ -1,8 +1,9 @@
 //! The bounded worker scheduler (T-009).
 //!
-//! Deterministic, in-process, clockless: waves of ready tasks are selected
-//! under priority-class order, `max_in_flight`, resource-unit capacity and
-//! exclusivity; every priced task **reserves budget before dispatch**
+//! Deterministic, in-process, clockless: ready tasks dispatch as soon as
+//! they pass priority-class order, max_in_flight, resource-unit and memory
+//! capacity, and exclusivity against tasks already in flight (no wave
+//! barrier); every priced task **reserves budget before dispatch**
 //! (AT-055); outcomes map to commit / release / unresolved (R-056); retries
 //! are bounded and non-idempotent work is never auto-retried
 //! (MASTER_SPEC:371). Durability/replay belongs to T-011.
@@ -51,9 +52,9 @@ pub enum SchedulerError {
 /// Bounds for one scheduler.
 #[derive(Debug, Clone, Copy)]
 pub struct SchedulerConfig {
-    /// Maximum tasks dispatched in one wave (must be >= 1).
+    /// Maximum tasks in flight at once (must be >= 1).
     pub max_in_flight: usize,
-    /// Resource units available to one wave.
+    /// Resource units available across all in-flight tasks.
     pub resource_capacity: u32,
     pub memory_capacity_mb: u64,
     /// Maximum queued (pending, undispatched) tasks admitted at
@@ -76,7 +77,7 @@ pub struct RunReport {
 }
 
 impl RunReport {
-    /// Ids in dispatch order (class order per wave; retries re-listed).
+    /// Ids in dispatch order (class order per round; retries re-listed).
     pub fn dispatch_order(&self) -> &[String] {
         &self.dispatch_order
     }
@@ -121,6 +122,20 @@ enum NodeState {
     Unresolved,
 }
 
+/// A dispatched task awaiting completion: the resources it holds and the
+/// reservation its settlement will commit or release exactly once.
+#[derive(Debug)]
+struct InFlight {
+    units: u32,
+    memory_mb: u64,
+    exclusive: bool,
+    held: Option<Money>,
+}
+
+/// One worker completion message: (task index, outcome) pairs, or the
+/// executor panic payload, which re-raises fail-closed.
+type WorkerMsg = std::thread::Result<Vec<(usize, TaskOutcome)>>;
+
 /// The bounded scheduler over a validated [`TaskDag`] and a [`BudgetLedger`].
 #[derive(Debug)]
 pub struct Scheduler {
@@ -131,6 +146,7 @@ pub struct Scheduler {
     dispatch_counts: Vec<u32>,
     fail_reasons: HashMap<String, String>,
     cancel_flags: HashMap<String, Arc<AtomicBool>>,
+    in_flight: HashMap<usize, InFlight>,
 }
 
 impl Scheduler {
@@ -197,6 +213,7 @@ impl Scheduler {
             dispatch_counts,
             fail_reasons,
             cancel_flags,
+            in_flight: HashMap::new(),
         })
     }
 
@@ -213,130 +230,197 @@ impl Scheduler {
     }
 
     /// Run until no progress is possible; returns the deterministic report.
+    ///
+    /// Dispatch streams: each round starts every task that passes admission
+    /// (reserve before dispatch, AT-055), then settles one completion
+    /// message. There is no wave barrier, so a child can start while
+    /// unrelated earlier work still runs (AC2). Worker threads only execute
+    /// tasks and post outcomes; admission, state, budgets, settlement and
+    /// the report stay on this thread (one owner). Report lists remain
+    /// declaration ordered via collect_terminal; physical completion order
+    /// may vary between runs and is not part of the contract.
     pub fn run<E: TaskExecutor>(&mut self, executor: &E) -> Result<RunReport, SchedulerError> {
         let mut report = RunReport::default();
-        loop {
-            self.cascade(executor);
+        // The channel must outlive the scope region so its sender can be
+        // lent to workers for as long as the scope can run.
+        let (tx, rx) = std::sync::mpsc::channel::<WorkerMsg>();
+        std::thread::scope(|scope| {
+            loop {
+                self.cascade(executor);
 
-            let mut wave = self.select_wave();
-            if wave.is_empty() {
-                // Terminalization (cancel/failed deps) may cascade further —
-                // try once more before declaring stuck.
-                if self.cascade(executor) {
-                    wave = self.select_wave();
-                }
-                if wave.is_empty() {
-                    if self.states.contains(&NodeState::Pending) {
-                        return Err(SchedulerError::Stuck(
-                            "pending tasks with no dispatchable wave — dependency or budget deadlock"
-                                .to_string(),
-                        ));
+                let mut wave = self.select_wave();
+                if wave.is_empty() && self.in_flight.is_empty() {
+                    // Terminalization (cancel/failed deps) may cascade
+                    // further — try once more before declaring stuck.
+                    if self.cascade(executor) {
+                        wave = self.select_wave();
                     }
-                    break;
+                    if wave.is_empty() {
+                        if self.states.contains(&NodeState::Pending) {
+                            return Err(SchedulerError::Stuck(
+                                "pending tasks with no dispatchable wave — dependency or budget deadlock"
+                                    .to_string(),
+                            ));
+                        }
+                        break;
+                    }
+                }
+
+                if !wave.is_empty() {
+                    self.dispatch_wave(&wave, executor, scope, &tx, &mut report)?;
+                }
+                if self.in_flight.is_empty() {
+                    // Every selected task was budget-refused (now Failed):
+                    // re-evaluate; no completion can arrive.
+                    continue;
+                }
+
+                let msg = rx.recv().map_err(|_| {
+                    SchedulerError::Stuck(
+                        "completion channel closed while tasks are in flight".to_string(),
+                    )
+                })?;
+                let results = match msg {
+                    Ok(results) => results,
+                    Err(payload) => std::panic::resume_unwind(payload),
+                };
+                for (i, outcome) in results {
+                    let flight = self
+                        .in_flight
+                        .remove(&i)
+                        .expect("settling task must be in flight");
+                    self.resolve(i, outcome, flight.held)?;
                 }
             }
+            self.collect_terminal(&mut report);
+            Ok(report)
+        })
+    }
 
-            // Reserve BEFORE dispatch (AT-055), wave order; `dispatched`
-            // stays parallel to the reservations it carries.
-            let mut dispatched: Vec<(usize, Option<Money>)> = Vec::new();
-            for &i in &wave {
-                let task = self.dag.tasks()[i].clone();
-                if task.cost.minor_units > 0 {
-                    match self.budget.reserve(&task.id, task.cost.clone()) {
-                        Ok(()) => dispatched.push((i, Some(task.cost.clone()))),
-                        Err(BudgetError::InsufficientAvailable { .. }) => {
-                            // Budget refuses the reservation: the task
-                            // cannot run — and nothing was dispatched.
-                            self.states[i] = NodeState::Failed;
-                            self.fail_reasons
-                                .insert(task.id.clone(), "BUDGET_UNAVAILABLE".to_string());
-                            continue;
-                        }
-                        Err(e) => {
-                            // Defense in depth: release sibling holds made
-                            // in this wave before aborting (pass-2 fresh
-                            // finding) — an abort must never leak.
-                            let siblings: Vec<String> = dispatched
-                                .iter()
-                                .filter(|(_, held)| held.is_some())
-                                .map(|(idx, _)| self.dag.tasks()[*idx].id.clone())
-                                .collect();
-                            let mut cleanup: Vec<String> = Vec::new();
-                            for id in &siblings {
-                                if let Err(e2) = self.budget.release(id) {
-                                    cleanup.push(format!("{id}: {e2}"));
-                                }
+    /// Reserve, record and spawn one admission round (no barrier).
+    ///
+    /// Phase 1 reserves every selected priced task before any spawn
+    /// (AT-055): a budget refusal fails that task without dispatching it;
+    /// an unexpected reservation error releases the fresh holds of this
+    /// round, spawns nothing, and aborts. Phase 2 registers in-flight
+    /// holds, then spawns workers: two or more unflagged trivial tasks
+    /// share one run_batch call; everything else runs through
+    /// run_cancellable.
+    fn dispatch_wave<'scope, 'env, E: TaskExecutor>(
+        &mut self,
+        wave: &[usize],
+        executor: &'scope E,
+        scope: &'scope std::thread::Scope<'scope, 'env>,
+        tx: &'scope std::sync::mpsc::Sender<WorkerMsg>,
+        report: &mut RunReport,
+    ) -> Result<(), SchedulerError> {
+        // Phase 1: reserve before dispatch (AT-055), selection order.
+        let mut dispatched: Vec<(usize, Option<Money>)> = Vec::new();
+        for &i in wave {
+            let task = self.dag.tasks()[i].clone();
+            if task.cost.minor_units > 0 {
+                match self.budget.reserve(&task.id, task.cost.clone()) {
+                    Ok(()) => dispatched.push((i, Some(task.cost.clone()))),
+                    Err(BudgetError::InsufficientAvailable { .. }) => {
+                        // Budget refuses the reservation: the task cannot
+                        // run — and nothing was dispatched for it.
+                        self.states[i] = NodeState::Failed;
+                        self.fail_reasons
+                            .insert(task.id.clone(), "BUDGET_UNAVAILABLE".to_string());
+                        continue;
+                    }
+                    Err(e) => {
+                        // Defense in depth: release the fresh holds of this
+                        // round before aborting — an abort must never leak.
+                        let siblings: Vec<String> = dispatched
+                            .iter()
+                            .filter(|(_, held)| held.is_some())
+                            .map(|(idx, _)| self.dag.tasks()[*idx].id.clone())
+                            .collect();
+                        let mut cleanup: Vec<String> = Vec::new();
+                        for id in &siblings {
+                            if let Err(e2) = self.budget.release(id) {
+                                cleanup.push(format!("{id}: {e2}"));
                             }
-                            let extra = if cleanup.is_empty() {
-                                String::new()
-                            } else {
-                                format!(" (cleanup failures: {})", cleanup.join("; "))
-                            };
-                            return Err(SchedulerError::Settlement(format!(
-                                "reservation for {}: {e}{extra}",
-                                task.id
-                            )));
                         }
-                    }
-                } else {
-                    dispatched.push((i, None));
-                }
-                self.dispatch_counts[i] += 1;
-                report.dispatch_order.push(task.id.clone());
-            }
-
-            // Execute: >= 2 unflagged trivial tasks go through one
-            // run_batch call (plan: batch trivial deterministic work).
-            let tasks: Vec<Task> = dispatched
-                .iter()
-                .map(|(i, _)| self.dag.tasks()[*i].clone())
-                .collect();
-            let flags: Vec<Arc<AtomicBool>> = dispatched
-                .iter()
-                .map(|(i, _)| {
-                    self.cancel_flags
-                        .get(&self.dag.tasks()[*i].id)
-                        .cloned()
-                        .expect("flag exists")
-                })
-                .collect();
-            let batchable: Vec<usize> = (0..dispatched.len())
-                .filter(|&k| tasks[k].trivial && !flags[k].load(Ordering::SeqCst))
-                .collect();
-            // (dispatched index, task index, outcome) — pairing by the
-            // dispatched index keeps reservations correct even when batching
-            // reorders execution (review pass 1 bug).
-            let mut outcomes: Vec<(usize, usize, TaskOutcome)> = Vec::new();
-            if batchable.len() > 1 {
-                let batch: Vec<Task> = batchable.iter().map(|&k| tasks[k].clone()).collect();
-                let outs = executor.run_batch(&batch);
-                for (idx, &k) in batchable.iter().enumerate() {
-                    outcomes.push((k, dispatched[k].0, outs[idx].clone()));
-                }
-                let batched: std::collections::HashSet<usize> = batchable.iter().copied().collect();
-                for (k, (i, _)) in dispatched.iter().enumerate() {
-                    if !batched.contains(&k) {
-                        let out = executor.run_cancellable(&tasks[k], &flags[k]);
-                        outcomes.push((k, *i, out));
+                        let extra = if cleanup.is_empty() {
+                            String::new()
+                        } else {
+                            format!(" (cleanup failures: {})", cleanup.join("; "))
+                        };
+                        return Err(SchedulerError::Settlement(format!(
+                            "reservation for {}: {e}{extra}",
+                            task.id
+                        )));
                     }
                 }
             } else {
-                for (k, (i, _)) in dispatched.iter().enumerate() {
-                    let out = executor.run_cancellable(&tasks[k], &flags[k]);
-                    outcomes.push((k, *i, out));
-                }
+                dispatched.push((i, None));
             }
-
-            // Resolve in dispatch order (determinism); each outcome carries
-            // its own dispatched index, so reservations can never shift.
-            outcomes.sort_by_key(|(k, _, _)| *k);
-            for (k, i, outcome) in outcomes {
-                let held = dispatched[k].1.clone();
-                self.resolve(i, outcome, held)?;
-            }
+            self.dispatch_counts[i] += 1;
+            report.dispatch_order.push(task.id.clone());
         }
-        self.collect_terminal(&mut report);
-        Ok(report)
+
+        // Phase 2: register holds, then spawn workers.
+        let tasks: Vec<Task> = dispatched
+            .iter()
+            .map(|(i, _)| self.dag.tasks()[*i].clone())
+            .collect();
+        let flags: Vec<Arc<AtomicBool>> = tasks
+            .iter()
+            .map(|t| self.cancel_flags.get(&t.id).cloned().expect("flag exists"))
+            .collect();
+        for (k, (i, held)) in dispatched.iter().enumerate() {
+            self.in_flight.insert(
+                *i,
+                InFlight {
+                    units: tasks[k].resource_units,
+                    memory_mb: tasks[k].memory_mb,
+                    exclusive: tasks[k].exclusive,
+                    held: held.clone(),
+                },
+            );
+        }
+        let batchable: Vec<usize> = (0..dispatched.len())
+            .filter(|&k| tasks[k].trivial && !flags[k].load(Ordering::SeqCst))
+            .collect();
+        let batched: Vec<usize> = if batchable.len() > 1 {
+            let batch: Vec<Task> = batchable.iter().map(|&k| tasks[k].clone()).collect();
+            let indices: Vec<usize> = batchable.iter().map(|&k| dispatched[k].0).collect();
+            scope.spawn(move || {
+                let msg: WorkerMsg = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+                    let outs = executor.run_batch(&batch);
+                    // A short batch panics here, exactly as the
+                    // pre-streaming loop did: fail closed, never a
+                    // silent missing completion.
+                    indices
+                        .iter()
+                        .enumerate()
+                        .map(|(n, &i)| (i, outs[n].clone()))
+                        .collect()
+                }));
+                let _ = tx.send(msg);
+            });
+            batchable
+        } else {
+            Vec::new()
+        };
+        for (k, (task, flag)) in tasks.iter().zip(flags.iter()).enumerate() {
+            if batched.contains(&k) {
+                continue;
+            }
+            let i = dispatched[k].0;
+            let task = task.clone();
+            let flag = flag.clone();
+            scope.spawn(move || {
+                let msg: WorkerMsg = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+                    executor.run_cancellable(&task, &flag)
+                }))
+                .map(|outcome| vec![(i, outcome)]);
+                let _ = tx.send(msg);
+            });
+        }
+        Ok(())
     }
 
     // --- internals -------------------------------------------------------
@@ -391,6 +475,12 @@ impl Scheduler {
             if self.states[i] != NodeState::Pending {
                 continue;
             }
+            if self.in_flight.contains_key(&i) {
+                // Already dispatched: cooperative cancellation reaches it
+                // through the flag its worker holds; the hold settles once,
+                // at completion (never pre-emptively).
+                continue;
+            }
             let id = self.dag.tasks()[i].id.clone();
             let flagged = self
                 .cancel_flags
@@ -434,6 +524,7 @@ impl Scheduler {
             .enumerate()
             .filter(|(i, t)| {
                 self.states[*i] == NodeState::Pending
+                    && !self.in_flight.contains_key(i)
                     && t.depends_on.iter().all(|d| {
                         matches!(
                             self.state_of(d),
@@ -446,21 +537,33 @@ impl Scheduler {
     }
 
     /// Priority class first (Critical < Normal < Verification < Exploration),
-    /// declaration order within class; bounded by max_in_flight, resource
-    /// capacity, and mutual exclusion of `exclusive` tasks.
+    /// declaration order within class; bounded by max_in_flight minus tasks
+    /// already in flight, remaining resource-unit and memory capacity, and
+    /// mutual exclusion of exclusive tasks against in-flight work.
     fn select_wave(&self) -> Vec<usize> {
+        // An exclusive task runs alone: admit nothing while any task runs.
+        if self.in_flight.values().any(|f| f.exclusive) {
+            return Vec::new();
+        }
+        let slots = self
+            .config
+            .max_in_flight
+            .saturating_sub(self.in_flight.len());
+        if slots == 0 {
+            return Vec::new();
+        }
         let mut candidates = self.ready_indices();
         candidates.sort_by_key(|&i| (self.dag.tasks()[i].priority, i));
         let mut wave: Vec<usize> = Vec::new();
-        let mut units: u32 = 0;
-        let mut memory: u64 = 0;
+        let mut units: u32 = self.in_flight.values().map(|f| f.units).sum();
+        let mut memory: u64 = self.in_flight.values().map(|f| f.memory_mb).sum();
         for i in candidates {
-            if wave.len() >= self.config.max_in_flight {
+            if wave.len() >= slots {
                 break;
             }
             let task = &self.dag.tasks()[i];
             let wave_has_exclusive = wave.iter().any(|&j| self.dag.tasks()[j].exclusive);
-            if task.exclusive && !wave.is_empty() {
+            if task.exclusive && (!wave.is_empty() || !self.in_flight.is_empty()) {
                 continue;
             }
             if wave_has_exclusive {

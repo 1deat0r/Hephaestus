@@ -1,0 +1,71 @@
+   Compiling hephaestus v0.1.0 (/run/media/ideator/Projects/AI Agents/Hephaestus/crates/hephaestus)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 47.79s
+     Running tests/architecture_resource_admission.rs (target/debug/deps/architecture_resource_admission-01a6270e9affd8e7)
+
+running 10 tests
+test s1_envelope_oversize_claims_refused_at_admission ... ok
+test s2_admission_queue_over_bound_refused_before_dispatch ... ok
+test s2_admission_queue_at_bound_dispatches ... ok
+test s1_envelope_memory_claims_split_waves_before_dispatch ... ok
+test s2_admission_queue_bytes_drain_with_dispatch ... ok
+test s1_envelope_zero_memory_keeps_cpu_only_admission ... ok
+test s2_admission_reservations_release_exactly_once ... ok
+test s3_limits_measured_peak_stays_under_limit ... ok
+test s3_limits_clean_exit_carries_no_violation ... ok
+test s3_limits_memory_hog_dies_with_receipts ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.12s
+
+     Running tests/operations_deny.rs (target/debug/deps/operations_deny-7decf3d69308bea6)
+
+running 19 tests
+test crash_between_store_commit_and_event_leaves_orphan_no_receipt ... ok
+test cancel_requested_is_recorded_before_the_handle_flips ... ok
+test fault_boundary_cancel_intent_recovers_as_cancelled_not_requeue ... ok
+test planned_is_durable_before_any_dispatch_possibility ... ok
+test apply_records_unresolved_exactly_once_and_releases_holds ... ok
+test end_to_end_recorder_survives_death_with_audit_history_intact ... ok
+test fault_boundary_ambiguous_effect_reconciles_exactly_once ... ok
+test fault_boundary_dispatched_without_receipt_becomes_unresolved ... ok
+test fault_boundary_artifact_committed_without_receipt_stays_ambiguous ... ok
+test overlong_operation_tags_are_refused_by_contract_validation ... ok
+test fault_boundary_planned_only_requeues_and_touches_no_budget ... ok
+test receipt_payload_lands_in_the_artifact_store ... ok
+test tampered_chain_refuses_replay_entirely ... ok
+test reopen_continues_monotonic_ids_and_sequences ... ok
+test scheduler_dag_runs_through_recording_executor_with_budget ... ok
+test replay_is_deterministic_across_reopens ... ok
+test recording_executor_appends_dispatched_before_delegating ... ok
+test replay_derives_states_from_events_alone ... ok
+test rule_table_covers_every_state ... ok
+
+test result: ok. 19 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests/scheduler_deny.rs (target/debug/deps/scheduler_deny-93eada7063559800)
+
+running 2 tests
+test cycles_are_named_and_every_other_gap_is_denied ... ok
+test valid_linear_and_diamond_dags_validate_clean ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/scheduler_run.rs (target/debug/deps/scheduler_run-62829224adeab3f4)
+
+running 15 tests
+test budget_refusal_blocks_dispatch_before_any_executor_call ... ok
+test cancellation_prevents_new_reservations_signals_and_cascades ... ok
+test cost_mismatch_fails_the_task_and_returns_the_reservation ... ok
+test cross_currency_costs_are_refused_at_construction ... ok
+test executor_reported_cancellation_releases_the_reservation ... ok
+test attempt_counts_are_visible_in_the_report ... ok
+test mixed_wave_batching_keeps_every_reservation_with_its_own_task ... ok
+test failure_and_unknown_cost_release_or_refuse ... ok
+test timeouts_follow_the_same_retry_rules ... ok
+test trivial_ready_tasks_are_batched_and_non_trivial_never_are ... ok
+test reserve_happens_before_dispatch_and_success_commits_exactly ... ok
+test non_idempotent_work_is_attempted_exactly_once ... ok
+test retries_are_bounded_by_max_attempts_with_visible_attempts ... ok
+test priorities_drain_critical_first_and_runs_are_deterministic ... ok
+test bounded_waves_respect_max_in_flight_resource_units_and_exclusivity ... ok
+
+test result: ok. 15 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s

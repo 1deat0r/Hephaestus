@@ -1,0 +1,22 @@
+   Compiling hephaestus v0.1.0 (/run/media/ideator/Projects/AI Agents/Hephaestus/crates/hephaestus)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 44.11s
+     Running tests/architecture_concurrent_execution.rs (target/debug/deps/architecture_concurrent_execution-469adfbe231a9049)
+
+running 1 test
+test s2_dispatch_child_runs_before_unrelated_completion ... FAILED
+
+failures:
+
+---- s2_dispatch_child_runs_before_unrelated_completion stdout ----
+
+thread 's2_dispatch_child_runs_before_unrelated_completion' (4058823) panicked at crates/hephaestus/tests/architecture_concurrent_execution.rs:224:5:
+child must start while unrelated work is still active;          UNRELATED outcome reason: Some("child never started while unrelated work was active"); dispatch order: ["PARENT", "UNRELATED", "CHILD"]
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    s2_dispatch_child_runs_before_unrelated_completion
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 3 filtered out; finished in 3.00s
+
+error: test failed, to rerun pass `-p hephaestus --test architecture_concurrent_execution`

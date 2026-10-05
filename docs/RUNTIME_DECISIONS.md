@@ -385,3 +385,43 @@ separate decision and stays untouched here.
 Live demo: appending one byte to `AGENTS.md` fails with
 `MANIFEST hash mismatch: AGENTS.md — recorded 0f81d9f9b710..., actual
 5750741ce6d4...`; removing the byte returns green.
+
+## ADR-033 — Workers run dispatch; settlement stays with the scheduler
+
+AE-01/S2 removes the wave barrier so independent tasks overlap and a
+child starts as soon as its parent completes (spec AC2). The non-obvious
+part is where the money and the state live while tasks run in parallel.
+Each dispatch round spawns scoped worker threads (`std::thread::scope`)
+— one thread for a run_batch group of trivial tasks, one per other
+task — and every worker sends its outcome, or its caught panic, over
+one `std::mpsc` channel created outside the scope region.
+
+Decision: the scheduler loop stays the single owner. It selects the
+next round (priority class, then declaration index), reserves every
+priced task before any spawn (R-055/AT-055), registers the in-flight
+holds, spawns workers, then receives completions and performs every
+state transition, budget commit or release, and report append itself.
+Capacity for the next round is computed from the in-flight registry:
+`max_in_flight` minus flights, plus in-flight resource-unit and memory
+sums, with exclusivity held for the flight's duration. No worker ever
+touches the ledger or the state vector.
+
+Rejected: an async runtime pool (new dependency, and it moves selection
+and settlement off the one thread whose order the replay tests pin);
+worker-side settlement behind a mutex (it breaks the exclusive-borrow
+check-plus-debit invariant `&mut self` gives `BudgetLedger` — two
+owners can interleave reserve and commit); keeping the wave barrier
+(spec AC2 forbids it); a crossbeam channel (std mpsc already carries
+the one thing that crosses the boundary: a settled outcome).
+
+Consequences a future reader needs: a worker panic is caught and
+resume-unwound on the scheduler thread, so a missing completion fails
+loudly instead of hanging the run; a batch message resolves all its
+members atomically, so batch sizes stay exact for admission tests; while
+an exclusive task is in flight no new round is selected; pre-dispatch
+cancellation skips in-flight tasks (the worker holds the cancel flag
+and the hold settles once at completion); `Stuck` is raised only when
+the selected wave and the in-flight registry are both empty after a
+cascade pass. Physical completion order may vary between runs; recorded
+dispatch order, report ordering, and replay stay stable because the
+scheduler thread alone writes them.

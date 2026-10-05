@@ -1,0 +1,13 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.21s
+     Running tests/architecture_concurrent_execution.rs (target/debug/deps/architecture_concurrent_execution-469adfbe231a9049)
+
+running 7 tests
+test s1_contract_cancellation_signals_and_ambiguous_reasons_default ... ok
+test s1_contract_bounded_submission_admits_below_and_refuses_above ... ok
+test s1_contract_completion_identities_separate_retries_from_duplicates ... ok
+test s2_dispatch_budget_refusal_never_reaches_the_executor ... ok
+test s2_dispatch_replay_is_stable_across_runs ... ok
+test s2_dispatch_child_runs_before_unrelated_completion ... ok
+test s2_dispatch_independent_tasks_overlap_within_capacity ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s

@@ -1,0 +1,1 @@
+{"status":"PASS","exit_code":0,"nonempty_tests":true,"elapsed_seconds":0.179,"log":"/tmp/hephaestus-AE-01-S2-anx9iedz.log","smalls":[{"small":"S2","command":"cargo test -p hephaestus --test architecture_concurrent_execution s2_dispatch","exit_code":0,"nonempty_tests":true,"green":true}]}

@@ -1,7 +1,7 @@
 # AE-01: Concurrent execution
 
 **Status:** ready-for-agent
-**Verify:** cargo test -p hephaestus --test architecture_concurrent_execution
+**Verify:** python3 .scratch/architecture-efficiency/workflow.py verify AE-01
 **Covers:** 1, 2, 3
 **Blocked by:** None (AE-02 done: 8604d25)
 **Requirements:** R-051, R-055, R-056, R-057
@@ -26,15 +26,15 @@ Test names below are planned. Existing passing tests cannot substitute for these
       - [x] Add positive, refusal, and regression cases in `crates/hephaestus/tests/architecture_concurrent_execution.rs`.
       - [x] Implement the specified behavior in `crates/hephaestus/src/scheduler/executor.rs`.
 
-2. [ ] **S2** Dispatch without wave barriers
-   **Status:** pending
+2. [x] **S2** Dispatch without wave barriers
+   **Status:** done
    **Verify:** cargo test -p hephaestus --test architecture_concurrent_execution s2_dispatch
    Overlap independent tasks; unblock children after completion; retain one owner for budget and state.
    **Micro-tasks:**
-   1. [ ] **M1** Demonstrate the missing behavior; implement it; pass the same acceptance tests.
+   1. [x] **M1** Demonstrate the missing behavior; implement it; pass the same acceptance tests.
       **Verify:** cargo test -p hephaestus --test architecture_concurrent_execution s2_dispatch
-      - [ ] Add positive, refusal, and regression cases in `crates/hephaestus/tests/architecture_concurrent_execution.rs`.
-      - [ ] Implement the specified behavior in `crates/hephaestus/src/scheduler/core.rs`.
+      - [x] Add positive, refusal, and regression cases in `crates/hephaestus/tests/architecture_concurrent_execution.rs`.
+      - [x] Implement the specified behavior in `crates/hephaestus/src/scheduler/core.rs`.
 
 3. [ ] **S3** Preserve cancellation and recovery
    **Status:** pending

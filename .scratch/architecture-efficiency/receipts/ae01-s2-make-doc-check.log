@@ -1,0 +1,4 @@
+RUSTDOCFLAGS="-D warnings" cargo doc --workspace --no-deps
+ Documenting hephaestus v0.1.0 (/run/media/ideator/Projects/AI Agents/Hephaestus/crates/hephaestus)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 6.47s
+   Generated /run/media/ideator/Projects/AI Agents/Hephaestus/target/doc/hephaestus/index.html and 1 other file

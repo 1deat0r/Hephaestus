@@ -114,6 +114,23 @@ campaign execution pending).
      plus a failure message that prints stdout; standalone 2× green and
      `sandbox_deny` 17/17.
 
+## Campaign receipts (dev-roadmap tickets 01-04)
+
+Fresh campaign receipts land here (tickets 01-04).
+
+- Ticket 01 (fixture campaign driver): 20-mission loop with R-103
+  denominator and budget receipts (commits a9b7698, 18169f8).
+- Ticket 02 (real-corpus mission): `cargo test --test e2e_real_corpus`
+  3 passed over repo docs (commit adf8a71, closed 06a58e7).
+- Ticket 03 (docs domain pack): `cargo test --test docs_domain_pack`
+  3 passed (commit b88fea4, closed c3a693f).
+- Ticket 04 (canary-watch): `cargo test --test cli canary_watch`
+  1 passed; twin runs byte-identical, stopped outcome with the
+  rollback receipt restoring incumbent d8 (commit 7fc2649, closed
+  4cb24e2).
+- Full workspace suite at ticket-04 close: 82 suites ok, exit 0;
+  `cargo doc` exit 0.
+
 ## Limitations and non-claims
 
 - **Release label unchanged**: specification/engineering foundation, not

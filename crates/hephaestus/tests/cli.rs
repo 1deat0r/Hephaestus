@@ -101,6 +101,24 @@ fn help_documents_both_subcommands() {
     assert!(text.contains("fixture run"), "{text}");
     assert!(text.contains("fixture recover"), "{text}");
     assert!(text.contains("fixture mission-run"), "{text}");
+    assert!(text.contains("fixture canary-watch"), "{text}");
+}
+
+#[test]
+fn canary_watch_stops_the_breached_rollout_with_a_rollback_receipt() {
+    // dev-roadmap ticket 04: the monitor as a command -- twin runs over
+    // the fixed observation stream are byte-identical and carry the stop
+    // outcome plus the rollback receipt restoring the proven incumbent.
+    let run_once = || bin().args(["fixture", "canary-watch"]).output().expect("spawn");
+    let a = run_once();
+    assert!(a.status.success(), "{}", String::from_utf8_lossy(&a.stderr));
+    let summary: serde_json::Value = serde_json::from_slice(&a.stdout).expect("json");
+    assert_eq!(summary["outcome"], "stopped");
+    assert_eq!(summary["checks"], 3);
+    assert_eq!(summary["rollback"]["restored_incumbent_digest"], "d8");
+    assert_eq!(summary["rollback"]["rolled_back_challenger_digest"], "d16");
+    let b = run_once();
+    assert_eq!(a.stdout, b.stdout, "twin runs byte-identical");
 }
 
 #[test]

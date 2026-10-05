@@ -4,7 +4,7 @@
 
 **Blocked by:** None (can start immediately)
 
-**Status:** ready-for-agent
+**Status:** done
 
 **Verify:** cargo test --test cli -- --list | grep canary_watch && cargo test --test cli canary_watch
 
@@ -12,16 +12,16 @@
 
 **Small tasks:** (max 8)
 
-1. [ ] **S1** — fixture canary-watch command
+1. [x] **S1** — fixture canary-watch command
    **Status:** ready-for-agent
    **Verify:** cargo test --test cli -- --list | grep canary_watch && cargo test --test cli canary_watch
    **Micro-tasks:** (max 6)
-   1. [ ] **M1** — red-to-green cycle for the subcommand
+   1. [x] **M1** — red-to-green cycle for the subcommand
       **Verify:** cargo test --test cli -- --list | grep canary_watch && cargo test --test cli canary_watch
-      - [ ] add subcommand wiring in main.rs with usage and help
-      - [ ] run monitor_deployment over a fixture stream
-      - [ ] add the twin-run byte-identical cli test and run it green
-      - [ ] run cargo fmt --check and make ticket-status
+      - [x] add subcommand wiring in main.rs with usage and help
+      - [x] run monitor_deployment over a fixture stream
+      - [x] add the twin-run byte-identical cli test and run it green
+      - [x] run cargo fmt --check and make ticket-status
 
 2. [ ] **S2** — close: status flip
    **Status:** ready-for-agent

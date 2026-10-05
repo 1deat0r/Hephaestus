@@ -5,6 +5,7 @@
 //!   hephaestus fixture run         --state-dir <DIR>
 //!   hephaestus fixture recover     --state-dir <DIR>
 //!   hephaestus fixture mission-run --trace <FILE>
+//!   hephaestus fixture canary-watch
 //!   hephaestus --help
 //!
 //! Exit codes: 0 success · 1 operational failure (bad state dir, refused
@@ -20,11 +21,11 @@ use std::io::Write;
 use std::path::PathBuf;
 use std::process::ExitCode;
 
-const USAGE: &str = "usage: hephaestus <fixture run|fixture recover> --state-dir <DIR>\n       hephaestus <fixture mission-run> --trace <FILE>\n       hephaestus --help\n";
+const USAGE: &str = "usage: hephaestus <fixture run|fixture recover> --state-dir <DIR>\n       hephaestus <fixture mission-run> --trace <FILE>\n       hephaestus <fixture canary-watch>\n       hephaestus --help\n";
 
 fn print_help() {
     println!(
-        "hephaestus — local CLI (M1 exit fixture)\n\n\
+        "hephaestus - local CLI (M1 exit fixture)\n\n\
          \x20 Commands:\n\
          \x20   fixture run     --state-dir <DIR>   run the deterministic fixture DAG\n\
          \x20                                       (state dir must be empty or absent)\n\
@@ -32,8 +33,11 @@ fn print_help() {
          \x20                                       states plus the recovery plan\n\
          \x20   fixture mission-run --trace <FILE>   run the E2E mission chain over a\n\
          \x20                                       world-derived trace fixture and print\n\
-         \x20                                       supported + negative receipts\n\n\
-         \x20 Exit codes: 0 ok · 1 operational failure · 2 usage error\n\n{USAGE}"
+         \x20                                       supported + negative receipts\n\
+         \x20   fixture canary-watch                monitor the fixture deployment over a\n\
+         \x20                                       fixed observation stream and print\n\
+         \x20                                       the stop outcome + rollback receipt\n\n\
+         \x20 Exit codes: 0 ok - 1 operational failure - 2 usage error\n\n{USAGE}"
     );
 }
 
@@ -108,6 +112,65 @@ fn mission_run(rest: &[String]) -> ExitCode {
     }
 }
 
+/// `fixture canary-watch`: monitor the fixed fixture deployment over a
+/// fixed observation stream (clear, clear, breach) and print the stop
+/// outcome plus the rollback receipt as JSON. Deterministic: no clock,
+/// no I/O, fixed digests and limits.
+fn canary_watch() -> ExitCode {
+    use hephaestus::selfimprove::record::{
+        BoundKind, Deployment, GuardrailIndicators, Indicator, MonitorOutcome, MonitorPolicy,
+    };
+    let deployment = Deployment {
+        challenger_id: "bound-16".to_string(),
+        challenger_digest: "d16".to_string(),
+        incumbent_id: "bound-8".to_string(),
+        incumbent_digest: "d8".to_string(),
+        grant_scope: vec!["discovery.generation_bound".to_string()],
+        assessment_payload_digest: "d16".to_string(),
+        observed_scope: "canary-bounded".to_string(),
+    };
+    let policy = MonitorPolicy {
+        max_checks: 3,
+        stop_rules: vec!["stop the rollout on any guardrail breach".to_string()],
+        verified_incumbent_digest: "d8".to_string(),
+    };
+    let obs = |observed: f64| GuardrailIndicators {
+        indicators: vec![Indicator {
+            name: "latency_ms".to_string(),
+            kind: BoundKind::AtMost,
+            observed,
+            limit: 100.0,
+        }],
+    };
+    let stream = vec![obs(90.0), obs(95.0), obs(250.0)];
+    match hephaestus::selfimprove::monitor_deployment(&deployment, &policy, &stream) {
+        Err(e) => {
+            let _ = writeln!(std::io::stderr(), "error: {e}");
+            ExitCode::from(1)
+        }
+        Ok(MonitorOutcome::Completed { checks }) => {
+            println!("{}", serde_json::json!({ "outcome": "completed", "checks": checks }));
+            ExitCode::SUCCESS
+        }
+        Ok(MonitorOutcome::Stopped { checks, rollback }) => {
+            println!(
+                "{}",
+                serde_json::json!({
+                    "outcome": "stopped",
+                    "checks": checks,
+                    "rollback": {
+                        "restored_incumbent_digest": rollback.restored_incumbent_digest,
+                        "rolled_back_challenger_digest": rollback.rolled_back_challenger_digest,
+                        "reason": rollback.reason,
+                        "observations": rollback.observations,
+                    },
+                })
+            );
+            ExitCode::SUCCESS
+        }
+    }
+}
+
 fn main() -> ExitCode {
     let args: Vec<String> = std::env::args().skip(1).collect();
     match args.as_slice() {
@@ -124,6 +187,7 @@ fn main() -> ExitCode {
                     .map(|s| serde_json::to_string(&s).expect("summary serializes"))
             }),
             Some("mission-run") => mission_run(&rest[1..]),
+            Some("canary-watch") => canary_watch(),
             _ => usage_error(),
         },
         _ => usage_error(),

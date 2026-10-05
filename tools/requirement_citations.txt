@@ -2,4 +2,3 @@
 # Format: R-XXX # reason. Stale entries (id now cited in code scope) FAIL.
 # The scanner must never read requirements data — self-citation tautology (spec §Problem).
 R-054 # no cache feature exists anywhere; retrieval views rebuildable by construction (R-015). N/A until caching is introduced; this obligation gates any future cache. Audited runs 24-26.
-R-079 # build-order process obligation (contracts and durable execution before acceleration) — evidenced by the repo's own sequence (M0 before M5) and ADR history; has no code form by design.

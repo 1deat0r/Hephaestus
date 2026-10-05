@@ -554,6 +554,10 @@ docs/agents/auto-workflow/decisions-2026-10-01T22:27:46Z.md
 .scratch/t060-scratch-trail-completion/grill.md
 .scratch/t060-scratch-trail-completion/issues/01-stage-and-allowlist.md
 .scratch/t060-scratch-trail-completion/spec.md
+.scratch/development-baseline-repair/spec.md
+.scratch/development-baseline-repair/issues/01-restore-verification-gates.md
+.scratch/development-baseline-repair/receipts/baseline-failures.md
+.scratch/development-baseline-repair/receipts/checks-green.md
 docs/agents/auto-workflow/decisions-2026-10-01T22:44:44Z.md
 docs/agents/auto-workflow/decisions-2026-10-01T22:53:12Z.md
 docs/agents/auto-workflow/decisions-2026-10-01T22:59:40Z.md

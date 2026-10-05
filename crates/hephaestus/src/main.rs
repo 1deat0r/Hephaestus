@@ -149,7 +149,10 @@ fn canary_watch() -> ExitCode {
             ExitCode::from(1)
         }
         Ok(MonitorOutcome::Completed { checks }) => {
-            println!("{}", serde_json::json!({ "outcome": "completed", "checks": checks }));
+            println!(
+                "{}",
+                serde_json::json!({ "outcome": "completed", "checks": checks })
+            );
             ExitCode::SUCCESS
         }
         Ok(MonitorOutcome::Stopped { checks, rollback }) => {

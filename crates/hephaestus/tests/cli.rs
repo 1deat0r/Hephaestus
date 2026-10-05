@@ -109,7 +109,12 @@ fn canary_watch_stops_the_breached_rollout_with_a_rollback_receipt() {
     // dev-roadmap ticket 04: the monitor as a command -- twin runs over
     // the fixed observation stream are byte-identical and carry the stop
     // outcome plus the rollback receipt restoring the proven incumbent.
-    let run_once = || bin().args(["fixture", "canary-watch"]).output().expect("spawn");
+    let run_once = || {
+        bin()
+            .args(["fixture", "canary-watch"])
+            .output()
+            .expect("spawn")
+    };
     let a = run_once();
     assert!(a.status.success(), "{}", String::from_utf8_lossy(&a.stderr));
     let summary: serde_json::Value = serde_json::from_slice(&a.stdout).expect("json");

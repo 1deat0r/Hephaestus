@@ -93,9 +93,12 @@ struct ScriptedExecutor {
 
 impl TaskExecutor for ScriptedExecutor {
     fn run(&self, task: &Task) -> TaskOutcome {
-        self.outcomes.get(&task.id).cloned().unwrap_or(TaskOutcome::Succeeded {
-            cost: task.cost.clone(),
-        })
+        self.outcomes
+            .get(&task.id)
+            .cloned()
+            .unwrap_or(TaskOutcome::Succeeded {
+                cost: task.cost.clone(),
+            })
     }
 
     fn run_batch(&self, tasks: &[Task]) -> Vec<TaskOutcome> {
@@ -206,10 +209,7 @@ fn s2_admission_reservations_release_exactly_once() {
     let mut sched = scheduler(dag);
     let executor = ScriptedExecutor {
         outcomes: [
-            (
-                "OK".to_string(),
-                TaskOutcome::Succeeded { cost: usd(100) },
-            ),
+            ("OK".to_string(), TaskOutcome::Succeeded { cost: usd(100) }),
             (
                 "BAD".to_string(),
                 TaskOutcome::Failed {
@@ -279,7 +279,10 @@ fn sandbox_spec() -> IsolationSpec {
     }
 }
 
-fn sandbox_run_argv(spec: IsolationSpec, argv: Vec<&str>) -> Result<hephaestus::sandbox::RunOutcome, hephaestus::sandbox::SandboxError> {
+fn sandbox_run_argv(
+    spec: IsolationSpec,
+    argv: Vec<&str>,
+) -> Result<hephaestus::sandbox::RunOutcome, hephaestus::sandbox::SandboxError> {
     SandboxProvider::with_default_tools().run(RunSpec {
         argv: argv.iter().map(|s| s.to_string()).collect(),
         spec,
@@ -291,11 +294,8 @@ fn sandbox_run_argv(spec: IsolationSpec, argv: Vec<&str>) -> Result<hephaestus::
 fn s3_limits_measured_peak_stays_under_limit() {
     // S3 positive: a small worker reports a nonzero peak far under
     // the 64 MiB limit and exits clean.
-    let out = sandbox_run_argv(
-        sandbox_spec(),
-        vec!["python3", "-c", "print('small')"],
-    )
-    .expect("small worker runs");
+    let out = sandbox_run_argv(sandbox_spec(), vec!["python3", "-c", "print('small')"])
+        .expect("small worker runs");
     assert!(out.peak_rss_bytes > 0, "peak measures something");
     assert!(
         out.peak_rss_bytes < 64 * 1024 * 1024,
@@ -313,7 +313,11 @@ fn s3_limits_memory_hog_dies_with_receipts() {
     // stderr names the cause (MemoryError).
     let err = sandbox_run_argv(
         sandbox_spec(),
-        vec!["python3", "-c", "x = bytearray(256 * 1024 * 1024); print(len(x))"],
+        vec![
+            "python3",
+            "-c",
+            "x = bytearray(256 * 1024 * 1024); print(len(x))",
+        ],
     )
     .expect_err("hog must die");
     match err {
@@ -348,7 +352,11 @@ fn s3_limits_clean_exit_carries_no_violation() {
     // even when the peak approaches but stays under the limit.
     let out = sandbox_run_argv(
         sandbox_spec(),
-        vec!["python3", "-c", "x = bytearray(8 * 1024 * 1024); print(len(x))"],
+        vec![
+            "python3",
+            "-c",
+            "x = bytearray(8 * 1024 * 1024); print(len(x))",
+        ],
     )
     .expect("8 MiB worker fits");
     assert!(out.peak_rss_bytes > 0, "peak measured");

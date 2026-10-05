@@ -114,7 +114,9 @@ fn rejection_classes_undeployed() {
         promote(&c, &a_over, &g, &g.verified_artifacts, true),
         Err(PromotionRejection::OverBudget)
     );
-    // Permission-expanding: target = protected evaluator (R-071).
+    // R-071/AT-071 negative case: a policy change granting itself more
+    // authority (target = protected evaluator) -- promotion denied
+    // without owner authorization (PermissionExpanding).
     let mut c_perm = c.clone();
     c_perm.target = s("evaluator");
     assert_eq!(
@@ -137,6 +139,9 @@ fn rejection_classes_undeployed() {
 
 #[test]
 fn self_attestation_and_budget_multiplication_rejected() {
+    // R-070/AT-070 negative case: an optimization with only its own
+    // favorable evaluation (challenger == evaluator) cannot become
+    // champion -- SelfAttestation refuses the promotion.
     let c = candidate();
     // §R-117: challenger digest == evaluator digest -> self-attestation.
     let mut a_self = assessment();
@@ -166,6 +171,8 @@ fn rollback_restores_verified_incumbent() {
         true,
     )
     .unwrap();
+    // R-072/AT-072 negative case: a guardrail regression after rollout --
+    // the previous qualified version is restored with provenance kept.
     // Violation triggers rollback (§R-118).
     let receipt = rollback(
         &d,

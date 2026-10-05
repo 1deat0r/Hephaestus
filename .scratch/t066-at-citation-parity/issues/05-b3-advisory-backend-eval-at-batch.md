@@ -7,15 +7,15 @@ AT-070 AT-071 AT-072 AT-074 AT-075 AT-077 AT-078 AT-079
 
 **Blocked by:** None (run after 04).
 
-**Status:** ready-for-agent
+**Status:** done
 **Covers:** 3
 
 **Verify:** python3 tools/report_at_citations.py --batch .scratch/t066-at-citation-parity/issues/05-b3-advisory-backend-eval-at-batch.md
 
-- [ ] All 16 dispositioned: cited or goal candidate
-- [ ] Re-scan: batch absent; gates green
+- [x] All 16 dispositioned: cited or goal candidate
+- [x] Re-scan: batch absent; gates green
 
-**Candidate goals:** (none recorded yet — an entry with no honest mirror
+**Candidate goals:** (none -- all 16 cited at verified mirrors; record closed — an entry with no honest mirror
 is disposed as a goal candidate only at close, because an open ticket
 must stay inside the 16 scope-ID cap)
 
@@ -39,28 +39,28 @@ must stay inside the 16 scope-ID cap)
       - [x] apply cite edits only at verified mirrors
       - [x] run this micro's Verify until green
 
-2. [ ] **S2** — cite the second half of this batch and close it
-   **Status:** ready-for-agent
+2. [x] **S2** — cite the second half of this batch and close it
+   **Status:** done
    **Verify:** python3 tools/report_at_citations.py --batch .scratch/t066-at-citation-parity/issues/05-b3-advisory-backend-eval-at-batch.md --min-disposed 16
    **Micro-tasks:** (max 6)
-   1. [ ] **M1** — cite group 1 of half 2
+   1. [x] **M1** — cite group 1 of half 2
       **Verify:** python3 tools/report_at_citations.py --batch .scratch/t066-at-citation-parity/issues/05-b3-advisory-backend-eval-at-batch.md --min-disposed 12
-      - [ ] extract the negative cases for this group from OBLIGATIONS.md
-      - [ ] locate one mirror test per ID; read both sides
-      - [ ] apply cite edits only at verified mirrors
-      - [ ] run this micro's Verify until green
-   2. [ ] **M2** — cite group 2 of half 2
+      - [x] extract the negative cases for this group from OBLIGATIONS.md
+      - [x] locate one mirror test per ID; read both sides
+      - [x] apply cite edits only at verified mirrors
+      - [x] run this micro's Verify until green
+   2. [x] **M2** — cite group 2 of half 2
       **Verify:** python3 tools/report_at_citations.py --batch .scratch/t066-at-citation-parity/issues/05-b3-advisory-backend-eval-at-batch.md --min-disposed 16
-      - [ ] extract the negative cases for this group from OBLIGATIONS.md
-      - [ ] locate one mirror test per ID; read both sides
-      - [ ] apply cite edits only at verified mirrors
-      - [ ] run this micro's Verify until green
-   3. [ ] **M3** — close the batch
+      - [x] extract the negative cases for this group from OBLIGATIONS.md
+      - [x] locate one mirror test per ID; read both sides
+      - [x] apply cite edits only at verified mirrors
+      - [x] run this micro's Verify until green
+   3. [x] **M3** — close the batch
       **Verify:** python3 tools/report_at_citations.py --batch .scratch/t066-at-citation-parity/issues/05-b3-advisory-backend-eval-at-batch.md
-      - [ ] run the batch Verify command
-      - [ ] record any goal candidates under Candidate goals
-      - [ ] flip Status to done and tick the acceptance boxes
-      - [ ] run cargo fmt --check and make ticket-status
+      - [x] run the batch Verify command
+      - [x] record any goal candidates under Candidate goals
+      - [x] flip Status to done and tick the acceptance boxes
+      - [x] run cargo fmt --check and make ticket-status
 
 
 ## Comments
@@ -78,3 +78,5 @@ mismatch), workspace_core (persisted progress, cursor recovery,
 identical local and gateway authorization), learning_reuse_gates
 (altered source hash invalidates reuse — the reuse-key half of entry
 054).
+
+**S2 dispositions (half 2):** eight entries cited at verified mirrors read on both sides -- champion/challenger evaluation (self-favorable evaluation refused, permission-expanding promotion denied, guardrail-regression rollback with provenance), campaign baselines (unequal model/tool access flagged invalid, judge-score/novelty/replication fields kept separate), release gates (critical-unresolved blocks scope, finite-suite uncertainty with no universal field), milestone scope (M5+ requirements absent from M0-M4 runtime sets).

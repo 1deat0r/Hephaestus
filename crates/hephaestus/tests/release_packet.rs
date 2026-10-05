@@ -91,6 +91,8 @@ fn critical_unresolved_in_scope_blocks() {
         resolved: false,
         in_scope: true,
         description: s("unvalidated path traversal in tool contract"),
+        // R-077/AT-077 negative case: a known critical issue left open --
+        // release stays blocked for the affected scope (assembled below).
     }];
     assert_eq!(
         assemble_release(p),
@@ -121,7 +123,10 @@ fn critical_unresolved_in_scope_blocks() {
 
 #[test]
 fn uncertainty_required_and_no_universal_field() {
-    // R-078: missing uncertainty blocks.
+    // R-078/AT-078 negative case: zero failures in a small sample --
+    // the report still gives independent n, failure counts and a scoped
+    // qualified interval; missing uncertainty blocks. Zero failures never
+    // becomes a zero-risk claim (no universal-reliability field exists).
     let mut p = packet();
     p.uncertainty = Uncertainty {
         suite_id: s(""),

@@ -75,6 +75,9 @@ fn unmatched_envelope_named_per_arm_and_resource() {
     e.envelope.tuning_record = String::new();
     define_baseline(&mut suite, e).unwrap();
 
+    // R-074/AT-074 negative case: a campaign arm with unequal model or
+    // tool access -- the comparison is flagged invalid until budgets and
+    // access are reconciled (per-arm, per-resource mismatches named).
     let report = check_matched(&suite).expect_err("mismatches exist");
     let has = |arm: &str, res: &str| {
         report
@@ -112,6 +115,9 @@ fn single_ingredient_ablations() {
 
 #[test]
 fn result_fields_stay_separate() {
+    // R-075/AT-075 negative case: a high model-judge score on a
+    // retrospective task -- the four fields stay separate, so the report
+    // cannot convert a judge score into prospective invention validation.
     // R-075: judge scores, rediscovery, prospective novelty, independent
     // replication are four separate optional fields — never collapsed.
     let r = ArmResult {

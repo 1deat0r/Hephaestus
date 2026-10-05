@@ -135,6 +135,30 @@ fn release_scope_set_must_be_complete() {
 }
 
 #[test]
+fn m5_milestone_not_required_for_m0_through_m4_completion() {
+    // R-079/AT-079 negative case: inspect the milestone dependencies --
+    // no requirement with an M5 (or later) runtime milestone may appear
+    // in the M0..M4 runtime sets, so M5 is never required for M0-M4
+    // core completion.
+    let (reqs, _tests, scopes) = package();
+    let late: Vec<&str> = reqs
+        .iter()
+        .filter(|r| r.runtime_milestone.as_str() > "M4")
+        .map(|r| r.id.as_str())
+        .collect();
+    assert!(!late.is_empty(), "package has post-M4 requirements");
+    for scope in scopes.scopes.iter().filter(|s| s.id.as_str() <= "M4") {
+        for id in &late {
+            assert!(
+                !scope.runtime_requirements.iter().any(|r| r == id),
+                "{id} must not gate {}",
+                scope.id
+            );
+        }
+    }
+}
+
+#[test]
 fn invalid_scope_id_denied() {
     let (reqs, tests, mut scopes) = package();
     scopes.scopes[0].id = "M9".to_string();

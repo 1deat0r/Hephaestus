@@ -1,0 +1,132 @@
+test_empty_markers_alone_are_vacuous (test_ticket_status.ClassifierTest.test_empty_markers_alone_are_vacuous) ...
+  test_empty_markers_alone_are_vacuous (test_ticket_status.ClassifierTest.test_empty_markers_alone_are_vacuous) (marker='running 0 tests') ... ERROR
+  test_empty_markers_alone_are_vacuous (test_ticket_status.ClassifierTest.test_empty_markers_alone_are_vacuous) (marker='test result: ok. 0 passed') ... ERROR
+  test_empty_markers_alone_are_vacuous (test_ticket_status.ClassifierTest.test_empty_markers_alone_are_vacuous) (marker='Ran 0 tests') ... ERROR
+  test_empty_markers_alone_are_vacuous (test_ticket_status.ClassifierTest.test_empty_markers_alone_are_vacuous) (marker='collected 0 items') ... ERROR
+test_executed_evidence_variants_suppress_vacuity (test_ticket_status.ClassifierTest.test_executed_evidence_variants_suppress_vacuity) ...
+  test_executed_evidence_variants_suppress_vacuity (test_ticket_status.ClassifierTest.test_executed_evidence_variants_suppress_vacuity) (evidence='running 1 test') ... ERROR
+  test_executed_evidence_variants_suppress_vacuity (test_ticket_status.ClassifierTest.test_executed_evidence_variants_suppress_vacuity) (evidence='running 42 tests') ... ERROR
+  test_executed_evidence_variants_suppress_vacuity (test_ticket_status.ClassifierTest.test_executed_evidence_variants_suppress_vacuity) (evidence='test result: ok. 1 passed') ... ERROR
+  test_executed_evidence_variants_suppress_vacuity (test_ticket_status.ClassifierTest.test_executed_evidence_variants_suppress_vacuity) (evidence='Ran 1 test in 0.001s') ... ERROR
+  test_executed_evidence_variants_suppress_vacuity (test_ticket_status.ClassifierTest.test_executed_evidence_variants_suppress_vacuity) (evidence='Ran 94 tests in 0.448s') ... ERROR
+  test_executed_evidence_variants_suppress_vacuity (test_ticket_status.ClassifierTest.test_executed_evidence_variants_suppress_vacuity) (evidence='collected 1 item') ... ERROR
+test_composite_make_ci_output_is_not_vacuous (test_ticket_status.CompositeVerifyTest.test_composite_make_ci_output_is_not_vacuous) ... FAIL
+test_composite_open_ticket_reports_stale_open_not_vacuous (test_ticket_status.CompositeVerifyTest.test_composite_open_ticket_reports_stale_open_not_vacuous) ... FAIL
+test_cargo_filter_matching_nothing_is_still_vacuous (test_ticket_status.EmptyRunRefusalTest.test_cargo_filter_matching_nothing_is_still_vacuous) ... ok
+test_empty_pytest_collection_is_still_vacuous (test_ticket_status.EmptyRunRefusalTest.test_empty_pytest_collection_is_still_vacuous) ... ok
+test_empty_unittest_run_is_still_vacuous (test_ticket_status.EmptyRunRefusalTest.test_empty_unittest_run_is_still_vacuous) ... ok
+test_ignored_and_filtered_only_is_still_vacuous (test_ticket_status.EmptyRunRefusalTest.test_ignored_and_filtered_only_is_still_vacuous) ... ok
+test_failing_done_ticket_reads_broken_not_vacuous (test_ticket_status.FailingRunTest.test_failing_done_ticket_reads_broken_not_vacuous) ... ok
+
+======================================================================
+ERROR: test_empty_markers_alone_are_vacuous (test_ticket_status.ClassifierTest.test_empty_markers_alone_are_vacuous) (marker='running 0 tests')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/run/media/ideator/Projects/AI Agents/Hephaestus/tests/test_ticket_status.py", line 154, in test_empty_markers_alone_are_vacuous
+    self.assertTrue(gate.vacuous_output(marker))
+                    ^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'check_ticket_status' has no attribute 'vacuous_output'
+
+======================================================================
+ERROR: test_empty_markers_alone_are_vacuous (test_ticket_status.ClassifierTest.test_empty_markers_alone_are_vacuous) (marker='test result: ok. 0 passed')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/run/media/ideator/Projects/AI Agents/Hephaestus/tests/test_ticket_status.py", line 154, in test_empty_markers_alone_are_vacuous
+    self.assertTrue(gate.vacuous_output(marker))
+                    ^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'check_ticket_status' has no attribute 'vacuous_output'
+
+======================================================================
+ERROR: test_empty_markers_alone_are_vacuous (test_ticket_status.ClassifierTest.test_empty_markers_alone_are_vacuous) (marker='Ran 0 tests')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/run/media/ideator/Projects/AI Agents/Hephaestus/tests/test_ticket_status.py", line 154, in test_empty_markers_alone_are_vacuous
+    self.assertTrue(gate.vacuous_output(marker))
+                    ^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'check_ticket_status' has no attribute 'vacuous_output'
+
+======================================================================
+ERROR: test_empty_markers_alone_are_vacuous (test_ticket_status.ClassifierTest.test_empty_markers_alone_are_vacuous) (marker='collected 0 items')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/run/media/ideator/Projects/AI Agents/Hephaestus/tests/test_ticket_status.py", line 154, in test_empty_markers_alone_are_vacuous
+    self.assertTrue(gate.vacuous_output(marker))
+                    ^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'check_ticket_status' has no attribute 'vacuous_output'
+
+======================================================================
+ERROR: test_executed_evidence_variants_suppress_vacuity (test_ticket_status.ClassifierTest.test_executed_evidence_variants_suppress_vacuity) (evidence='running 1 test')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/run/media/ideator/Projects/AI Agents/Hephaestus/tests/test_ticket_status.py", line 143, in test_executed_evidence_variants_suppress_vacuity
+    self.assertFalse(gate.vacuous_output("running 0 tests\n" + evidence))
+                     ^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'check_ticket_status' has no attribute 'vacuous_output'
+
+======================================================================
+ERROR: test_executed_evidence_variants_suppress_vacuity (test_ticket_status.ClassifierTest.test_executed_evidence_variants_suppress_vacuity) (evidence='running 42 tests')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/run/media/ideator/Projects/AI Agents/Hephaestus/tests/test_ticket_status.py", line 143, in test_executed_evidence_variants_suppress_vacuity
+    self.assertFalse(gate.vacuous_output("running 0 tests\n" + evidence))
+                     ^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'check_ticket_status' has no attribute 'vacuous_output'
+
+======================================================================
+ERROR: test_executed_evidence_variants_suppress_vacuity (test_ticket_status.ClassifierTest.test_executed_evidence_variants_suppress_vacuity) (evidence='test result: ok. 1 passed')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/run/media/ideator/Projects/AI Agents/Hephaestus/tests/test_ticket_status.py", line 143, in test_executed_evidence_variants_suppress_vacuity
+    self.assertFalse(gate.vacuous_output("running 0 tests\n" + evidence))
+                     ^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'check_ticket_status' has no attribute 'vacuous_output'
+
+======================================================================
+ERROR: test_executed_evidence_variants_suppress_vacuity (test_ticket_status.ClassifierTest.test_executed_evidence_variants_suppress_vacuity) (evidence='Ran 1 test in 0.001s')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/run/media/ideator/Projects/AI Agents/Hephaestus/tests/test_ticket_status.py", line 143, in test_executed_evidence_variants_suppress_vacuity
+    self.assertFalse(gate.vacuous_output("running 0 tests\n" + evidence))
+                     ^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'check_ticket_status' has no attribute 'vacuous_output'
+
+======================================================================
+ERROR: test_executed_evidence_variants_suppress_vacuity (test_ticket_status.ClassifierTest.test_executed_evidence_variants_suppress_vacuity) (evidence='Ran 94 tests in 0.448s')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/run/media/ideator/Projects/AI Agents/Hephaestus/tests/test_ticket_status.py", line 143, in test_executed_evidence_variants_suppress_vacuity
+    self.assertFalse(gate.vacuous_output("running 0 tests\n" + evidence))
+                     ^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'check_ticket_status' has no attribute 'vacuous_output'
+
+======================================================================
+ERROR: test_executed_evidence_variants_suppress_vacuity (test_ticket_status.ClassifierTest.test_executed_evidence_variants_suppress_vacuity) (evidence='collected 1 item')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/run/media/ideator/Projects/AI Agents/Hephaestus/tests/test_ticket_status.py", line 143, in test_executed_evidence_variants_suppress_vacuity
+    self.assertFalse(gate.vacuous_output("running 0 tests\n" + evidence))
+                     ^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'check_ticket_status' has no attribute 'vacuous_output'
+
+======================================================================
+FAIL: test_composite_make_ci_output_is_not_vacuous (test_ticket_status.CompositeVerifyTest.test_composite_make_ci_output_is_not_vacuous)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/run/media/ideator/Projects/AI Agents/Hephaestus/tests/test_ticket_status.py", line 90, in test_composite_make_ci_output_is_not_vacuous
+    self.assertNotIn("VACUOUS", out)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+AssertionError: 'VACUOUS' unexpectedly found in "ticket-status: VACUOUS issues/01-probe.md: Verify exited 0 with zero tests run — it proves nothing: printf 'running 26 tests\\ntest budget::tests::boundary_limit ... ok\\ntest result: ok. 26 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out\\nrunning 0 tests\\ntest result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out\\nRan 94 tests in 0.448s\\nOK\\n'\nticket-status-sweep: 0 stale-open, 0 broken-done, 1 vacuous, 0 honestly open\n"
+
+======================================================================
+FAIL: test_composite_open_ticket_reports_stale_open_not_vacuous (test_ticket_status.CompositeVerifyTest.test_composite_open_ticket_reports_stale_open_not_vacuous)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/run/media/ideator/Projects/AI Agents/Hephaestus/tests/test_ticket_status.py", line 96, in test_composite_open_ticket_reports_stale_open_not_vacuous
+    self.assertNotIn("VACUOUS", out)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+AssertionError: 'VACUOUS' unexpectedly found in "ticket-status: VACUOUS issues/01-probe.md: Verify exited 0 with zero tests run — it proves nothing: printf 'running 26 tests\\ntest budget::tests::boundary_limit ... ok\\ntest result: ok. 26 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out\\nrunning 0 tests\\ntest result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out\\nRan 94 tests in 0.448s\\nOK\\n'\nticket-status-sweep: 0 stale-open, 0 broken-done, 1 vacuous, 0 honestly open\n"
+
+----------------------------------------------------------------------
+Ran 9 tests in 0.012s
+
+FAILED (failures=2, errors=10)

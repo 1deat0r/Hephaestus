@@ -1,0 +1,14 @@
+test_empty_markers_alone_are_vacuous (test_ticket_status.ClassifierTest.test_empty_markers_alone_are_vacuous) ... ok
+test_executed_evidence_variants_suppress_vacuity (test_ticket_status.ClassifierTest.test_executed_evidence_variants_suppress_vacuity) ... ok
+test_composite_make_ci_output_is_not_vacuous (test_ticket_status.CompositeVerifyTest.test_composite_make_ci_output_is_not_vacuous) ... ok
+test_composite_open_ticket_reports_stale_open_not_vacuous (test_ticket_status.CompositeVerifyTest.test_composite_open_ticket_reports_stale_open_not_vacuous) ... ok
+test_cargo_filter_matching_nothing_is_still_vacuous (test_ticket_status.EmptyRunRefusalTest.test_cargo_filter_matching_nothing_is_still_vacuous) ... ok
+test_empty_pytest_collection_is_still_vacuous (test_ticket_status.EmptyRunRefusalTest.test_empty_pytest_collection_is_still_vacuous) ... ok
+test_empty_unittest_run_is_still_vacuous (test_ticket_status.EmptyRunRefusalTest.test_empty_unittest_run_is_still_vacuous) ... ok
+test_ignored_and_filtered_only_is_still_vacuous (test_ticket_status.EmptyRunRefusalTest.test_ignored_and_filtered_only_is_still_vacuous) ... ok
+test_failing_done_ticket_reads_broken_not_vacuous (test_ticket_status.FailingRunTest.test_failing_done_ticket_reads_broken_not_vacuous) ... ok
+
+----------------------------------------------------------------------
+Ran 9 tests in 0.011s
+
+OK

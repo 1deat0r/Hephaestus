@@ -608,3 +608,14 @@ docs/agents/auto-workflow/report-2026-10-01T23:53:34Z.md
 .scratch/architecture-efficiency/receipts/ae01-s2-workflow-verify.json
 .scratch/architecture-efficiency/receipts/ae01-s2-parent-verify-repaired.md
 .scratch/architecture-efficiency/receipts/ae01-s2-sweep-final.log
+.scratch/ticket-sweep-honesty/issues/01-honest-vacuity-classification.md
+.scratch/ticket-sweep-honesty/receipts/red.log
+.scratch/ticket-sweep-honesty/receipts/verify.log
+.scratch/ticket-sweep-honesty/spec.md
+tests/test_ticket_status.py
+.scratch/ticket-sweep-honesty/receipts/ci.log
+.scratch/ticket-sweep-honesty/receipts/doc-check.log
+.scratch/ticket-sweep-honesty/receipts/format.log
+.scratch/ticket-sweep-honesty/receipts/sweep-final.log
+.scratch/ticket-sweep-honesty/receipts/sweep.log
+.scratch/ticket-sweep-honesty/receipts/handoff.md

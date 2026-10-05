@@ -33,6 +33,11 @@ direction. This tool makes them detectable and therefore stoppable:
     Verify that RAN NOTHING (exit 0, zero tests) -> VACUOUS: it proves
     nothing in either direction, so it never counts as green and never
     reads as a landed label (ADR-031).
+    A composite Verify (ADR-034) that exits 0 while one sub-suite prints
+    zero counts, but whose output elsewhere proves executed tests, is
+    NOT vacuous: `cargo test --workspace` always prints zero-test
+    binary and doc sub-suites beside hundreds of real results. An
+    empty marker alone only means some step found nothing to run.
 
   python tools/check_ticket_status.py --format
   python tools/check_ticket_status.py --sweep
@@ -63,6 +68,27 @@ MAX_NANO = 4
 VACUOUS_RE = re.compile(
     r"running 0 tests|test result: ok\. 0 passed|Ran 0 tests|collected 0 items"
 )
+# Executed-test evidence anywhere in the same output: a count of at
+# least one. `N ignored` and `N filtered out` are deliberately absent
+# (ADR-031's defect printed `9 filtered out` beside `running 0 tests`).
+EXECUTED_RE = re.compile(
+    r"running [1-9]\d* tests?|test result: ok\. [1-9]\d* passed|"
+    r"Ran [1-9]\d* tests?|collected [1-9]\d* items?"
+)
+
+
+def vacuous_output(output: str) -> bool:
+    """True when exit-0 output proves that no test executed.
+
+    An empty marker is not enough: a composite command prints empty
+    sub-suite summaries next to real ones, and reading any one marker
+    as proof of nothing ran falsely labels green composite work
+    VACUOUS (ADR-034). Vacuity needs the marker AND the total absence
+    of executed-test evidence in the whole output.
+    """
+    if VACUOUS_RE.search(output) is None:
+        return False
+    return EXECUTED_RE.search(output) is None
 
 
 def read(path: Path) -> str:
@@ -270,7 +296,7 @@ def sweep_mode() -> int:
                 cmd, shell=True, cwd=ROOT, capture_output=True, text=True, timeout=900
             )
             output = (proc.stdout or "") + (proc.stderr or "")
-            ran_nothing = proc.returncode == 0 and VACUOUS_RE.search(output) is not None
+            ran_nothing = proc.returncode == 0 and vacuous_output(output)
             green = proc.returncode == 0 and not ran_nothing
         except subprocess.TimeoutExpired:
             green = False

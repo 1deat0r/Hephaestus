@@ -1,0 +1,10 @@
+.venv/bin/python tools/check_ticket_status.py --sweep
+ticket-status: open (honest) .scratch/architecture-efficiency/issues/01-concurrent-execution.md
+ticket-status: open (honest) .scratch/architecture-efficiency/issues/03-compact-evidence-storage.md
+ticket-status: open (honest) .scratch/architecture-efficiency/issues/04-incremental-invalidation.md
+ticket-status: open (honest) .scratch/architecture-efficiency/issues/05-task-context-assembly.md
+ticket-status: open (honest) .scratch/architecture-efficiency/issues/06-qualified-reasoning-routing.md
+ticket-status: open (honest) .scratch/architecture-efficiency/issues/07-independent-qualification.md
+ticket-status: STALE-OPEN .scratch/ticket-sweep-honesty/issues/01-honest-vacuity-classification.md: Verify is green — flip Status to done in the commit that landed the work
+ticket-status-sweep: 1 stale-open, 0 broken-done, 0 vacuous, 6 honestly open
+make: *** [Makefile:105: ticket-status-sweep] Error 1

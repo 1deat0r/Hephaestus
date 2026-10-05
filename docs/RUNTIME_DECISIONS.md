@@ -425,3 +425,71 @@ the selected wave and the in-flight registry are both empty after a
 cascade pass. Physical completion order may vary between runs; recorded
 dispatch order, report ordering, and replay stay stable because the
 scheduler thread alone writes them.
+
+
+## ADR-034 — Vacuity means no test ran, not that the output mentions zero
+
+The 2026-10-06 sweep
+(`.scratch/architecture-efficiency/receipts/ae01-s2-sweep-final.log`)
+printed
+`ticket-status: VACUOUS .scratch/development-baseline-repair/issues/01-restore-verification-gates.md: Verify exited 0 with zero tests run — it proves nothing: make ci`
+and exited 1. That ticket is `done` and its Verify is genuinely green.
+
+Cause: the classifier from ADR-031 searched the whole captured output
+for one empty-run marker. `make ci` always runs
+`cargo test --workspace`, which always prints three zero-test
+sub-suites — `Running unittests src/main.rs`, `Doc-tests hephaestus`,
+`Doc-tests synthetic_evaluator` — each printing `running 0 tests` and
+`test result: ok. 0 passed`, while the same output reports 162
+executed results (`.scratch/architecture-efficiency/receipts/ae01-s2-make-ci.log`
+lines 40, 1132, 1138). One substring anywhere turned a run that
+executed hundreds of tests into "it proves nothing". The label is
+false, and its only remedies are wrong: re-open a green baseline
+ticket, or narrow a landed Verify command until one match goes away.
+
+Decision: vacuity is a property of the whole captured output. On exit 0
+a Verify prints `VACUOUS` only when the output holds an empty marker
+(`running 0 tests`, `test result: ok. 0 passed`, `Ran 0 tests`,
+`collected 0 items`) AND holds no executed-test evidence anywhere:
+`running N tests`, `test result: ok. N passed`, `Ran N tests`,
+`collected N items`, each with N >= 1. Classification stays at
+Verify-command granularity, and ADR-031's own remedy (make the command
+find the test before it runs it) still applies to a single-purpose
+Verify.
+
+Everything ADR-031 refuses stays refused. A Cargo filter that matches
+nothing prints only zero counts, so it has no executed evidence. An
+empty unittest run and an empty pytest collection have none either.
+`0 passed ... N ignored` and `N filtered out` are not evidence that a
+test ran — ADR-031's original defect printed `9 filtered out` beside
+`running 0 tests` — so a Verify whose only non-zero signal is ignored
+or filtered-out tests still prints `VACUOUS` and still exits 1. A
+non-zero exit still means `BROKEN` for a done ticket and red for an
+open one. This change removes one false label; it creates no green.
+
+Rejected: dropping the vacuity check (it restores ADR-031's defect in
+the worse direction); scanning only the first or last N lines (composite
+suites interleave with build output, so any boundary is arbitrary);
+requiring every Verify to declare a test count (no current Verify
+declares one, so every ticket would go vacuous — a ban renamed);
+reading exit 0 alone as green (the defect ADR-031 was written to fix);
+narrowing `make ci` on the baseline ticket (hides the composite nature
+of the gate and rewrites a landed obligation); widening the classifier
+to fail any composite command (that would fail every honest `make ci`
+run forever).
+
+Regression proof comes before the fix: `tests/test_ticket_status.py`
+drives `sweep_mode()` over a temporary ticket tree, fails on the old
+classifier for the composite case, and keeps four empty-run refusals
+green (`.scratch/ticket-sweep-honesty/receipts/red.log`).
+
+Known limitation, stated rather than hidden: with Verify-command
+granularity, one vacuous sub-step inside a composite command cannot be
+detected if some other part of the same command executed tests. Per-step
+proof stays the Verify author's job (ADR-031's find-then-run pattern).
+
+Toolchain note, recorded and not changed: the Pi preparation protocol
+(`.scratch/architecture-efficiency/pi-development.md`) pins
+`pi --version` to `1.0.0`; the installed Pi reports `1.0.3` (an
+earlier spec note recorded `1.0.2`). No install change belongs to this
+decision.

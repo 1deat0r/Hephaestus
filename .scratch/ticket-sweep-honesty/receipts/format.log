@@ -1,0 +1,2 @@
+.venv/bin/python tools/check_ticket_status.py --format
+ticket-status: ok (132 issue files; statuses valid; open tickets declare Verify+Covers; four-level nesting holds (small<=8, micro<=6, nano<=4, per-level Status/Verify, atomic markers); scope-ID caps hold; open features cover every spec AC)

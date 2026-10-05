@@ -207,6 +207,7 @@ pub fn run(state_dir: &std::path::Path) -> Result<RunSummary, String> {
             max_in_flight: 8,
             resource_capacity: 8,
             memory_capacity_mb: 1024,
+            max_queued: usize::MAX,
         },
     )
     .map_err(|e| format!("scheduler: {e:?}"))?;

@@ -117,6 +117,7 @@ fn scheduler(dag: TaskDag, budget: BudgetLedger, max_in_flight: usize, capacity:
             max_in_flight,
             resource_capacity: capacity,
             memory_capacity_mb: 1024,
+            max_queued: usize::MAX,
         },
     )
     .expect("scheduler")
@@ -577,6 +578,7 @@ fn cross_currency_costs_are_refused_at_construction() {
             max_in_flight: 2,
             resource_capacity: 4,
             memory_capacity_mb: 1024,
+            max_queued: usize::MAX,
         },
     )
     .expect_err("currency mismatch refused");

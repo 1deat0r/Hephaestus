@@ -26,15 +26,15 @@ Test names below are planned. Existing passing tests cannot substitute for these
       - [x] Add positive, refusal, and regression cases in `crates/hephaestus/tests/architecture_resource_admission.rs`.
       - [x] Implement the specified behavior in `crates/hephaestus/src/scheduler/dag.rs`.
 
-2. [ ] **S2** Bound admission and queues
-   **Status:** pending
+2. [x] **S2** Bound admission and queues
+   **Status:** done
    **Verify:** cargo test -p hephaestus --test architecture_resource_admission s2_admission
    Reserve capacity for active work and queued bytes; release reservations exactly once on terminal outcomes.
    **Micro-tasks:**
-   1. [ ] **M1** Demonstrate the missing behavior; implement it; pass the same acceptance tests.
+   1. [x] **M1** Demonstrate the missing behavior; implement it; pass the same acceptance tests.
       **Verify:** cargo test -p hephaestus --test architecture_resource_admission s2_admission
-      - [ ] Add positive, refusal, and regression cases in `crates/hephaestus/tests/architecture_resource_admission.rs`.
-      - [ ] Implement the specified behavior in `crates/hephaestus/src/scheduler/core.rs`.
+      - [x] Add positive, refusal, and regression cases in `crates/hephaestus/tests/architecture_resource_admission.rs`.
+      - [x] Implement the specified behavior in `crates/hephaestus/src/scheduler/core.rs`.
 
 3. [ ] **S3** Enforce measured memory limits
    **Status:** pending

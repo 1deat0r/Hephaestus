@@ -33,6 +33,14 @@ pub enum SchedulerError {
     },
     /// A nonsensical configuration that could never make progress.
     InvalidConfig(String),
+    /// Too many queued tasks were admitted for the configured bound —
+    /// refused at construction, before any dispatch (S2 queue bound).
+    QueueExceedsBound {
+        /// Admitted task count.
+        queued: usize,
+        /// Configured bound.
+        bound: usize,
+    },
     /// A budget settlement failed in a way the invariants say cannot
     /// happen — reported loudly, never swallowed (AGENTS.md evidence rule).
     Settlement(String),
@@ -48,6 +56,10 @@ pub struct SchedulerConfig {
     /// Resource units available to one wave.
     pub resource_capacity: u32,
     pub memory_capacity_mb: u64,
+    /// Maximum queued (pending, undispatched) tasks admitted at
+    /// construction (must be >= 1). S2 bounds admission: a DAG with
+    /// more queued tasks than this is refused before any dispatch.
+    pub max_queued: usize,
 }
 
 /// What one `run` did. Lists are in declaration order; `dispatch_order`
@@ -135,6 +147,11 @@ impl Scheduler {
                 "max_in_flight must be >= 1".to_string(),
             ));
         }
+        if config.max_queued == 0 {
+            return Err(SchedulerError::InvalidConfig(
+                "max_queued must be >= 1".to_string(),
+            ));
+        }
         dag.validate().map_err(SchedulerError::InvalidDag)?;
         for task in dag.tasks() {
             if task.cost.minor_units > 0 && task.cost.currency != budget.currency() {
@@ -154,6 +171,14 @@ impl Scheduler {
                     capacity: config.resource_capacity,
                 });
             }
+        }
+        // S2 queue bound: admission refuses a DAG whose queued task
+        // count exceeds the configured bound, before any dispatch.
+        if dag.tasks().len() > config.max_queued {
+            return Err(SchedulerError::QueueExceedsBound {
+                queued: dag.tasks().len(),
+                bound: config.max_queued,
+            });
         }
         let states = vec![NodeState::Pending; dag.tasks().len()];
         let dispatch_counts = vec![0u32; dag.tasks().len()];
@@ -389,6 +414,19 @@ impl Scheduler {
             .map(|i| &self.states[i])
     }
 
+    /// Queued byte volume: the cost bytes of every task still pending
+    /// (undispatched or awaiting retry). S2 names the queue the bound
+    /// protects; admission-sized at construction, drained by dispatch.
+    pub fn queue_bytes(&self) -> u64 {
+        self.dag
+            .tasks()
+            .iter()
+            .enumerate()
+            .filter(|(i, _)| self.states[*i] == NodeState::Pending)
+            .map(|(_, t)| t.cost.minor_units.max(0) as u64)
+            .sum()
+    }
+
     fn ready_indices(&self) -> Vec<usize> {
         self.dag
             .tasks()
@@ -620,6 +658,7 @@ mod tests {
                 max_in_flight,
                 resource_capacity: capacity,
                 memory_capacity_mb: 1024,
+                max_queued: usize::MAX,
             },
         )
         .expect("scheduler")
@@ -672,6 +711,7 @@ mod tests {
                     max_in_flight: 2,
                     resource_capacity: 4,
                     memory_capacity_mb: 1024,
+                    max_queued: usize::MAX,
                 },
             ),
             Err(SchedulerError::ResourceExceedsCapacity { .. })
@@ -687,6 +727,7 @@ mod tests {
                     max_in_flight: 0,
                     resource_capacity: 4,
                     memory_capacity_mb: 1024,
+                    max_queued: usize::MAX,
                 },
             ),
             Err(SchedulerError::InvalidConfig(_))

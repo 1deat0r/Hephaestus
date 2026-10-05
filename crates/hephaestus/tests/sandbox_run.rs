@@ -315,6 +315,7 @@ fn scheduler_runs_real_sandboxed_work_with_budget_settled() {
             max_in_flight: 2,
             resource_capacity: 4,
             memory_capacity_mb: 1024,
+            max_queued: usize::MAX,
         },
     )
     .expect("scheduler");

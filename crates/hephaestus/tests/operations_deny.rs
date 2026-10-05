@@ -762,6 +762,7 @@ fn scheduler_dag_runs_through_recording_executor_with_budget() {
             max_in_flight: 2,
             resource_capacity: 4,
             memory_capacity_mb: 1024,
+            max_queued: usize::MAX,
         },
     )
     .expect("scheduler");

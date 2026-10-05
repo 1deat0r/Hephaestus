@@ -295,6 +295,7 @@ fn scheduler_runs_real_sandboxed_work_with_budget_settled() {
             trivial: false,
             retryable: true,
             resource_units: 0,
+            memory_mb: 0,
             exclusive: false,
         };
         t.inputs = vec![id.to_string()];
@@ -313,6 +314,7 @@ fn scheduler_runs_real_sandboxed_work_with_budget_settled() {
         SchedulerConfig {
             max_in_flight: 2,
             resource_capacity: 4,
+            memory_capacity_mb: 1024,
         },
     )
     .expect("scheduler");
@@ -341,6 +343,7 @@ fn sandbox_timeout_maps_to_timed_out_outcome() {
         trivial: false,
         retryable: true,
         resource_units: 0,
+        memory_mb: 0,
         exclusive: false,
     };
     let executor = SandboxExecutor::new(
@@ -370,6 +373,7 @@ fn provider_denials_surface_as_failed_tasks() {
         trivial: false,
         retryable: true,
         resource_units: 0,
+        memory_mb: 0,
         exclusive: false,
     };
     let executor = SandboxExecutor::new(

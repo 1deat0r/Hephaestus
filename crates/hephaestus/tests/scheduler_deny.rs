@@ -29,6 +29,7 @@ fn task(id: &str) -> Task {
         trivial: false,
         retryable: true,
         resource_units: 0,
+        memory_mb: 0,
         exclusive: false,
     }
 }

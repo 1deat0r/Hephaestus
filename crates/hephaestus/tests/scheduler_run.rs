@@ -34,6 +34,7 @@ fn task(id: &str) -> Task {
         trivial: false,
         retryable: true,
         resource_units: 0,
+        memory_mb: 0,
         exclusive: false,
     }
 }
@@ -115,6 +116,7 @@ fn scheduler(dag: TaskDag, budget: BudgetLedger, max_in_flight: usize, capacity:
         SchedulerConfig {
             max_in_flight,
             resource_capacity: capacity,
+            memory_capacity_mb: 1024,
         },
     )
     .expect("scheduler")
@@ -574,6 +576,7 @@ fn cross_currency_costs_are_refused_at_construction() {
         SchedulerConfig {
             max_in_flight: 2,
             resource_capacity: 4,
+            memory_capacity_mb: 1024,
         },
     )
     .expect_err("currency mismatch refused");

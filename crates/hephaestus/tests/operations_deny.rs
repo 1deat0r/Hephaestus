@@ -39,6 +39,7 @@ fn task(id: &str) -> Task {
         trivial: false,
         retryable: true,
         resource_units: 0,
+        memory_mb: 0,
         exclusive: false,
     }
 }
@@ -760,6 +761,7 @@ fn scheduler_dag_runs_through_recording_executor_with_budget() {
         SchedulerConfig {
             max_in_flight: 2,
             resource_capacity: 4,
+            memory_capacity_mb: 1024,
         },
     )
     .expect("scheduler");

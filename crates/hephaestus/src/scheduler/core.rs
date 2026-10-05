@@ -47,6 +47,7 @@ pub struct SchedulerConfig {
     pub max_in_flight: usize,
     /// Resource units available to one wave.
     pub resource_capacity: u32,
+    pub memory_capacity_mb: u64,
 }
 
 /// What one `run` did. Lists are in declaration order; `dispatch_order`
@@ -144,7 +145,9 @@ impl Scheduler {
                     budget.currency()
                 )));
             }
-            if task.resource_units > config.resource_capacity {
+            if task.resource_units > config.resource_capacity
+                || task.memory_mb > config.memory_capacity_mb
+            {
                 return Err(SchedulerError::ResourceExceedsCapacity {
                     task: task.id.clone(),
                     units: task.resource_units,
@@ -412,6 +415,7 @@ impl Scheduler {
         candidates.sort_by_key(|&i| (self.dag.tasks()[i].priority, i));
         let mut wave: Vec<usize> = Vec::new();
         let mut units: u32 = 0;
+        let mut memory: u64 = 0;
         for i in candidates {
             if wave.len() >= self.config.max_in_flight {
                 break;
@@ -427,8 +431,12 @@ impl Scheduler {
             if units + task.resource_units > self.config.resource_capacity {
                 continue;
             }
+            if memory + task.memory_mb > self.config.memory_capacity_mb {
+                continue;
+            }
             wave.push(i);
             units += task.resource_units;
+            memory += task.memory_mb;
         }
         wave
     }
@@ -599,6 +607,7 @@ mod tests {
             trivial: false,
             retryable: true,
             resource_units: units,
+            memory_mb: 0,
             exclusive,
         }
     }
@@ -610,6 +619,7 @@ mod tests {
             SchedulerConfig {
                 max_in_flight,
                 resource_capacity: capacity,
+                memory_capacity_mb: 1024,
             },
         )
         .expect("scheduler")
@@ -660,7 +670,8 @@ mod tests {
                 BudgetLedger::new(usd(10)).expect("b"),
                 SchedulerConfig {
                     max_in_flight: 2,
-                    resource_capacity: 4
+                    resource_capacity: 4,
+                    memory_capacity_mb: 1024,
                 },
             ),
             Err(SchedulerError::ResourceExceedsCapacity { .. })
@@ -674,7 +685,8 @@ mod tests {
                 BudgetLedger::new(usd(10)).expect("b"),
                 SchedulerConfig {
                     max_in_flight: 0,
-                    resource_capacity: 4
+                    resource_capacity: 4,
+                    memory_capacity_mb: 1024,
                 },
             ),
             Err(SchedulerError::InvalidConfig(_))

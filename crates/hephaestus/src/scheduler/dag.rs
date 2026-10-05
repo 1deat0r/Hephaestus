@@ -56,6 +56,11 @@ pub struct Task {
     pub retryable: bool,
     /// Resource units consumed while running (0 = pure).
     pub resource_units: u32,
+    /// Memory (MiB) the task claims. Zero means unspecified — the task
+    /// takes no memory reservation. Oversize claims are refused at
+    /// admission, exactly like CPU units (S1: two-dimensional envelope;
+    /// a wave must fit both dimensions).
+    pub memory_mb: u64,
     /// Runs alone: no other task may share its dispatch wave.
     pub exclusive: bool,
 }
@@ -340,6 +345,7 @@ mod tests {
             trivial: false,
             retryable: true,
             resource_units: 0,
+            memory_mb: 0,
             exclusive: false,
         }
     }

@@ -67,6 +67,7 @@ pub fn build_dag() -> TaskDag {
             // recover's posture below matches the recorded history.
             retryable: false,
             resource_units: 0,
+            memory_mb: 0,
             exclusive: false,
         };
         dag.add(task).expect("unique ids");
@@ -205,6 +206,7 @@ pub fn run(state_dir: &std::path::Path) -> Result<RunSummary, String> {
         SchedulerConfig {
             max_in_flight: 8,
             resource_capacity: 8,
+            memory_capacity_mb: 1024,
         },
     )
     .map_err(|e| format!("scheduler: {e:?}"))?;

@@ -115,6 +115,7 @@ crates/hephaestus/src/scheduler/executor.rs
 crates/hephaestus/src/scheduler/mod.rs
 crates/hephaestus/tests/scheduler_deny.rs
 crates/hephaestus/tests/scheduler_run.rs
+crates/hephaestus/tests/architecture_resource_admission.rs
 crates/hephaestus/src/sandbox/executor.rs
 crates/hephaestus/src/sandbox/launch.rs
 crates/hephaestus/src/sandbox/mod.rs
@@ -271,6 +272,7 @@ tools/check_ticket_status.py
 .scratch/dev-roadmap/issues/03-docs-domain-pack.md
 .scratch/dev-roadmap/issues/04-cli-canary-watch.md
 .scratch/dev-roadmap/issues/05-campaign-exit-receipts.md
+.scratch/architecture-efficiency/issues/02-resource-admission.md
 docs/agents/auto-workflow/decisions-2026-10-02T00:04:46Z.md
 docs/agents/auto-workflow/report-2026-10-02T00:04:46Z.md
 docs/agents/auto-workflow/decisions-2026-10-02T00:45:28Z.md

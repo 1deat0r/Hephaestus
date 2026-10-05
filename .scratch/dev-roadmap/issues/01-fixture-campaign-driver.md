@@ -13,7 +13,7 @@
 **Small tasks:** (max 8)
 
 1. [x] **S1** — seam + red-to-green for run_fixture_batch
-   **Status:** in_progress
+   **Status:** done
    **Verify:** cargo test --test fixture_campaign
    **Micro-tasks:** (max 6)
    1. [ ] **M1** — red-to-green cycle at the campaign seam
@@ -23,16 +23,16 @@
       - [x] implement the seam
       - [x] run the test to green
 
-2. [ ] **S2** — 20-mission loop with R-103 receipts
-   **Status:** ready-for-agent
+2. [x] **S2** — 20-mission loop with R-103 receipts
+   **Status:** in_progress
    **Verify:** cargo test --test fixture_campaign
    **Micro-tasks:** (max 6)
-   1. [ ] **M1** — red-to-green cycle for the loop and receipts
+   1. [x] **M1** — red-to-green cycle for the loop and receipts
       **Verify:** cargo test --test fixture_campaign
-      - [ ] implement the loop over fixture variants through missionrun
-      - [ ] add denominator and budget receipts to the report
-      - [ ] run the test to green, then cargo fmt --check
-      - [ ] run make ticket-status
+      - [x] implement the loop over fixture variants through missionrun
+      - [x] add denominator and budget receipts to the report
+      - [x] run the test to green, then cargo fmt --check
+      - [x] run make ticket-status
 
 3. [ ] **S3** — close: allowlist, seal, status
    **Status:** ready-for-agent

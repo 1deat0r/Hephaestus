@@ -13,10 +13,10 @@ confirm and keep, do not silently cite)
 
 **Verify:** python3 tools/report_at_citations.py --batch .scratch/t066-at-citation-parity/issues/06-b4-requirements-release-at-batch.md
 
-- [ ] All 9 dispositioned: cited or goal candidate (AT-097 keeps its
+- [x] All 9 dispositioned: cited or goal candidate (AT-097 keeps its
       recorded candidate status unless a true mirror appears)
-- [ ] Final re-scan: the worklist equals the recorded goal candidates
-      exactly; gates green
+- [x] Final re-scan: the worklist equals the recorded goal candidates
+      exactly; gates green [x]
 
 **Candidate goals:**
 - AT-097 — recorded goal candidate from ticket 02; confirm and keep.
@@ -27,7 +27,7 @@ confirm and keep, do not silently cite)
 **Small tasks:** (max 8)
 
 1. [x] **S1** — cite the first half of this batch
-   **Status:** ready-for-agent
+   **Status:** done
    **Verify:** python3 tools/report_at_citations.py --batch .scratch/t066-at-citation-parity/issues/06-b4-requirements-release-at-batch.md --min-disposed 5
    **Micro-tasks:** (max 6)
    1. [x] **M1** — cite group 1 of half 1
@@ -43,31 +43,33 @@ confirm and keep, do not silently cite)
       - [x] apply cite edits only at verified mirrors
       - [x] run this micro's Verify until green
 
-2. [ ] **S2** — cite the second half of this batch and close it
-   **Status:** ready-for-agent
+2. [x] **S2** — cite the second half of this batch and close it
+   **Status:** done
    **Verify:** python3 tools/report_at_citations.py --batch .scratch/t066-at-citation-parity/issues/06-b4-requirements-release-at-batch.md --min-disposed 9
    **Micro-tasks:** (max 6)
-   1. [ ] **M1** — cite group 1 of half 2
+   1. [x] **M1** — cite group 1 of half 2
       **Verify:** python3 tools/report_at_citations.py --batch .scratch/t066-at-citation-parity/issues/06-b4-requirements-release-at-batch.md --min-disposed 7
-      - [ ] extract the negative cases for this group from OBLIGATIONS.md
-      - [ ] locate one mirror test per ID; read both sides
-      - [ ] apply cite edits only at verified mirrors
-      - [ ] run this micro's Verify until green
-   2. [ ] **M2** — cite group 2 of half 2
+      - [x] extract the negative cases for this group from OBLIGATIONS.md
+      - [x] locate one mirror test per ID; read both sides
+      - [x] apply cite edits only at verified mirrors
+      - [x] run this micro's Verify until green
+   2. [x] **M2** — cite group 2 of half 2
       **Verify:** python3 tools/report_at_citations.py --batch .scratch/t066-at-citation-parity/issues/06-b4-requirements-release-at-batch.md --min-disposed 9
-      - [ ] extract the negative cases for this group from OBLIGATIONS.md
-      - [ ] locate one mirror test per ID; read both sides
-      - [ ] apply cite edits only at verified mirrors
-      - [ ] run this micro's Verify until green
-   3. [ ] **M3** — close the batch
+      - [x] extract the negative cases for this group from OBLIGATIONS.md
+      - [x] locate one mirror test per ID; read both sides
+      - [x] apply cite edits only at verified mirrors
+      - [x] run this micro's Verify until green
+   3. [x] **M3** — close the batch
       **Verify:** python3 tools/report_at_citations.py --batch .scratch/t066-at-citation-parity/issues/06-b4-requirements-release-at-batch.md
-      - [ ] run the batch Verify command
-      - [ ] record any goal candidates under Candidate goals
-      - [ ] flip Status to done and tick the acceptance boxes
-      - [ ] run cargo fmt --check and make ticket-status
+      - [x] run the batch Verify command
+      - [x] record any goal candidates under Candidate goals
+      - [x] flip Status to done and tick the acceptance boxes
+      - [x] run cargo fmt --check and make ticket-status
 
 
 ## Comments
 
 Grill: `.scratch/t066-at-citation-parity/grill.md`. Split 2026-10-02
 (ticket 06 of the four-batch split; closes the AT-parity goal).
+
+**S2 dispositions (half 2):** three entries cited at verified mirrors read on both sides -- method guarantees (assumption-stripped campaign refused by name), provider identity (official vs third-party DISTINCT, exact manifest required), release scope (partial qualification stays EXPERIMENTAL, no superiority claim). AT-097 keeps its recorded candidate status from ticket 02. Final worklist = {AT-086, AT-087, AT-097} recorded candidates; every other B4 AT cited.

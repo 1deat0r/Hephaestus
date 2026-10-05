@@ -60,7 +60,10 @@ fn scope_label_defaults_experimental_requires_all_inputs() {
         scope_label(&QualificationInputs::default()),
         ScopeLabel::Experimental
     );
-    // PARTIAL qualification is still EXPERIMENTAL (no halfway label).
+    // R-093/AT-093 negative case: engineering gates pass but value
+    // qualification is incomplete -- PARTIAL qualification is still
+    // EXPERIMENTAL for the declared scope (no halfway label, no
+    // superiority claim).
     let partial = QualificationInputs {
         frozen_campaign: true,
         oracle_method_qualified: true,

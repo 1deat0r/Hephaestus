@@ -42,7 +42,10 @@ fn null_provider_always_abstains_core_runs_without_it() {
 
 #[test]
 fn provider_identity_labels_official_vs_third_party() {
-    // R-090: official Jev vs third-party implementations stay DISTINCT.
+    // R-090/AT-090 negative case: an unnamed OpenJev-compatible provider --
+    // identity labels official vs third-party DISTINCT, so exact
+    // implementation plus tested capability manifest is required and no
+    // third-party passes as the official Jev model.
     let official = ProviderIdentity {
         name: s("jev-official"),
         digest: s("d1"),

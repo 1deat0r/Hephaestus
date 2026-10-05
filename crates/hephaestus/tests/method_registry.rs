@@ -146,7 +146,10 @@ fn preregistration_refusals_are_named() {
         preregister(&m, &registry),
         Err(PreregError::UnresolvedOracle)
     );
-    // Missing MUST-include entries refused by name.
+    // R-089/AT-089 negative case: a campaign borrowing error guarantees
+    // without their assumptions -- stripping any MUST-include entry
+    // (sensitivity assumptions included) is refused by name, so no
+    // custom loop inherits guarantees it did not declare.
     for strip in [
         |m: &mut CampaignManifest| m.n_calculation_reference = None,
         |m: &mut CampaignManifest| m.alpha_allocation = None,

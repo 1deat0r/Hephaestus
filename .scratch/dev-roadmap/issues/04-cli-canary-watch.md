@@ -13,7 +13,7 @@
 **Small tasks:** (max 8)
 
 1. [x] **S1** — fixture canary-watch command
-   **Status:** ready-for-agent
+   **Status:** done
    **Verify:** cargo test --test cli -- --list | grep canary_watch && cargo test --test cli canary_watch
    **Micro-tasks:** (max 6)
    1. [x] **M1** — red-to-green cycle for the subcommand
@@ -23,14 +23,14 @@
       - [x] add the twin-run byte-identical cli test and run it green
       - [x] run cargo fmt --check and make ticket-status
 
-2. [ ] **S2** — close: status flip
-   **Status:** ready-for-agent
+2. [x] **S2** -- close: status flip
+   **Status:** done
    **Verify:** make ci && make doc-check
    **Micro-tasks:** (max 6)
-   1. [ ] **M1** — run the closing gates and flip
+   1. [x] **M1** -- run the closing gates and flip
       **Verify:** make ci && make doc-check
-      - [ ] run make ci and make doc-check
-      - [ ] flip Status to done and tick every box
+      - [x] run make ci and make doc-check
+      - [x] flip Status to done and tick every box
 
 
 ## Comments

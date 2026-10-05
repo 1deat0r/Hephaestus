@@ -12,4 +12,7 @@ pub mod executor;
 
 pub use core::{RunReport, Scheduler, SchedulerConfig, SchedulerError};
 pub use dag::{DagViolation, PriorityClass, RetryPolicy, Task, TaskDag};
-pub use executor::{TaskExecutor, TaskOutcome};
+pub use executor::{
+    Cancellation, Completion, ExecutorContractError, Submission, SubmissionGate, TaskExecutor,
+    TaskOutcome, normalize_ambiguous_reason,
+};

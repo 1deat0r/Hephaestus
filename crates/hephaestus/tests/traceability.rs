@@ -63,6 +63,8 @@ fn reverse_test_mapping_required() {
 
 #[test]
 fn clause_anchor_must_exist() {
+    // R-081/AT-081 negative case: run traceability validation over the
+    // specification package -- a missing clause anchor fails validation.
     let (mut reqs, tests, scopes) = package();
     reqs[0].clause_anchor = "docs/OBLIGATIONS.md#missing-clause".to_string();
     rejects(&errors(&reqs, &tests, &scopes), "MISSING_CLAUSE_ANCHOR");

@@ -122,6 +122,18 @@ fn critical_unresolved_in_scope_blocks() {
 }
 
 #[test]
+fn unresolved_questions_stay_visible_not_asserted() {
+    // R-085/AT-085 negative case: inspect the assembled release -- the
+    // open research question rides the packet verbatim instead of being
+    // resolved or dropped (unresolved, never asserted as a benefit).
+    let out = assemble_release(packet()).expect("assembled");
+    assert_eq!(
+        out.unresolved_questions,
+        vec![s("does the mechanism hold on deep topologies?")]
+    );
+}
+
+#[test]
 fn uncertainty_required_and_no_universal_field() {
     // R-078/AT-078 negative case: zero failures in a small sample --
     // the report still gives independent n, failure counts and a scoped

@@ -131,6 +131,9 @@ fn search_spans_index_raw_bytes() {
 
 #[test]
 fn supersedes_points_at_the_source_id() {
+    // R-088/AT-088 negative case: check the register after a correction --
+    // verified source identity is preserved and the correction supersedes
+    // (never repeats) the prior record.
     let mut c = Corpus::new();
     ingest(&mut c, "inline:first", b"original bytes");
     ingest(&mut c, "inline:second", b"other bytes");

@@ -244,6 +244,7 @@ crates/hephaestus/tests/dossier_export.rs
 crates/hephaestus/tests/e2e_m2.rs
 crates/hephaestus/tests/e2e_m3.rs
 crates/hephaestus/tests/e2e_real_corpus.rs
+crates/hephaestus/tests/docs_domain_pack.rs
 crates/hephaestus/tests/champion_reuse.rs
 crates/hephaestus/tests/crash_reconciliation.rs
 crates/hephaestus/tests/trigger_canary.rs

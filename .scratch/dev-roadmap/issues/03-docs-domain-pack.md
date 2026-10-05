@@ -12,24 +12,24 @@
 
 **Small tasks:** (max 8)
 
-1. [ ] **S1** — docs DomainPack fixture + qualify green
-   **Status:** ready-for-agent
+1. [x] **S1** — docs DomainPack fixture + qualify green
+   **Status:** done
    **Verify:** cargo test --test docs_domain_pack
    **Micro-tasks:** (max 6)
-   1. [ ] **M1** — red-to-green cycle for qualify
+   1. [x] **M1** — red-to-green cycle for qualify
       **Verify:** cargo test --test docs_domain_pack
-      - [ ] build the pack fixture with an adjudicated oracle
-      - [ ] write the failing qualify test and run it red
-      - [ ] make qualify pass
-      - [ ] run the test to green
+      - [x] build the pack fixture with an adjudicated oracle
+      - [x] write the failing qualify test and run it red
+      - [x] make qualify pass
+      - [x] run the test to green
 
 2. [ ] **S2** — close: gates + status
-   **Status:** ready-for-agent
+   **Status:** in_progress
    **Verify:** make ci && make doc-check
    **Micro-tasks:** (max 6)
    1. [ ] **M1** — run the closing gates
       **Verify:** make ci && make doc-check
-      - [ ] add runtime_allowlist entries as needed
+      - [x] add runtime_allowlist entries as needed
       - [ ] run make seal, then make ci and make doc-check
       - [ ] flip Status to done and tick every box
 

@@ -466,6 +466,7 @@ version = "0.1.0"
 dependencies = [
  "hmac",
  "jsonschema",
+ "libc",
  "regex-lite",
  "serde",
  "serde_json",

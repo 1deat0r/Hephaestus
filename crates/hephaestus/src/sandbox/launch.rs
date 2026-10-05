@@ -178,6 +178,10 @@ pub(crate) fn supervise(
             context: format!("spawn {} …", prlimit.display()),
             error: e,
         })?;
+    // S3 wait4 handle: reap the child through libc to read ru_maxrss —
+    // the kernel's exact peak for the whole lineage. try_wait must not
+    // reap first: only libc::waitpid reaps from here on.
+    let child_pid = child.id() as libc::pid_t;
 
     let stdout_cap = spec.max_stdout;
     let stderr_cap = spec.max_stderr;
@@ -190,31 +194,51 @@ pub(crate) fn supervise(
         .take()
         .map(|s| std::thread::spawn(move || drain_capped(s, stderr_cap)));
 
+    // S3 wait4 reap: WNOHANG polls reap the prlimit child and fill
+    // rusage — the kernel's exact lineage peak (ru_maxrss). No sampler
+    // thread: the kernel tracks the maximum itself. try_wait must not
+    // reap first, so only wait4 reaps from here on.
     let deadline = Duration::from_millis(spec.wall_timeout_ms);
-    let status = loop {
-        match child.try_wait() {
-            Ok(Some(status)) => break status,
-            Ok(None) => {
-                if start.elapsed() >= deadline {
-                    let _ = child.kill();
-                    let _ = child.wait();
-                    return Err(SandboxError::Timeout {
-                        wall_ms: start.elapsed().as_millis(),
-                    });
-                }
-                std::thread::sleep(Duration::from_millis(5));
-            }
-            Err(e) => {
-                let _ = child.kill();
-                let _ = child.wait();
-                return Err(SandboxError::Io {
-                    context: "wait".to_string(),
-                    error: e,
-                });
-            }
+    let mut rusage: libc::rusage = unsafe { std::mem::zeroed() };
+    let mut status_code: libc::c_int = 0;
+    loop {
+        let got = unsafe { libc::wait4(child_pid, &mut status_code, libc::WNOHANG, &mut rusage) };
+        if got == child_pid {
+            break;
         }
-    };
+        if got < 0 {
+            let e = std::io::Error::last_os_error();
+            let _ = child.kill();
+            let _ = child.wait();
+            return Err(SandboxError::Io {
+                context: "wait4".to_string(),
+                error: e,
+            });
+        }
+        if start.elapsed() >= deadline {
+            let _ = child.kill();
+            let _ = child.wait();
+            return Err(SandboxError::Timeout {
+                wall_ms: start.elapsed().as_millis(),
+            });
+        }
+        std::thread::sleep(Duration::from_millis(5));
+    }
     let wall_ms = start.elapsed().as_millis();
+    // Raw status decode (POSIX): low 7 bits hold the fatal signal,
+    // bit 7 flags a core dump, the next byte holds a clean exit code.
+    let signaled = status_code & 0x7f != 0;
+    let signal = if signaled {
+        Some(status_code & 0x7f)
+    } else {
+        None
+    };
+    let exit_code = if signaled {
+        -1
+    } else {
+        (status_code >> 8) & 0xff
+    };
+    let peak_rss_bytes = (rusage.ru_maxrss.max(0) as u64).saturating_mul(1024);
 
     let (stdout, stdout_truncated) = stdout_thread
         .map(|t| t.join().unwrap_or((Vec::new(), false)))
@@ -224,14 +248,21 @@ pub(crate) fn supervise(
         .unwrap_or((Vec::new(), false));
     let stdout = String::from_utf8_lossy(&stdout).into_owned();
     let stderr = String::from_utf8_lossy(&stderr).into_owned();
-    let exit_code = status.code().unwrap_or(-1);
 
+    // S3 receipts: RLIMIT_AS refuses the over-limit allocation before
+    // RSS grows, so a limit-caused death arrives as a plain nonzero
+    // exit with a low peak. The (peak, limit, stderr) triple is the
+    // enforcement receipt; oom_killed names only peak-breach/signal.
+    let oom_killed = peak_rss_bytes >= spec.memory_bytes || signal.is_some();
     if exit_code != 0 {
         return Err(SandboxError::WorkerFailed {
             exit_code,
             stdout,
             stderr,
             wall_ms,
+            peak_rss_bytes,
+            memory_limit_bytes: spec.memory_bytes,
+            oom_killed,
         });
     }
     Ok(RunOutcome {
@@ -241,6 +272,7 @@ pub(crate) fn supervise(
         stderr_truncated,
         exit_code,
         wall_ms,
+        peak_rss_bytes,
         attestation: super::Attestation {
             bwrap_version: String::new(),
             prlimit_path: prlimit.to_path_buf(),
@@ -253,6 +285,57 @@ pub(crate) fn supervise(
         outputs_truncated: false,
         work_dir: None,
     })
+}
+
+/// Best-effort child-pid scan of /proc. wait4 replaced this probe in
+/// the supervise path; the unit tests below keep it as a regression
+/// reader for live values and recycled pids.
+#[cfg(test)]
+fn read_rss_kb(pid: u32) -> u64 {
+    lineage_pids(pid)
+        .iter()
+        .map(|p| {
+            std::fs::read_to_string(format!("/proc/{p}/status"))
+                .ok()
+                .and_then(|s| {
+                    s.lines()
+                        .find(|l| l.starts_with("VmRSS:"))
+                        .and_then(|l| l.split_whitespace().nth(1))
+                        .and_then(|n| n.parse::<u64>().ok())
+                })
+                .unwrap_or(0)
+        })
+        .max()
+        .unwrap_or(0)
+}
+
+/// The pid plus its live child pids, via /proc. Best effort: a child
+/// that exits mid-scan simply drops out.
+#[cfg(test)]
+fn lineage_pids(pid: u32) -> Vec<u32> {
+    let mut out = vec![pid];
+    let Ok(entries) = std::fs::read_dir("/proc") else {
+        return out;
+    };
+    for entry in entries.flatten() {
+        let name = entry.file_name().to_string_lossy().into_owned();
+        let Ok(child) = name.parse::<u32>() else {
+            continue;
+        };
+        let ppid = std::fs::read_to_string(entry.path().join("status"))
+            .ok()
+            .and_then(|s| {
+                s.lines().find(|l| l.starts_with("PPid:")).and_then(|l| {
+                    l.split_whitespace()
+                        .nth(1)
+                        .and_then(|n| n.parse::<u32>().ok())
+                })
+            });
+        if ppid == Some(pid) {
+            out.push(child);
+        }
+    }
+    out
 }
 
 /// Read at most `cap + 1` bytes (to detect truncation), then keep draining
@@ -302,6 +385,20 @@ mod tests {
             max_output_bytes: 16384,
             keep_workdir: false,
         }
+    }
+
+    #[test]
+    fn rss_sampler_reads_a_live_process() {
+        // S3 regression: the /proc reader returns a positive value for
+        // this live test process.
+        let pid = std::process::id();
+        assert!(read_rss_kb(pid) > 0, "live process has resident bytes");
+    }
+
+    #[test]
+    fn rss_sampler_reads_zero_for_a_dead_pid() {
+        // S3 regression: a recycled pid reads zero, never an error.
+        assert_eq!(read_rss_kb(u32::MAX), 0);
     }
 
     #[test]

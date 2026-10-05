@@ -36,15 +36,15 @@ Test names below are planned. Existing passing tests cannot substitute for these
       - [x] Add positive, refusal, and regression cases in `crates/hephaestus/tests/architecture_resource_admission.rs`.
       - [x] Implement the specified behavior in `crates/hephaestus/src/scheduler/core.rs`.
 
-3. [ ] **S3** Enforce measured memory limits
-   **Status:** pending
+3. [x] **S3** Enforce measured memory limits
+   **Status:** done
    **Verify:** cargo test -p hephaestus --test architecture_resource_admission s3_limits
    Measure worker peaks; enforce hard limits; include buffers and resident workers; preserve receipts on violations.
    **Micro-tasks:**
-   1. [ ] **M1** Demonstrate the missing behavior; implement it; pass the same acceptance tests.
+   1. [x] **M1** Demonstrate the missing behavior; implement it; pass the same acceptance tests.
       **Verify:** cargo test -p hephaestus --test architecture_resource_admission s3_limits
-      - [ ] Add positive, refusal, and regression cases in `crates/hephaestus/tests/architecture_resource_admission.rs`.
-      - [ ] Implement the specified behavior in `crates/hephaestus/src/sandbox/mod.rs`.
+      - [x] Add positive, refusal, and regression cases in `crates/hephaestus/tests/architecture_resource_admission.rs`.
+      - [x] Implement the specified behavior in `crates/hephaestus/src/sandbox/mod.rs`.
 
 ## Comments
 

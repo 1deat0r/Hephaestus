@@ -117,6 +117,8 @@ pub struct RunOutcome {
     pub exit_code: i32,
     /// Supervised wall time.
     pub wall_ms: u128,
+    /// Peak resident-set bytes. S3 measures this against the hard limit.
+    pub peak_rss_bytes: u64,
     /// What attestation verified before the spawn.
     pub attestation: Attestation,
     /// Collected files from `/work/out` (symlinks refused before any of
@@ -185,6 +187,16 @@ pub enum SandboxError {
         stderr: String,
         /// Supervised wall time before exit (metering).
         wall_ms: u128,
+        /// Measured peak resident-set bytes (wait4 ru_maxrss). S3 receipt.
+        peak_rss_bytes: u64,
+        /// Hard memory limit for the run. S3 receipt.
+        memory_limit_bytes: u64,
+        /// True when the peak reached the limit or the worker died by
+        /// signal. RLIMIT_AS refuses over-limit allocations before RSS
+        /// grows, so a limit-caused death can also arrive as a plain
+        /// nonzero exit with a low peak; that receipt is the
+        /// (peak, limit, stderr) triple, not this flag. S3.
+        oom_killed: bool,
     },
     /// Output collection refused: a symlink (or other non-regular entry)
     /// in `/work/out` — nothing is copied (exfil class, MASTER_SPEC:389).
@@ -220,9 +232,12 @@ impl std::fmt::Display for SandboxError {
                 stdout,
                 stderr,
                 wall_ms,
+                peak_rss_bytes,
+                memory_limit_bytes,
+                oom_killed,
             } => write!(
                 f,
-                "worker exited {exit_code} after {wall_ms} ms; stdout={:?} stderr={:?}",
+                "worker exited {exit_code} after {wall_ms} ms; stdout={:?} stderr={:?}; peak_rss={peak_rss_bytes}B limit={memory_limit_bytes}B oom_killed={oom_killed}",
                 truncate(stdout, 200),
                 truncate(stderr, 200)
             ),

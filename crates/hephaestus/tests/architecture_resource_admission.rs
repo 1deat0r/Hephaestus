@@ -1,13 +1,15 @@
-//! AE-02 S1 — resource envelope admission (R-067/AT-067 S1).
+//! AE-02 S2+S3 — admission queue bound, budgeted waves, measured memory
+//! limits (R-067/AT-067 S2, S3).
 //!
-//! Tasks carry a two-dimensional envelope (CPU units + memory MiB).
-//! Admission reserves both dimensions per wave before dispatch; claims
-//! above node capacity are refused at construction.
+//! Admission reserves per-wave dimensions before dispatch (S1); refuses
+//! queues over the bound at construction (S2); measures worker RSS peaks
+//! against the hard memory limit (S3).
 
 use std::sync::Mutex;
 
 use hephaestus::budget::BudgetLedger;
 use hephaestus::contracts::generated::Money;
+use hephaestus::sandbox::{IsolationSpec, NetworkPolicy, RunSpec, SandboxProvider};
 use hephaestus::scheduler::{
     PriorityClass, RetryPolicy, Scheduler, SchedulerConfig, SchedulerError, Task, TaskDag,
     TaskExecutor, TaskOutcome,
@@ -253,6 +255,108 @@ fn s2_admission_queue_bytes_drain_with_dispatch() {
     let report = sched.run(&recorder).expect("run");
     assert_eq!(report.succeeded().len(), 2);
     assert_eq!(sched.queue_bytes(), 0, "dispatch drains the queue");
+}
+
+fn sandbox_spec() -> IsolationSpec {
+    // S3: small limit (64 MiB) with resident headroom, so the suite
+    // exercises the real enforcement path on the shared host.
+    IsolationSpec {
+        declared_tools: vec!["python3".to_string()],
+        env_allowlist: vec![],
+        extra_ro_binds: vec![],
+        wall_timeout_ms: 10_000,
+        memory_bytes: 64 * 1024 * 1024,
+        cpu_secs: 10,
+        nproc: 64,
+        fsize_bytes: 64 * 1024 * 1024,
+        network: NetworkPolicy::Off,
+        max_stdout: 4096,
+        max_stderr: 4096,
+        max_output_files: 8,
+        max_output_file_bytes: 4096,
+        max_output_bytes: 32 * 1024,
+        keep_workdir: false,
+    }
+}
+
+fn sandbox_run_argv(spec: IsolationSpec, argv: Vec<&str>) -> Result<hephaestus::sandbox::RunOutcome, hephaestus::sandbox::SandboxError> {
+    SandboxProvider::with_default_tools().run(RunSpec {
+        argv: argv.iter().map(|s| s.to_string()).collect(),
+        spec,
+        input_files: vec![],
+    })
+}
+
+#[test]
+fn s3_limits_measured_peak_stays_under_limit() {
+    // S3 positive: a small worker reports a nonzero peak far under
+    // the 64 MiB limit and exits clean.
+    let out = sandbox_run_argv(
+        sandbox_spec(),
+        vec!["python3", "-c", "print('small')"],
+    )
+    .expect("small worker runs");
+    assert!(out.peak_rss_bytes > 0, "peak measures something");
+    assert!(
+        out.peak_rss_bytes < 64 * 1024 * 1024,
+        "peak stays under the limit: {} bytes",
+        out.peak_rss_bytes
+    );
+}
+
+#[test]
+fn s3_limits_memory_hog_dies_with_receipts() {
+    // S3 refusal: a 256 MiB allocation against the 64 MiB limit dies
+    // boundedly. RLIMIT_AS refuses the allocation before RSS grows, so
+    // the receipt is the (peak, limit, stderr) triple — not a breached
+    // peak. peak names what was measured, limit names the bound, and
+    // stderr names the cause (MemoryError).
+    let err = sandbox_run_argv(
+        sandbox_spec(),
+        vec!["python3", "-c", "x = bytearray(256 * 1024 * 1024); print(len(x))"],
+    )
+    .expect_err("hog must die");
+    match err {
+        hephaestus::sandbox::SandboxError::WorkerFailed {
+            exit_code,
+            wall_ms,
+            peak_rss_bytes,
+            memory_limit_bytes,
+            stderr,
+            ..
+        } => {
+            assert!(exit_code != 0, "nonzero death");
+            assert!(wall_ms < 10_000, "dies bounded in {wall_ms} ms");
+            assert_eq!(memory_limit_bytes, 64 * 1024 * 1024);
+            assert!(peak_rss_bytes > 0, "peak measured");
+            assert!(
+                peak_rss_bytes < memory_limit_bytes,
+                "limit refused before RSS grew: peak={peak_rss_bytes}"
+            );
+            assert!(
+                stderr.contains("MemoryError"),
+                "stderr names the refused allocation"
+            );
+        }
+        other => panic!("hog dies named, got {other:?}"),
+    }
+}
+
+#[test]
+fn s3_limits_clean_exit_carries_no_violation() {
+    // S3 regression: a clean exit never sets the violation flag,
+    // even when the peak approaches but stays under the limit.
+    let out = sandbox_run_argv(
+        sandbox_spec(),
+        vec!["python3", "-c", "x = bytearray(8 * 1024 * 1024); print(len(x))"],
+    )
+    .expect("8 MiB worker fits");
+    assert!(out.peak_rss_bytes > 0, "peak measured");
+    assert!(
+        out.peak_rss_bytes < 64 * 1024 * 1024,
+        "peak under the limit: {} bytes",
+        out.peak_rss_bytes
+    );
 }
 
 #[test]

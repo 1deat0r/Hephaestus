@@ -4,7 +4,7 @@
 
 **Blocked by:** None (can start immediately)
 
-**Status:** ready-for-agent
+**Status:** done
 
 **Verify:** cargo test --test e2e_real_corpus
 
@@ -34,15 +34,15 @@
       - [x] run the test to green, then cargo fmt --check
       - [x] run make ticket-status
 
-3. [ ] **S3** — close: allowlist, seal, status
-   **Status:** in_progress
+3. [x] **S3** — close: allowlist, seal, status
+   **Status:** done
    **Verify:** make ci && make doc-check
    **Micro-tasks:** (max 6)
-   1. [ ] **M1** — run the closing gates
+   1. [x] **M1** — run the closing gates
       **Verify:** make ci && make doc-check
       - [x] add runtime_allowlist entries as needed
-      - [ ] run make seal, then make ci and make doc-check
-      - [ ] flip Status to done and tick every box
+      - [x] run make seal, then make ci and make doc-check
+      - [x] flip Status to done and tick every box
 
 
 ## Comments

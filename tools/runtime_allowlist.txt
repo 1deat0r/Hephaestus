@@ -275,6 +275,13 @@ tools/check_ticket_status.py
 .scratch/dev-roadmap/issues/05-campaign-exit-receipts.md
 .scratch/architecture-efficiency/issues/02-resource-admission.md
 .scratch/architecture-efficiency/issues/01-concurrent-execution.md
+.scratch/architecture-efficiency/spec.md
+.scratch/architecture-efficiency/pi-development.md
+.scratch/architecture-efficiency/issues/03-compact-evidence-storage.md
+.scratch/architecture-efficiency/issues/04-incremental-invalidation.md
+.scratch/architecture-efficiency/issues/05-task-context-assembly.md
+.scratch/architecture-efficiency/issues/06-qualified-reasoning-routing.md
+.scratch/architecture-efficiency/issues/07-independent-qualification.md
 docs/agents/auto-workflow/decisions-2026-10-02T00:04:46Z.md
 docs/agents/auto-workflow/report-2026-10-02T00:04:46Z.md
 docs/agents/auto-workflow/decisions-2026-10-02T00:45:28Z.md

@@ -56,11 +56,74 @@ $ git diff --cached --stat -- crates/
 The changes are rustfmt line-wrapping only; no statement, test name, or
 assertion changed.
 
+## Post-commit findings and forward correction (`baseline-repair.2`)
+
+Recorded 2026-10-05, after `baseline-repair.1` (14b947f) was pushed.
+
+1. **Status-staging omission (truthful record).** Commit 14b947f carried
+   the ticket at `**Status:** ready-for-agent` with unchecked S1 and
+   micro boxes, because the `done` flip was made in the worktree and never
+   staged. The worktree held the completed state. Pushed history was not
+   rewritten; the completed ticket is staged and lands in
+   `baseline-repair.2`. Verified with
+   `git show HEAD:.scratch/development-baseline-repair/issues/01-restore-verification-gates.md`.
+2. **Remote `ci` failed on the clean checkout.** Run 37290585047
+   (<https://github.com/1deat0r/Hephaestus/actions/runs/37290585047>), job
+   `gates`, step "Run environment-independent gates", stopped at
+   `md-links`:
+
+   ```
+   md-links: FAIL
+   .scratch/architecture-efficiency/issues/01-concurrent-execution.md:51: broken link '../spec.md' (target missing).
+   .scratch/architecture-efficiency/issues/01-concurrent-execution.md:9: broken link '../pi-development.md' (target missing).
+   .scratch/architecture-efficiency/issues/02-resource-admission.md:51: broken link '../spec.md' (target missing).
+   .scratch/architecture-efficiency/issues/02-resource-admission.md:9: broken link '../pi-development.md' (target missing).
+   make: *** [Makefile:109: md-links] Error 1
+   ```
+
+   Root cause: `check_md_links.py` scans `git ls-files`, so it sees only
+   tracked files. Local runs passed because the link targets existed as
+   untracked worktree files. The local green receipt above therefore
+   describes worktree state, not clean-checkout state.
+3. **Narrow planning integration (human authorized).** Seven documents
+   were tracked with all nonblank content preserved. The conflict-staged
+   gate (`git diff --check`) rejected trailing blank lines at EOF in six of
+   them, so only those blank EOF lines were trimmed and every nonblank line
+   is unchanged:
+   `.scratch/architecture-efficiency/spec.md`, `pi-development.md`, and
+   `issues/03` through `issues/07`. Their seven paths were appended to
+   `tools/runtime_allowlist.txt` and the seal was regenerated
+   (ADR-024, ADR-027). Result:
+   `manifest-check: ok (tracked=669, manifest=81, allowlisted=588, hashes verify)`.
+   `.pi/`, `.scratch/architecture-efficiency/workflow.py`, and
+   `docs/PI_AGENTS_SETUP_RESEARCH_2026-10.md` stay untracked.
+4. **Tracked-only clean export verification.** The staged index was
+   exported with `git write-tree` + `git archive` into a fresh directory
+   with its own git repository, so `git ls-files` matched the staged tree
+   exactly:
+
+   ```
+   export ci exit=0
+   export doc exit=0
+   md-links: ok (370 md files, 0 baseline entries)
+   ticket-status: ok (131 issue files; ...)
+   gate-seal: ok (26 gate files sealed)
+   ```
+
+   Command environment: `CARGO_TARGET_DIR=/home/ideator/.cache/heph-export-target`
+   (the first attempt used `/tmp`, which hit its 16 GB tmpfs quota),
+   `CARGO_BUILD_JOBS=2` (one parallel link was signalled with 9, cause unconfirmed:
+   `collect2: fatal error: ld terminated with signal 9 [Killed]`), and the
+   documented one-time `make hooks` (`core.hooksPath=.githooks`) inside
+   the throwaway export repository. `hooks-check` self-skips when `CI=true`,
+   as it does on GitHub.
+
 ## Limitations
 
-- Local gates only. The remote `ci` workflow for this commit runs after
-  push; that result is reported to the operator, not recorded in this file.
-- `report-unreferenced` is advisory: 76 tracked files are not named by any
-  markdown document (exit 0 by design, ADR-024).
-- Gates prove spec/reference and formatting state. No runtime acceptance,
-  performance, or scientific claim is made here.
+- The remote `ci` result for the correction commit runs after push; it is
+  reported to the operator, not recorded in this file.
+- `report-unreferenced` is advisory (exit 0 by design, ADR-024).
+- Gates prove spec/reference, link, and formatting state. No runtime
+  acceptance, performance, or scientific claim is made here.
+- The export reuses a warm cargo target directory and a lower job count;
+  it verifies tracked content, not GitHub runner resources.

@@ -10,6 +10,7 @@ pub mod advisory;
 pub mod amendment;
 pub mod backend;
 pub mod budget;
+pub mod campaign;
 pub mod containment;
 pub mod contracts;
 pub mod discovery;

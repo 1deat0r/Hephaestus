@@ -310,6 +310,8 @@ crates/hephaestus/tests/eval_suite.rs
 crates/hephaestus/src/pilot/mod.rs
 crates/hephaestus/src/pilot/record.rs
 crates/hephaestus/tests/pilot_campaigns.rs
+crates/hephaestus/src/campaign.rs
+crates/hephaestus/tests/fixture_campaign.rs
 crates/hephaestus/src/release/mod.rs
 crates/hephaestus/src/release/record.rs
 crates/hephaestus/tests/release_packet.rs

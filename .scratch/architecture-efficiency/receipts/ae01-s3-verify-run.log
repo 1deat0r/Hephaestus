@@ -1,0 +1,12 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.11s
+     Running tests/architecture_concurrent_execution.rs (target/debug/deps/architecture_concurrent_execution-469adfbe231a9049)
+
+running 6 tests
+test s3_recovery_cancel_before_dispatch_never_touches_budget ... ok
+test s3_recovery_cancel_intent_race_never_requeues_dispatched_work ... ok
+test s3_recovery_unresolved_cost_applies_once_over_stale_hold ... ok
+test s3_recovery_duplicate_completion_records_one_unresolved_cost ... ok
+test s3_recovery_cancel_race_settles_each_hold_exactly_once ... ok
+test s3_recovery_crash_replay_classifies_each_operation_once ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 7 filtered out; finished in 0.00s

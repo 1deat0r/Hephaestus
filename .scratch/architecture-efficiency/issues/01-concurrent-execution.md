@@ -1,6 +1,6 @@
 # AE-01: Concurrent execution
 
-**Status:** ready-for-agent
+**Status:** done
 **Verify:** python3 .scratch/architecture-efficiency/workflow.py verify AE-01
 **Covers:** 1, 2, 3
 **Blocked by:** None (AE-02 done: 8604d25)
@@ -36,15 +36,15 @@ Test names below are planned. Existing passing tests cannot substitute for these
       - [x] Add positive, refusal, and regression cases in `crates/hephaestus/tests/architecture_concurrent_execution.rs`.
       - [x] Implement the specified behavior in `crates/hephaestus/src/scheduler/core.rs`.
 
-3. [ ] **S3** Preserve cancellation and recovery
-   **Status:** pending
+3. [x] **S3** Preserve cancellation and recovery
+   **Status:** done
    **Verify:** cargo test -p hephaestus --test architecture_concurrent_execution s3_recovery
    Test cancellation races, duplicate completions, crash replay, and unresolved costs without duplicate effects.
    **Micro-tasks:**
-   1. [ ] **M1** Demonstrate the missing behavior; implement it; pass the same acceptance tests.
+   1. [x] **M1** Demonstrate the missing behavior; implement it; pass the same acceptance tests.
       **Verify:** cargo test -p hephaestus --test architecture_concurrent_execution s3_recovery
-      - [ ] Add positive, refusal, and regression cases in `crates/hephaestus/tests/architecture_concurrent_execution.rs`.
-      - [ ] Implement the specified behavior in `crates/hephaestus/src/operations/recover.rs`.
+      - [x] Add positive, refusal, and regression cases in `crates/hephaestus/tests/architecture_concurrent_execution.rs`.
+      - [x] Implement the specified behavior in `crates/hephaestus/src/operations/recover.rs`.
 
 ## Comments
 

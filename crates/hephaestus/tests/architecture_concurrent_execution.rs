@@ -4,12 +4,13 @@
 //! ambiguous-effect outcomes. Full overlap lands in S2; recovery in S3.
 
 use std::collections::HashSet;
-use std::sync::Mutex;
 use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
+use std::sync::{Arc, Mutex};
 use std::time::{Duration, Instant};
 
 use hephaestus::budget::BudgetLedger;
 use hephaestus::contracts::generated::Money;
+use hephaestus::operations::{OperationRecorder, Receipt, RetryPosture, apply, recover};
 use hephaestus::scheduler::{
     Cancellation, Completion, ExecutorContractError, PriorityClass, RetryPolicy, Scheduler,
     SchedulerConfig, SubmissionGate, Task, TaskDag, TaskExecutor, TaskOutcome,
@@ -461,5 +462,393 @@ fn s2_dispatch_replay_is_stable_across_runs() {
         runs[0].0,
         vec!["ROOT".to_string(), "MID".to_string(), "LEAF".to_string()],
         "chain dispatch order follows the DAG"
+    );
+}
+
+// --- AE-01/S3 --- cancellation and recovery (AC3) -------------------
+
+fn s3_temp_dir(tag: &str) -> std::path::PathBuf {
+    let nanos = std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .expect("clock")
+        .as_nanos();
+    let dir = std::env::temp_dir().join(format!("ae01-s3-{tag}-{}-{nanos}", std::process::id()));
+    std::fs::create_dir_all(&dir).expect("temp dir");
+    dir
+}
+
+/// AE-01/S3 first behavior red (AC3; R-055 R-056 R-057): an operation
+/// that was dispatched and then carried a durable cancel request must be
+/// reconciled, never requeued — requeue would make a new reservation for
+/// cancelled work (MASTER_SPEC:375), and dropping it would hide an
+/// uncertain effect behind Cancelled.
+#[test]
+fn s3_recovery_cancel_intent_race_never_requeues_dispatched_work() {
+    let dir = s3_temp_dir("cancel-race");
+    let (ledger, store) = (dir.join("ops.jsonl"), dir.join("store"));
+    // Crash-replay fixture: dispatch raced a durable cancel request.
+    let op = {
+        let mut rec = OperationRecorder::open(&ledger, &store).expect("open");
+        let op = rec.plan("race").expect("plan");
+        rec.dispatched(&op, 1).expect("dispatch");
+        rec.cancel_requested(&op).expect("cancel");
+        op
+    }; // crash: recorder dropped, ledger durable
+    let rec = OperationRecorder::open(&ledger, &store).expect("reopen");
+    let view = rec.replay();
+    assert_eq!(
+        format!("{:?}", view.state_of(&op).unwrap()),
+        "Ambiguous",
+        "uncertain effect never hides behind Cancelled"
+    );
+    // Retry permission is wide open — durable cancel intent must win.
+    let plan = recover(&view, |_| RetryPosture {
+        retryable: true,
+        max_attempts: 3,
+    });
+    assert!(
+        !plan.requeue.contains(&op),
+        "cancelled in-flight work must never be requeued; requeue={:?} cancelled={:?} unresolved={:?}",
+        plan.requeue,
+        plan.cancelled,
+        plan.unresolved
+    );
+    assert!(
+        plan.unresolved.contains(&op),
+        "reconcile the in-flight effect; requeue={:?} cancelled={:?} unresolved={:?}",
+        plan.requeue,
+        plan.cancelled,
+        plan.unresolved
+    );
+    assert!(
+        !plan.cancelled.contains(&op),
+        "cancelled bucket is for never-dispatched work only"
+    );
+    let _ = std::fs::remove_dir_all(&dir);
+}
+
+/// AE-01/S3 (AC3; R-057): cancel intent with no dispatch classifies as
+/// cancelled. Apply records nothing and the budget is untouched — there
+/// is no effect to reconcile and nothing to requeue.
+#[test]
+fn s3_recovery_cancel_before_dispatch_never_touches_budget() {
+    let dir = s3_temp_dir("cancel-pre");
+    let (ledger, store) = (dir.join("ops.jsonl"), dir.join("store"));
+    let op = {
+        let mut rec = OperationRecorder::open(&ledger, &store).expect("open");
+        let op = rec.plan("pre").expect("plan");
+        rec.cancel_requested(&op).expect("cancel");
+        op
+    }; // crash before any dispatch
+    let rec = OperationRecorder::open(&ledger, &store).expect("reopen");
+    let view = rec.replay();
+    assert_eq!(
+        format!("{:?}", view.state_of(&op).unwrap()),
+        "Cancelled",
+        "planned + cancel, no dispatch"
+    );
+    let plan = recover(&view, |_| RetryPosture {
+        retryable: true,
+        max_attempts: 3,
+    });
+    assert_eq!(plan.total(), 1, "every op classified exactly once");
+    assert!(
+        plan.cancelled.contains(&op),
+        "cancel before dispatch lands in cancelled"
+    );
+    assert!(!plan.requeue.contains(&op), "never requeue cancelled work");
+    assert!(!plan.unresolved.contains(&op), "no effect ran to reconcile");
+    let mut budget = BudgetLedger::new(usd(100)).expect("budget");
+    let recorded = apply(&plan, &view, &mut budget).expect("apply");
+    assert!(recorded.is_empty(), "nothing to record");
+    assert_eq!(budget.reserved(), usd(0), "no hold was ever taken");
+    assert_eq!(budget.spent(), usd(0), "no spend");
+    assert_eq!(budget.unresolved_count(), 0, "no unresolved entry");
+    let _ = std::fs::remove_dir_all(&dir);
+}
+
+/// AE-01/S3 (AC3; R-056): duplicate completion receipts collapse into
+/// ONE unresolved record. The effect stays unknown (retry posture
+/// withholds permission — never a blind retry), and a repeated apply
+/// never records a second effect.
+#[test]
+fn s3_recovery_duplicate_completion_records_one_unresolved_cost() {
+    let dir = s3_temp_dir("dup-completion");
+    let (ledger, store) = (dir.join("ops.jsonl"), dir.join("store"));
+    let receipt = Receipt {
+        outcome: "AmbiguousEffect".to_string(),
+        cost: usd(40),
+        wall_ms: 5,
+        reason: Some("effect unknown after crash".to_string()),
+        attempt: 1,
+        executor: "s3-probe".to_string(),
+        artifacts: vec![],
+    };
+    let op = {
+        let mut rec = OperationRecorder::open(&ledger, &store).expect("open");
+        let op = rec.plan("dup").expect("plan");
+        rec.dispatched(&op, 1).expect("dispatch");
+        rec.receipt(&op, &receipt).expect("first completion");
+        rec.receipt(&op, &receipt).expect("duplicate completion");
+        op
+    }; // crash
+    let rec = OperationRecorder::open(&ledger, &store).expect("reopen");
+    let view = rec.replay();
+    assert_eq!(format!("{:?}", view.state_of(&op).unwrap()), "Ambiguous");
+    let plan = recover(&view, |_| RetryPosture {
+        retryable: false,
+        max_attempts: 1,
+    });
+    assert_eq!(plan.total(), 1, "duplicate receipts, still one operation");
+    assert!(
+        plan.unresolved.contains(&op),
+        "unknown effect reconciles, never requeues"
+    );
+    assert!(!plan.requeue.contains(&op), "no blind retry");
+    let mut budget = BudgetLedger::new(usd(100)).expect("budget");
+    let first = apply(&plan, &view, &mut budget).expect("apply 1");
+    assert_eq!(first, vec![op.clone()], "one unresolved cost recorded once");
+    assert_eq!(budget.unresolved_count(), 1, "exactly one entry");
+    assert_eq!(budget.unresolved(), usd(40), "amount held exactly once");
+    let second = apply(&plan, &view, &mut budget).expect("apply 2");
+    assert!(second.is_empty(), "second apply records nothing");
+    assert_eq!(budget.unresolved_count(), 1, "still one entry");
+    assert_eq!(budget.unresolved(), usd(40), "no duplicate effect");
+    let _ = std::fs::remove_dir_all(&dir);
+}
+
+/// AE-01/S3 (AC3; R-051 R-057): crash replay classifies every recorded
+/// operation exactly once, and recomputing the plan from the same
+/// recorded view yields identical buckets (deterministic replay).
+#[test]
+fn s3_recovery_crash_replay_classifies_each_operation_once() {
+    let dir = s3_temp_dir("mixed");
+    let (ledger, store) = (dir.join("ops.jsonl"), dir.join("store"));
+    let receipt = Receipt {
+        outcome: "Succeeded".to_string(),
+        cost: usd(10),
+        wall_ms: 3,
+        reason: None,
+        attempt: 1,
+        executor: "s3-probe".to_string(),
+        artifacts: vec![],
+    };
+    let (op_p, op_s, op_d, op_c) = {
+        let mut rec = OperationRecorder::open(&ledger, &store).expect("open");
+        let op_p = rec.plan("p").expect("planned only");
+        let op_s = rec.plan("s").expect("succeeded");
+        rec.dispatched(&op_s, 1).expect("dispatch");
+        rec.receipt(&op_s, &receipt).expect("receipt");
+        let op_d = rec.plan("d").expect("dispatched only");
+        rec.dispatched(&op_d, 1).expect("dispatch");
+        let op_c = rec.plan("c").expect("cancelled before dispatch");
+        rec.cancel_requested(&op_c).expect("cancel");
+        (op_p, op_s, op_d, op_c)
+    }; // crash
+    let rec = OperationRecorder::open(&ledger, &store).expect("reopen");
+    let view = rec.replay();
+    let plan = recover(&view, |_| RetryPosture {
+        retryable: false,
+        max_attempts: 1,
+    });
+    assert_eq!(plan.total(), 4, "every recorded op appears exactly once");
+    assert_eq!(plan.requeue, vec![op_p], "planned requeues");
+    assert_eq!(plan.terminal, vec![op_s], "receipt-backed terminal");
+    assert_eq!(
+        plan.unresolved,
+        vec![op_d],
+        "dispatched without receipt reconciles"
+    );
+    assert_eq!(
+        plan.cancelled,
+        vec![op_c],
+        "cancel without dispatch is cancelled"
+    );
+    assert!(plan.corrupt.is_empty(), "clean history is not corrupt");
+    // Same recorded view, same decision — replay determinism (R-051).
+    let again = recover(&view, |_| RetryPosture {
+        retryable: false,
+        max_attempts: 1,
+    });
+    assert_eq!(
+        format!("{:?}", plan),
+        format!("{:?}", again),
+        "recomputed plan is identical"
+    );
+    let _ = std::fs::remove_dir_all(&dir);
+}
+
+/// AE-01/S3 (AC3; R-055 R-056): a stale pre-crash hold is released and
+/// the known receipt cost is recorded as unresolved exactly once — a
+/// re-apply never duplicates the effect.
+#[test]
+fn s3_recovery_unresolved_cost_applies_once_over_stale_hold() {
+    let dir = s3_temp_dir("stale-hold");
+    let (ledger, store) = (dir.join("ops.jsonl"), dir.join("store"));
+    let receipt = Receipt {
+        outcome: "AmbiguousEffect".to_string(),
+        cost: usd(40),
+        wall_ms: 7,
+        reason: Some("effect unknown".to_string()),
+        attempt: 1,
+        executor: "s3-probe".to_string(),
+        artifacts: vec![],
+    };
+    let op = {
+        let mut rec = OperationRecorder::open(&ledger, &store).expect("open");
+        let op = rec.plan("hold").expect("plan");
+        rec.dispatched(&op, 1).expect("dispatch");
+        rec.receipt(&op, &receipt).expect("receipt");
+        op
+    }; // crash with the hold still live
+    let rec = OperationRecorder::open(&ledger, &store).expect("reopen");
+    let view = rec.replay();
+    let plan = recover(&view, |_| RetryPosture {
+        retryable: false,
+        max_attempts: 1,
+    });
+    assert!(plan.unresolved.contains(&op), "ambiguous needs reconcile");
+    let mut budget = BudgetLedger::new(usd(100)).expect("budget");
+    budget
+        .reserve(&op, usd(60))
+        .expect("stale hold from the crashed dispatch");
+    let recorded = apply(&plan, &view, &mut budget).expect("apply");
+    assert_eq!(recorded, vec![op.clone()], "known cost recorded once");
+    assert_eq!(budget.reserved(), usd(0), "stale hold released");
+    assert_eq!(budget.unresolved(), usd(40), "receipt amount reconciled");
+    assert_eq!(budget.unresolved_count(), 1, "exactly one entry");
+    let again = apply(&plan, &view, &mut budget).expect("re-apply");
+    assert!(again.is_empty(), "re-apply records nothing");
+    assert_eq!(budget.unresolved_count(), 1, "still exactly one entry");
+    assert_eq!(budget.unresolved(), usd(40), "no duplicate effect");
+    assert_eq!(budget.spent(), usd(0), "nothing marked spent");
+    let _ = std::fs::remove_dir_all(&dir);
+}
+
+/// AE-01/S3 (AC3; R-055 R-057): the cancellation race settles each
+/// hold exactly once at the scheduler seam. PRE is cancelled before
+/// dispatch: it never reaches the executor and never reserves. LONG is
+/// cancelled while in flight (flag flipped after the executor starts):
+/// cooperative cancellation completes it and releases its hold once.
+#[test]
+fn s3_recovery_cancel_race_settles_each_hold_exactly_once() {
+    struct S3CancelRaceExecutor {
+        started_long: Arc<AtomicBool>,
+        runs: Mutex<Vec<String>>,
+        signalled: Mutex<Vec<String>>,
+    }
+
+    impl S3CancelRaceExecutor {
+        fn new() -> Self {
+            S3CancelRaceExecutor {
+                started_long: Arc::new(AtomicBool::new(false)),
+                runs: Mutex::new(Vec::new()),
+                signalled: Mutex::new(Vec::new()),
+            }
+        }
+    }
+
+    impl TaskExecutor for S3CancelRaceExecutor {
+        fn run(&self, task: &Task) -> TaskOutcome {
+            self.runs.lock().unwrap().push(task.id.clone());
+            TaskOutcome::Succeeded {
+                cost: task.cost.clone(),
+            }
+        }
+
+        fn run_cancellable(&self, task: &Task, cancel: &AtomicBool) -> TaskOutcome {
+            self.runs.lock().unwrap().push(task.id.clone());
+            if task.id == "LONG" {
+                self.started_long.store(true, Ordering::SeqCst);
+                let deadline = Instant::now() + Duration::from_secs(3);
+                while Instant::now() < deadline {
+                    if cancel.load(Ordering::SeqCst) {
+                        return TaskOutcome::Cancelled;
+                    }
+                    std::thread::sleep(Duration::from_millis(1));
+                }
+                return TaskOutcome::Failed {
+                    reason: "cancel flag never arrived".to_string(),
+                };
+            }
+            TaskOutcome::Succeeded {
+                cost: task.cost.clone(),
+            }
+        }
+
+        fn signal_cancel(&self, task_id: &str) {
+            self.signalled.lock().unwrap().push(task_id.to_string());
+        }
+    }
+
+    let mut dag = TaskDag::new(vec![]);
+    let mut pre = s2_task("PRE", &[]);
+    pre.cost = usd(30);
+    let mut long = s2_task("LONG", &[]);
+    long.cost = usd(50);
+    dag.add(pre).expect("add PRE");
+    dag.add(long).expect("add LONG");
+    dag.validate().expect("valid");
+    let mut sched = Scheduler::new(
+        dag,
+        BudgetLedger::new(usd(200)).expect("budget"),
+        SchedulerConfig {
+            max_in_flight: 4,
+            resource_capacity: 4,
+            memory_capacity_mb: 1024,
+            max_queued: usize::MAX,
+        },
+    )
+    .expect("scheduler");
+    let pre_flag = sched.cancel_handle("PRE").expect("PRE handle");
+    let long_flag = sched.cancel_handle("LONG").expect("LONG handle");
+    // Cancel PRE before dispatch: it must never reserve.
+    pre_flag.store(true, Ordering::SeqCst);
+    let executor = S3CancelRaceExecutor::new();
+    // Flip LONG's flag only after its executor started: a genuine race
+    // between dispatch and cancellation.
+    let started = executor.started_long.clone();
+    let helper = std::thread::spawn(move || {
+        let deadline = Instant::now() + Duration::from_secs(3);
+        while !started.load(Ordering::SeqCst) && Instant::now() < deadline {
+            std::thread::sleep(Duration::from_millis(1));
+        }
+        long_flag.store(true, Ordering::SeqCst);
+    });
+    let report = sched.run(&executor).expect("run");
+    helper.join().expect("helper");
+    let runs = executor.runs.lock().unwrap().clone();
+    assert_eq!(
+        runs,
+        vec!["LONG".to_string()],
+        "PRE never reaches the executor; LONG dispatched once"
+    );
+    assert!(
+        executor
+            .signalled
+            .lock()
+            .unwrap()
+            .iter()
+            .any(|s| s == "PRE"),
+        "PRE got the cancel signal"
+    );
+    assert!(
+        report.cancelled().contains(&"PRE".to_string()),
+        "PRE settled as cancelled"
+    );
+    assert!(
+        report.cancelled().contains(&"LONG".to_string()),
+        "in-flight cancel settles via its own completion"
+    );
+    assert_eq!(sched.budget().reserved(), usd(0), "every hold settled");
+    assert_eq!(
+        sched.budget().spent(),
+        usd(0),
+        "cancelled work never commits"
+    );
+    assert_eq!(
+        sched.budget().unresolved_count(),
+        0,
+        "no unresolved side effects"
     );
 }

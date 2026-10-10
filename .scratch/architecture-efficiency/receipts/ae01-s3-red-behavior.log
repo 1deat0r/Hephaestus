@@ -1,0 +1,22 @@
+   Compiling hephaestus v0.1.0 (/run/media/ideator/Projects/AI Agents/Hephaestus/crates/hephaestus)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.51s
+     Running tests/architecture_concurrent_execution.rs (target/debug/deps/architecture_concurrent_execution-469adfbe231a9049)
+
+running 1 test
+test s3_recovery_cancel_intent_race_never_requeues_dispatched_work ... FAILED
+
+failures:
+
+---- s3_recovery_cancel_intent_race_never_requeues_dispatched_work stdout ----
+
+thread 's3_recovery_cancel_intent_race_never_requeues_dispatched_work' (1221899) panicked at crates/hephaestus/tests/architecture_concurrent_execution.rs:512:5:
+cancelled in-flight work must never be requeued; requeue=["OP-0-race"] cancelled=[] unresolved=[]
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    s3_recovery_cancel_intent_race_never_requeues_dispatched_work
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 7 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p hephaestus --test architecture_concurrent_execution`

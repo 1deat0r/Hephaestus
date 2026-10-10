@@ -1,0 +1,10 @@
+   Compiling hephaestus v0.1.0 (/run/media/ideator/Projects/AI Agents/Hephaestus/crates/hephaestus)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.38s
+     Running tests/architecture_concurrent_execution.rs (target/debug/deps/architecture_concurrent_execution-469adfbe231a9049)
+
+running 1 test
+test s3_recovery_cancel_intent_race_never_requeues_dispatched_work ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 7 filtered out; finished in 0.00s
+
+EXIT=0

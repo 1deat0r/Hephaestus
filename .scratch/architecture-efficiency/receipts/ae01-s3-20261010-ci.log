@@ -1,0 +1,1262 @@
+cargo fmt --all -- --check
+cargo clippy --workspace --all-targets -- -D warnings
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.29s
+cargo test --workspace
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.16s
+     Running unittests src/lib.rs (target/debug/deps/hephaestus-a505b4852744ea30)
+
+running 26 tests
+test sandbox::launch::tests::prlimit_args_carry_every_bound ... ok
+test budget::tests::sums_are_bounded_by_the_limit_through_cycles ... ok
+test operations::replay::tests::corrupt_order_beats_every_other_interpretation ... ok
+test operations::replay::tests::unreadable_receipt_payload_never_downgrades_to_requeueable ... ok
+test budget::tests::boundary_limit_fits_the_integer_type ... ok
+test budget::tests::currency_pattern_is_enforced_on_the_limit ... ok
+test operations::replay::tests::fold_counts_unknown_lifecycle_types_without_panicking ... ok
+test ledger::event_ledger::tests::sequences_advance_per_mission_and_report_the_line ... ok
+test ledger::event_ledger::tests::split_keeps_offsets_and_newlines ... ok
+test budget::tests::refusals_leave_state_untouched ... ok
+test sandbox::launch::tests::argv_builder_isolation_invariants ... ok
+test scheduler::dag::tests::reachability_follows_dependency_edges ... ok
+test security::grant::destination_facet_maps_contract_shapes ... ok
+test security::grant::tests::cost_cap_boundaries ... ok
+test security::grant::tests::interval_requires_two_ordered_timestamps ... ok
+test scheduler::dag::tests::kahn_reports_the_leftover_as_cycle_members ... ok
+test scheduler::core::tests::wave_builder_enforces_exclusivity_both_directions ... ok
+test security::grant::tests::malformed_cost_never_authorizes ... ok
+test scheduler::core::tests::wave_builder_respects_max_in_flight_and_resource_capacity ... ok
+test security::grant::tests::policy_chain_and_refs ... ok
+test security::grant::tests::ref_pair_requires_the_exact_ref_shape ... ok
+test security::grant::tests::subset_and_destination_facets ... ok
+test security::grant::tests::window_edges_are_exactly_the_contract ... ok
+test tests::skeleton_links_and_tests_run ... ok
+test sandbox::launch::tests::rss_sampler_reads_zero_for_a_dead_pid ... ok
+test sandbox::launch::tests::rss_sampler_reads_a_live_process ... ok
+
+test result: ok. 26 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running unittests src/main.rs (target/debug/deps/hephaestus-c15eb5394c38b180)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/acceleration_eval.rs (target/debug/deps/acceleration_eval-4e9e0fe6216fdec4)
+
+running 8 tests
+test at_083_full_reconstruction_alone_without_justification_is_refused ... ok
+test at_083_using_the_stronger_comparator_satisfies_review ... ok
+test six_mechanism_kinds_typed ... ok
+test absent_infrastructure_is_not_evaluable_not_failure ... ok
+test at_083_a_justified_exclusion_satisfies_review_and_carries_the_reason ... ok
+test matched_ablation_enforces_identical_envelopes ... ok
+test promoted_requires_value_guardrails_and_disablability ... ok
+test twin_run_byte_identical ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/advisory_provider.rs (target/debug/deps/advisory_provider-ffd673998ea66461)
+
+running 7 tests
+test calibration_abstention_rejection_measured_from_known_outcomes ... ok
+test control_authority_attestation ... ok
+test null_provider_always_abstains_core_runs_without_it ... ok
+test empty_fixtures_yield_not_measured_not_zeros ... ok
+test provider_identity_labels_official_vs_third_party ... ok
+test recommendation_types_distinct ... ok
+test twin_run_byte_identical ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/amendment_gates.rs (target/debug/deps/amendment_gates-913a1e589fce162c)
+
+running 5 tests
+test challenger_evaluation_requires_fresh_or_qualified_holdout ... ok
+test exposure_is_monotonic ... ok
+test migration_requires_declared_gates_and_preserves_identity ... ok
+test twin_run_byte_identical ... ok
+test family_binding_requires_lineage_qualification_and_allocation ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/approval_deny.rs (target/debug/deps/approval_deny-554be484811bae2d)
+
+running 8 tests
+test short_or_empty_key_material_is_rejected ... ok
+test malformed_tags_fail_closed ... ok
+test wrong_key_denies ... ok
+test approve_then_verify_round_trips ... ok
+test bare_content_hash_never_verifies_as_approval ... ok
+test tampered_payload_denies ... ok
+test approval_is_deterministic ... ok
+test manifest_approvals_use_canonical_json ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/architecture_concurrent_execution.rs (target/debug/deps/architecture_concurrent_execution-469adfbe231a9049)
+
+running 13 tests
+test s1_contract_bounded_submission_admits_below_and_refuses_above ... ok
+test s1_contract_cancellation_signals_and_ambiguous_reasons_default ... ok
+test s1_contract_completion_identities_separate_retries_from_duplicates ... ok
+test s2_dispatch_budget_refusal_never_reaches_the_executor ... ok
+test s2_dispatch_replay_is_stable_across_runs ... ok
+test s3_recovery_cancel_before_dispatch_never_touches_budget ... ok
+test s3_recovery_cancel_intent_race_never_requeues_dispatched_work ... ok
+test s3_recovery_unresolved_cost_applies_once_over_stale_hold ... ok
+test s3_recovery_duplicate_completion_records_one_unresolved_cost ... ok
+test s3_recovery_cancel_race_settles_each_hold_exactly_once ... ok
+test s3_recovery_crash_replay_classifies_each_operation_once ... ok
+test s2_dispatch_child_runs_before_unrelated_completion ... ok
+test s2_dispatch_independent_tasks_overlap_within_capacity ... ok
+
+test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s
+
+     Running tests/architecture_resource_admission.rs (target/debug/deps/architecture_resource_admission-01a6270e9affd8e7)
+
+running 10 tests
+test s2_admission_queue_over_bound_refused_before_dispatch ... ok
+test s1_envelope_oversize_claims_refused_at_admission ... ok
+test s2_admission_queue_bytes_drain_with_dispatch ... ok
+test s1_envelope_zero_memory_keeps_cpu_only_admission ... ok
+test s2_admission_queue_at_bound_dispatches ... ok
+test s1_envelope_memory_claims_split_waves_before_dispatch ... ok
+test s2_admission_reservations_release_exactly_once ... ok
+test s3_limits_clean_exit_carries_no_violation ... ok
+test s3_limits_measured_peak_stays_under_limit ... ok
+test s3_limits_memory_hog_dies_with_receipts ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.07s
+
+     Running tests/artifact_identity.rs (target/debug/deps/artifact_identity-bd5f3466bf8c1b10)
+
+running 4 tests
+test malformed_digests_are_rejected ... ok
+test valid_digest_parses ... ok
+test digest_of_bytes_matches_known_sha256 ... ok
+test different_bytes_different_identity ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/backend_adapter.rs (target/debug/deps/backend_adapter-3875b3c5e51069f7)
+
+running 7 tests
+test cancellation_states ... ok
+test contract_check_covers_all_clauses ... ok
+test dispatch_executes_and_records_durable_receipt ... ok
+test replay_digest_verified_and_mismatch_refused ... ok
+test policy_and_budget_refusals_named ... ok
+test tachyon_blocked_no_compatibility_claim ... ok
+test twin_run_byte_identical ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/budget_ledger.rs (target/debug/deps/budget_ledger-bf455cd3231c1c6c)
+
+running 11 tests
+test commit_converts_exactly_and_denies_overage ... ok
+test reserve_respects_unresolved_holds ... ok
+test unknown_price_over_available_is_refused_not_silently_negative ... ok
+test settling_more_than_available_is_refused_and_keeps_the_entry ... ok
+test release_returns_capacity_and_unknown_ids_are_not_found ... ok
+test reserve_is_transactional_and_refuses_without_mutation ... ok
+test reconcile_settles_exactly_once_and_never_duplicates ... ok
+test identical_call_sequences_yield_identical_totals ... ok
+test new_fixes_currency_and_read_model_starts_at_limit ... ok
+test unknown_prices_are_explicit_entries_never_zeros ... ok
+test concurrent_reservations_never_oversubscribe ... ok
+
+test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/capability_grant.rs (target/debug/deps/capability_grant-14c8c8f652ef09ab)
+
+running 6 tests
+test mint_rejects_contract_violations ... ok
+test mint_binds_every_facet_and_is_approved ... ok
+test mint_rejects_empty_or_reversed_window ... ok
+test revoke_transitions_state_and_surfaces_in_the_contract ... ok
+test from_contract_also_rejects_invalid_grants ... ok
+test contract_round_trip_is_lossless ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests/champion_reuse.rs (target/debug/deps/champion_reuse-d919766fa874809f)
+
+running 3 tests
+test r119_disqualified_challengers_stay_undeployed ... ok
+test proposal_edge_refuses_unseeded_and_self_budgeted_candidates ... ok
+test r119_full_loop_later_missions_use_the_persisted_champion ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests/cli.rs (target/debug/deps/cli-72bf3096199a10a6)
+
+running 10 tests
+test unknown_subcommand_exits_two_with_usage_on_stderr ... ok
+test help_documents_both_subcommands ... ok
+test run_refuses_a_non_empty_state_dir ... ok
+test recover_on_missing_state_exits_one ... ok
+test malformed_state_dir_arguments_exit_two ... ok
+test canary_watch_stops_the_breached_rollout_with_a_rollback_receipt ... ok
+test mission_run_prints_byte_identical_receipts_twice ... ok
+test fixture_run_exits_zero_and_reports_the_pillar_signals ... ok
+test run_then_recover_round_trips_and_proves_all_four_pillars ... ok
+test twin_fresh_runs_are_byte_identical ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+     Running tests/containment_races.rs (target/debug/deps/containment_races-a354e65d92073ffa)
+
+running 5 tests
+test completed_before_cancel_is_not_fabricated_undone ... ok
+test events_from_both_sequences_preserved_in_order ... ok
+test revocation_stops_in_flight_dispatch_safely ... ok
+test unknown_dispatch_refused ... ok
+test twin_run_byte_identical ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/contracts.rs (target/debug/deps/contracts-1d6623ae9dba1845)
+
+running 12 tests
+test missing_envelope_fields_are_malformed ... ok
+test unsupported_schema_versions_are_rejected_not_guessed ... ok
+test unknown_kind_is_rejected ... ok
+test unknown_enum_member_is_rejected ... ok
+test schema_oracle_rejects_an_unknown_field ... ok
+test schema_oracle_rejects_a_missing_required_field ... ok
+test date_time_format_is_enforced ... ok
+test string_pattern_is_enforced ... ok
+test parse_bundle_json_parses_all_records ... ok
+test const_boolean_false_is_enforced_by_contract_validation ... ok
+test round_trip_example_bundle ... ok
+test round_trip_covers_all_18_record_kinds ... ok
+
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.40s
+
+     Running tests/corpus_edges.rs (target/debug/deps/corpus_edges-12e2f02d411ec7fd)
+
+running 5 tests
+test edges_link_evidence_to_spans ... ok
+test correction_supersedes_without_mutating ... ok
+test contradicting_origins_tally_separately ... ok
+test tally_counts_distinct_origins_once ... ok
+test quarantine_invalidates_edges_and_excludes_views ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/corpus_ingest.rs (target/debug/deps/corpus_ingest-be06005d684845d7)
+
+running 5 tests
+test ingest_captures_bytes_and_hash ... ok
+test exact_span_verifies_tampered_span_fails ... ok
+test twin_ingest_is_byte_identical ... ok
+test spans_verify_against_capture_not_live_files ... ok
+test adapter_reads_real_files_through_the_same_path ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/corpus_review.rs (target/debug/deps/corpus_review-9b19557ccbebd855)
+
+running 8 tests
+test parser_identity_is_stored ... ok
+test transforms_replay_against_captured_bytes ... ok
+test trim_transform_replays ... ok
+test coverage_reports_inaccessible_as_zero ... ok
+test all_four_edge_types_link ... ok
+test ties_break_by_source_then_offset ... ok
+test search_spans_index_raw_bytes ... ok
+test supersedes_points_at_the_source_id ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/corpus_search.rs (target/debug/deps/corpus_search-3b503567d8da0907)
+
+running 6 tests
+test corpus_coverage_counts_are_exact ... ok
+test empty_results_stay_empty_with_coverage ... ok
+test query_coverage_counts_are_exact ... ok
+test search_ranks_by_token_overlap ... ok
+test search_is_deterministic ... ok
+test views_rebuild_from_captured_bytes_alone ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/crash_reconciliation.rs (target/debug/deps/crash_reconciliation-3282e6d3cb10125c)
+
+running 4 tests
+test canary_guardrail_breach_names_the_indicator_and_stops_the_rollout ... ok
+test corrupt_ledger_refuses_recovery_instead_of_silently_empting ... ok
+test recovery_reconstructs_state_and_notes_a_stale_temp_file ... ok
+test an_interrupted_deployment_reconciles_exactly_once ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/digest_conformance.rs (target/debug/deps/digest_conformance-568dce88f13fd607)
+
+running 2 tests
+test non_finite_numbers_are_rejected ... ok
+test rust_digests_match_python_vectors ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests/discovery_pressure_points.rs (target/debug/deps/discovery_pressure_points-eda034d8b9bd4607)
+
+running 19 tests
+test polished_unevidenced_candidate_stays_speculative ... ok
+test no_bottleneck_emits_nothing ... ok
+test capability_without_constraint_account_is_rejected ... ok
+test bare_counter_movement_without_coupling_is_rejected ... ok
+test missing_prediction_is_rejected ... ok
+test hidden_bottleneck_becomes_cited_opportunity ... ok
+test single_failure_is_not_a_pattern ... ok
+test recurring_failures_form_one_pattern_opportunity ... ok
+test genuine_discrepancy_becomes_anomaly_opportunity_with_uncertainty ... ok
+test unevidenced_trace_records_are_not_bottleneck_sources ... ok
+test coupled_counter_movement_becomes_tradeoff_opportunity ... ok
+test incomparable_conditions_are_rejected ... ok
+test unit_mismatch_is_rejected_not_emitted ... ok
+test declared_assumption_becomes_opportunity_with_uncertainty ... ok
+test evidence_backed_validity_tracks_evidence_not_narrative ... ok
+test all_six_operators_wired_through_analyze ... ok
+test verified_capability_with_constraint_account_becomes_opportunity ... ok
+test within_uncertainty_discrepancy_is_not_an_anomaly ... ok
+test twin_runs_byte_identical ... ok
+
+test result: ok. 19 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/docs_domain_pack.rs (target/debug/deps/docs_domain_pack-0f870667dacdaa8c)
+
+running 3 tests
+test docs_pack_qualifies_with_independent_verifier ... ok
+test docs_pack_refuses_self_unqualified_oracle_and_unbounded_claims ... ok
+test twin_qualifications_are_byte_identical ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/domain_packs.rs (target/debug/deps/domain_packs-1e4c5a793dbc64e6)
+
+running 4 tests
+test execution_class_separation ... ok
+test measurement_units_and_simulator_validity ... ok
+test qualification_refuses_self_and_unqualified_oracle ... ok
+test twin_run_byte_identical ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/domain_verifier.rs (target/debug/deps/domain_verifier-50fe8100c0ebd7ea)
+
+running 4 tests
+test at063_unknown_version_and_missing_reference_stable_codes ... ok
+test at062_no_provider_leak_and_explicit_unsupported ... ok
+test twin_run_byte_identical_rejections ... ok
+test at061_contradictory_records_rejected ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/dossier_export.rs (target/debug/deps/dossier_export-5ca337b02894a4f3)
+
+running 9 tests
+test at_092_an_unclassified_mixed_bundle_is_refused_by_record ... ok
+test capture_binds_raw_data_and_quantity_costs ... ok
+test export_gate_refusals_named ... ok
+test reproduce_typed_outcomes ... ok
+test at_092_a_classified_mixed_bundle_exports_with_per_record_facts ... ok
+test negative_dossier_distinguishes_five_kinds ... ok
+test at_082_a_measured_label_without_receipt_is_refused ... ok
+test lineage_recorded_and_export_twin_identical ... ok
+test at_082_packaged_example_exports_with_unmeasured_synthetic_label ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/e2e_m2.rs (target/debug/deps/e2e_m2-e281ec18f5b9c1dc)
+
+running 1 test
+test e2e_m2_goal_reaches_a_test_ready_hypothesis_on_hidden_world_data ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests/e2e_m3.rs (target/debug/deps/e2e_m3-e5e3aa7849116f03)
+
+running 2 tests
+test e2e_m3_contradicted_result_exports_as_an_honest_negative ... ok
+test e2e_m3_supported_path_exports_a_measured_dossier ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/e2e_real_corpus.rs (target/debug/deps/e2e_real_corpus-4ec8f2cea6643acb)
+
+running 3 tests
+test twin_missions_are_byte_identical ... ok
+test grounded_records_yield_one_evidence_backed_opportunity ... ok
+test real_corpus_ingest_covers_the_fixed_doc_list ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests/eval_suite.rs (target/debug/deps/eval_suite-781f40edca258585)
+
+running 7 tests
+test at_073_the_benchmark_refuses_to_run_without_supplied_hypotheses ... ok
+test result_fields_stay_separate ... ok
+test single_ingredient_ablations ... ok
+test at_073_the_generator_is_evaluated_on_independently_originated_inputs ... ok
+test twin_run_byte_identical ... ok
+test unmatched_envelope_named_per_arm_and_resource ... ok
+test four_baseline_arms_defined_and_matched ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/evaluator_access.rs (target/debug/deps/evaluator_access-8da48de7390c7a1c)
+
+running 4 tests
+test control_plane_manifest_has_no_evaluator_dependency ... ok
+test evaluator_corpus_is_not_shipped_with_the_control_plane ... ok
+test resolved_dependency_graph_has_no_evaluator_edge ... ok
+test control_plane_source_never_names_the_evaluator ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/event_ledger.rs (target/debug/deps/event_ledger-2c08b8fdbb9f4750)
+
+running 19 tests
+test malformed_digest_string_is_refused ... ok
+test fresh_staging_entries_are_protected_from_gc ... ok
+test crash_before_commit_leaves_only_sweepable_staging ... ok
+test staged_bytes_are_addressable_only_after_commit ... ok
+test reads_fail_loudly_on_digest_mismatch ... ok
+test invalid_event_is_refused_and_nothing_is_written ... ok
+test appended_event_survives_reopen ... ok
+test crash_after_commit_before_event_leaves_safe_orphan ... ok
+test non_contiguous_sequence_is_refused ... ok
+test unparseable_middle_line_is_reported_with_its_line_number ... ok
+test chain_links_previous_line_and_tamper_fails_reopen ... ok
+test complete_final_line_without_newline_is_normalized_on_open ... ok
+test projection_is_written_only_after_the_event_is_durable ... ok
+test open_detects_sequence_gap_left_in_the_file ... ok
+test failed_write_does_not_consume_a_sequence ... ok
+test events_after_supports_cursor_reads ... ok
+test full_story_survives_death_at_every_persistence_boundary ... ok
+test torn_trailing_line_is_trimmed_and_history_survives ... ok
+test projection_rebuilds_byte_identically_after_deletion ... ok
+
+test result: ok. 19 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests/evidence_class.rs (target/debug/deps/evidence_class-312c01e7c44221c3)
+
+running 3 tests
+test at_007_a_grounded_observation_attests ... ok
+test at_007_repetition_never_promotes_a_model_statement_to_empirical_evidence ... ok
+test at_007_the_four_kinds_are_pairwise_distinct ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/evidence_lifecycle.rs (target/debug/deps/evidence_lifecycle-da6a70a3ff851189)
+
+running 7 tests
+test reactivation_references_original_failure ... ok
+test transition_binds_snapshot_and_lineage ... ok
+test legal_and_illegal_hypothesis_transitions ... ok
+test legal_and_illegal_opportunity_transitions ... ok
+test queue_refuses_without_budget ... ok
+test invalidation_traverses_dependents_append_only ... ok
+test twin_run_byte_identical ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/experiment_compiler.rs (target/debug/deps/experiment_compiler-99f1416acec78841)
+
+running 8 tests
+test blockers_are_precise_never_imagined ... ok
+test digest_mismatch_rejected ... ok
+test compile_binds_all_section_255_fields ... ok
+test indistinguishable_predictions_flagged ... ok
+test missing_analysis_or_stopping_rule_fails_compilation ... ok
+test matrix_maps_three_prediction_targets ... ok
+test validate_names_completeness_denials ... ok
+test twin_run_byte_identical ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/fixture_campaign.rs (target/debug/deps/fixture_campaign-8ed0724daebb5291)
+
+running 2 tests
+test campaign_runs_twenty_missions_with_variance_from_actual_runs ... ok
+test twin_batches_are_byte_identical ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests/genesis_registry.rs (target/debug/deps/genesis_registry-625135bad1296911)
+
+running 18 tests
+test placeholder_language_is_refused_at_construction ... ok
+test genuine_mechanism_constructs_and_carries_all_fields ... ok
+test failure_resurrection_requires_changed_boundary_conditions ... ok
+test contradiction_resolution_with_axis_emits_record ... ok
+test composition_rejects_unit_or_interface_mismatch ... ok
+test failure_resurrection_with_changed_conditions_emits_record ... ok
+test composition_compatible_parts_emit_record ... ok
+test abduction_single_explanation_is_rejected ... ok
+test incompatible_regime_transfer_is_flagged_with_boundary_reasons ... ok
+test contradiction_resolution_requires_named_decoupling_axis ... ok
+test low_plausibility_valid_mechanism_stays_eligible ... ok
+test structural_transfer_requires_relations_not_vocabulary ... ok
+test subtraction_without_outcome_is_rejected ... ok
+test apply_all_sweep_exercises_all_six_operators ... ok
+test structural_transfer_with_relations_carries_broken_relations_and_boundaries ... ok
+test abduction_with_competing_explanations_emits_mechanism ... ok
+test subtraction_states_exactly_one_three_way_outcome ... ok
+test registry_sweep_is_deterministic_and_bounded ... ok
+
+test result: ok. 18 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/grant_deny.rs (target/debug/deps/grant_deny-43c5810c89ea9d72)
+
+running 18 tests
+test reversed_grant_interval_is_invalid ... ok
+test untrusted_grant_denies ... ok
+test allowlist_without_authenticated_hash_denies ... ok
+test missing_budget_denies ... ok
+test cost_above_grant_cap_denies ... ok
+test artifact_mismatch_denies ... ok
+test missing_clock_denies_time_bounded_authorization ... ok
+test wrong_mission_binding_denies ... ok
+test expired_grant_denies ... ok
+test destination_outside_allowlist_denies ... ok
+test operation_mismatch_denies ... ok
+test consistent_grant_authorizes ... ok
+test stale_ctx_policy_denies ... ok
+test unapproved_state_denies ... ok
+test ungranted_capability_denies ... ok
+test missing_grant_ref_denies ... ok
+test not_yet_issued_grant_denies ... ok
+test currency_mismatch_denies ... ok
+
+test result: ok. 18 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/guardrail_classes.rs (target/debug/deps/guardrail_classes-8c0fb5275ab3b51b)
+
+running 4 tests
+test complete_declaration_passes ... ok
+test evaluation_semantics_unchanged ... ok
+test missing_classes_named_per_class ... ok
+test twin_run_byte_identical ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/hypothesis_compiler.rs (target/debug/deps/hypothesis_compiler-9190ef1c8c3dce99)
+
+running 12 tests
+test compile_produces_all_spec_fields ... ok
+test provenanced_threshold_is_accepted ... ok
+test no_discriminator_stays_exploratory_never_deleted ... ok
+test complete_hypothesis_validates_test_ready ... ok
+test self_fulfilling_metric_is_denied ... ok
+test changed_mechanism_blocks_silent_inheritance ... ok
+test changed_falsifier_or_endpoint_or_boundary_blocks_too ... ok
+test stripped_falsifiers_or_competitors_denies_test_ready ... ok
+test revise_mints_new_version_with_lineage ... ok
+test unprovenanced_threshold_is_returned_for_completion ... ok
+test revise_requires_revalidation_and_twin_run_identical ... ok
+test twin_run_compile_byte_identical ... ok
+
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/import_closure.rs (target/debug/deps/import_closure-608c7d357c3aebfa)
+
+running 6 tests
+test aliases_and_crate_paths_resolve ... ok
+test unsupported_resolution_blocks_without_omission ... ok
+test stale_and_missing_named ... ok
+test twin_run_byte_identical ... ok
+test oracle_disagreement_conservative_block ... ok
+test cycles_detected_without_looping ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/learning_reuse_gates.rs (target/debug/deps/learning_reuse_gates-042caabfc4c15918)
+
+running 4 tests
+test altered_source_becomes_stale_and_is_not_reusable ... ok
+test history_survives_invalidation ... ok
+test quarantine_blocks_reuse_and_cannot_flip_back ... ok
+test twin_run_byte_identical ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/memory_quarantine.rs (target/debug/deps/memory_quarantine-88ae36136e619390)
+
+running 4 tests
+test audit_history_survives_invalidation ... ok
+test quarantine_propagates_to_dependent_artifacts_and_labels ... ok
+test twin_run_byte_identical ... ok
+test unauthorized_behavioral_memory_write_denied ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/method_registry.rs (target/debug/deps/method_registry-cf12fa7a95948913)
+
+running 8 tests
+test bonferroni_splits_equally ... ok
+test registry_rejects_missing_identity_and_bad_allocations ... ok
+test mean_difference_interval_matches_a_hand_computed_fixture ... ok
+test zero_failure_bound_matches_campaign_example ... ok
+test registry_binds_all_spec_fields_and_rejects_duplicates ... ok
+test preregistration_refusals_are_named ... ok
+test complete_manifest_freezes_immutable_preregistration ... ok
+test twin_run_byte_identical ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/migrate.rs (target/debug/deps/migrate-60a87e6352639ef5)
+
+running 6 tests
+test bundle_without_records_is_malformed ... ok
+test missing_or_non_string_version_is_malformed ... ok
+test v1_0_is_rejected_not_guessed ... ok
+test migrated_record_with_unknown_kind_fails_contract_validation ... ok
+test unknown_versions_are_unsupported ... ok
+test v1_1_bundle_migrates_to_current_and_only_retags ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+
+     Running tests/mission_auth.rs (target/debug/deps/mission_auth-33a15e9979f128d2)
+
+running 7 tests
+test unsupervised_risk_requests_authorization ... ok
+test missing_value_frame_fails_closed ... ok
+test sensitive_application_is_never_silent ... ok
+test reversible_ambiguity_becomes_explicit_assumption ... ok
+test unapproved_spending_requests_authorization ... ok
+test irreversible_operation_requests_authorization ... ok
+test caller_hypothesis_recorded_as_provenance_never_claim ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/mission_compile.rs (target/debug/deps/mission_compile-2f5359b9f8bf637c)
+
+running 4 tests
+test actuation_goal_never_compiles_to_mission ... ok
+test broad_goal_compiles_without_hypothesis ... ok
+test four_profiles_bind_distinct_permissions ... ok
+test compile_is_deterministic ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/mission_completion.rs (target/debug/deps/mission_completion-a92c0ab8738bc037)
+
+running 3 tests
+test at_091_malformed_evidence_refs_are_refused_by_name ... ok
+test at_091_unanimous_approval_without_usable_evidence_cannot_complete ... ok
+test at_091_well_formed_evidence_completes_and_carries_every_ref ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/mission_review.rs (target/debug/deps/mission_review-c1b996b807c19d59)
+
+running 9 tests
+test compile_accumulates_every_matching_request ... ok
+test guardrails_block_metric_gaming ... ok
+test plain_goal_gets_only_the_terminology_default ... ok
+test assumption_variants_come_from_goal_text ... ok
+test revise_goal_rescreens_tripwires ... ok
+test mission_carries_the_full_section_4_field_set ... ok
+test forbidden_sets_hold_for_every_profile ... ok
+test destinations_widen_strictly_by_profile ... ok
+test mission_serde_round_trips ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/mission_revise.rs (target/debug/deps/mission_revise-59eea39d5b85b5d1)
+
+running 8 tests
+test requirement_override_keeps_provenance ... ok
+test unknown_price_survives_compile_explicitly ... ok
+test dataset_and_quality_changes_land_in_constraints ... ok
+test envelope_binds_to_budget_ledger ... ok
+test cost_change_updates_envelope_only ... ok
+test goal_change_mints_version_two ... ok
+test unknown_requirement_is_an_error_not_a_guess ... ok
+test revise_is_deterministic ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/multi_objective_archive.rs (target/debug/deps/multi_objective_archive-33c6d581a619d807)
+
+running 5 tests
+test at032_both_candidates_remain ... ok
+test missing_value_defaults_low_no_fabrication ... ok
+test dominated_node_is_evictable ... ok
+test cap_eviction_is_audited_lru_lowest_band ... ok
+test twin_run_byte_identical ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/operations_deny.rs (target/debug/deps/operations_deny-7decf3d69308bea6)
+
+running 19 tests
+test crash_between_store_commit_and_event_leaves_orphan_no_receipt ... ok
+test overlong_operation_tags_are_refused_by_contract_validation ... ok
+test fault_boundary_planned_only_requeues_and_touches_no_budget ... ok
+test planned_is_durable_before_any_dispatch_possibility ... ok
+test fault_boundary_dispatched_without_receipt_becomes_unresolved ... ok
+test cancel_requested_is_recorded_before_the_handle_flips ... ok
+test fault_boundary_cancel_intent_recovers_as_cancelled_not_requeue ... ok
+test fault_boundary_artifact_committed_without_receipt_stays_ambiguous ... ok
+test reopen_continues_monotonic_ids_and_sequences ... ok
+test receipt_payload_lands_in_the_artifact_store ... ok
+test fault_boundary_ambiguous_effect_reconciles_exactly_once ... ok
+test tampered_chain_refuses_replay_entirely ... ok
+test end_to_end_recorder_survives_death_with_audit_history_intact ... ok
+test apply_records_unresolved_exactly_once_and_releases_holds ... ok
+test scheduler_dag_runs_through_recording_executor_with_budget ... ok
+test recording_executor_appends_dispatched_before_delegating ... ok
+test replay_is_deterministic_across_reopens ... ok
+test replay_derives_states_from_events_alone ... ok
+test rule_table_covers_every_state ... ok
+
+test result: ok. 19 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests/pilot_campaigns.rs (target/debug/deps/pilot_campaigns-e3d472bba072529d)
+
+running 7 tests
+test at_084_worker_access_to_a_held_out_workload_manifest_is_denied ... ok
+test partition_conflicts_named ... ok
+test variance_estimated_with_failures_retained ... ok
+test plan_registers_with_preregistration_and_partitions ... ok
+test at_084_the_analysis_retains_the_declared_clustering_unit ... ok
+test confirmation_gate_named_blocks ... ok
+test twin_run_byte_identical ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/policy_engine.rs (target/debug/deps/policy_engine-ed2d670386919ac4)
+
+running 11 tests
+test at_058_a_malicious_paper_ingested_and_retrieved_is_inert_with_no_effect ... ok
+test multi_fault_reasons_come_out_in_fixed_declaration_order ... ok
+test exact_trusted_unexpired_grant_is_allowed ... ok
+test request_and_decision_key_sets_are_pinned ... ok
+test invalid_interval_denies_after_construction_time ... ok
+test fail_closed_on_every_missing_fact ... ok
+test single_facet_mismatch_reports_exactly_that_reason ... ok
+test golden_decision_bytes_are_stable ... ok
+test deny_matrix_reports_one_specific_reason_per_single_fault ... ok
+test engine_and_contract_layer_agree_on_every_shared_facet ... ok
+test decisions_are_reproducible_across_the_whole_matrix ... ok
+
+test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests/prior_art.rs (target/debug/deps/prior_art-939264e4db68139d)
+
+running 10 tests
+test conclusion_enum_is_the_closed_five ... ok
+test chart_refuses_unverified_span ... ok
+test verify_span_passes_on_matching_bytes ... ok
+test stage1_flags_known_rediscovery ... ok
+test verify_span_rejects_mismatched_captured_text ... ok
+test scoped_no_match_never_yields_novelty_language ... ok
+test stage2_produces_near_match_with_difference_account ... ok
+test validated_candidate_requires_verified_chart ... ok
+test redacted_queries_strip_mechanism_tokens ... ok
+test twin_run_byte_identical ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/prototype_worker.rs (target/debug/deps/prototype_worker-55b7de76229894c9)
+
+running 9 tests
+test failing_test_receipt_rejected ... ok
+test protected_targets_rejected_by_name ... ok
+test interface_and_version_checks_with_named_missing_edges ... ok
+test worker_claim_of_unchanged_evaluator_is_not_trust ... ok
+test guardrails_checked_and_named ... ok
+test resource_aggregation_and_cost_accounting ... ok
+test verified_candidate_change_accepted ... ok
+test unverified_receipt_rejected ... ok
+test twin_run_byte_identical ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/realization_gates.rs (target/debug/deps/realization_gates-f672cf53c19a1de1)
+
+running 3 tests
+test at_045_a_positive_prototype_result_never_authorizes_publication ... ok
+test authorizations_are_version_bound_by_subject_digest ... ok
+test authorizations_are_separate_per_act ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/receipt_deny.rs (target/debug/deps/receipt_deny-ce459ea43ca23ee5)
+
+running 12 tests
+test untrusted_receipt_denies_and_stops ... ok
+test altered_bindings_denied_even_with_fresh_trust ... ok
+test consistent_receipt_verifies ... ok
+test missing_guardrail_coverage_denies ... ok
+test non_pass_outcome_denies ... ok
+test unverified_artifact_bytes_denies ... ok
+test wrong_subject_reference_denies ... ok
+test missing_required_artifact_denies ... ok
+test wrong_purpose_denies ... ok
+test policy_comes_from_mission_not_from_receipt ... ok
+test missing_endpoint_coverage_denies ... ok
+test subject_digest_without_receipt_exclusion_denies ... ok
+
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/release_packet.rs (target/debug/deps/release_packet-415b9297c219e403)
+
+running 9 tests
+test at_076_a_measured_claim_without_receipt_or_machine_is_refused ... ok
+test scope_label_defaults_experimental_requires_all_inputs ... ok
+test at_076_a_provisional_p95_target_never_reaches_the_achieved_funnel ... ok
+test at_076_a_fully_pinned_measured_claim_passes_and_is_funneled ... ok
+test five_outcome_classes_and_quantities_only ... ok
+test critical_unresolved_in_scope_blocks ... ok
+test unresolved_questions_stay_visible_not_asserted ... ok
+test uncertainty_required_and_no_universal_field ... ok
+test twin_run_byte_identical ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reproduction_record.rs (target/debug/deps/reproduction_record-610a15c4bedd7e89)
+
+running 4 tests
+test recording_enforces_independence_and_endpoint_registration ... ok
+test negative_and_inconclusive_outcomes_are_first_class ... ok
+test warrant_requires_both_claims_and_first_candidate ... ok
+test twin_run_byte_identical ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/result_interpreter.rs (target/debug/deps/result_interpreter-e93d0f68c0ea8121)
+
+running 7 tests
+test no_proven_true_representation_exists ... ok
+test interval_entirely_above_threshold_supports ... ok
+test interval_entirely_below_contradicts_overlap_inconclusive ... ok
+test noninferiority_uses_lower_bound_vs_negative_margin ... ok
+test guardrails_independent_of_science_dimension ... ok
+test invalid_execution_short_circuits_to_not_assessed ... ok
+test twin_run_byte_identical ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/review_service.rs (target/debug/deps/review_service-341e5fb95840cea3)
+
+running 3 tests
+test at_034_unanimous_approval_never_bypasses_a_deterministic_failure ... ok
+test at_035_evaluator_edit_is_scope_denied_with_an_audit_event ... ok
+test at_036_objections_are_retained_with_dispositions_and_block_advancement ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/sandbox_deny.rs (target/debug/deps/sandbox_deny-b4ca7f69e1301299)
+
+running 17 tests
+test attestation_denies_before_any_spawn ... ok
+test attestation_refuses_host_exposing_binds ... ok
+test undeclared_tools_never_spawn ... ok
+test fork_bomb_stops_at_the_nproc_allowance ... ok
+test dependency_installation_cannot_succeed_without_network ... ok
+test host_environment_never_leaks_inside ... ok
+test path_qualified_declared_tools_normalize_to_basenames ... ok
+test huge_writes_hit_the_fsize_bound ... ok
+test memory_bomb_dies_at_the_declared_bound ... ok
+test dependency_install_failure_has_a_pinned_cause ... ok
+test traversal_cannot_reach_host_bound_trees ... ok
+test subprocess_children_stay_inside_the_network_namespace ... ok
+test only_the_sandbox_python_environment_is_visible ... ok
+test mounts_are_read_only_except_workdir ... ok
+test network_is_unreachable_inside_the_sandbox ... ok
+test wall_timeout_kills_a_runaway ... ok
+test cpu_runaway_dies_at_the_rlimit_within_the_wall_deadline ... ok
+
+test result: ok. 17 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.05s
+
+     Running tests/sandbox_run.rs (target/debug/deps/sandbox_run-c62c5cda33cee12d)
+
+running 11 tests
+test provider_denials_surface_as_failed_tasks ... ok
+test traversal_input_names_are_refused_not_sanitized ... ok
+test total_output_budget_caps_collection ... ok
+test symlinked_outputs_are_refused_wholesale ... ok
+test undeclared_job_tool_is_denied_by_the_worker ... ok
+test failing_tool_surfaces_as_worker_failure ... ok
+test declared_tool_can_publish_an_artifact_file ... ok
+test scheduler_runs_real_sandboxed_work_with_budget_settled ... ok
+test worker_runs_in_sandbox_and_result_json_is_collected ... ok
+test output_caps_truncate_never_crash ... ok
+test sandbox_timeout_maps_to_timed_out_outcome ... ok
+
+test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.73s
+
+     Running tests/scheduler_deny.rs (target/debug/deps/scheduler_deny-93eada7063559800)
+
+running 2 tests
+test valid_linear_and_diamond_dags_validate_clean ... ok
+test cycles_are_named_and_every_other_gap_is_denied ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/scheduler_run.rs (target/debug/deps/scheduler_run-62829224adeab3f4)
+
+running 15 tests
+test cross_currency_costs_are_refused_at_construction ... ok
+test cancellation_prevents_new_reservations_signals_and_cascades ... ok
+test budget_refusal_blocks_dispatch_before_any_executor_call ... ok
+test reserve_happens_before_dispatch_and_success_commits_exactly ... ok
+test timeouts_follow_the_same_retry_rules ... ok
+test cost_mismatch_fails_the_task_and_returns_the_reservation ... ok
+test executor_reported_cancellation_releases_the_reservation ... ok
+test failure_and_unknown_cost_release_or_refuse ... ok
+test mixed_wave_batching_keeps_every_reservation_with_its_own_task ... ok
+test non_idempotent_work_is_attempted_exactly_once ... ok
+test attempt_counts_are_visible_in_the_report ... ok
+test bounded_waves_respect_max_in_flight_resource_units_and_exclusivity ... ok
+test priorities_drain_critical_first_and_runs_are_deterministic ... ok
+test trivial_ready_tasks_are_batched_and_non_trivial_never_are ... ok
+test retries_are_bounded_by_max_attempts_with_visible_attempts ... ok
+
+test result: ok. 15 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/sealed_deny.rs (target/debug/deps/sealed_deny-a050ee6ddc66403a)
+
+running 14 tests
+test exploratory_families_share_no_partition_claim ... ok
+test unresolvable_family_denies ... ok
+test reused_partition_across_families_denies ... ok
+test missing_registration_denies ... ok
+test duplicate_family_query_denies ... ok
+test plan_outside_family_denies ... ok
+test consistent_access_is_permitted ... ok
+test retired_family_denies_reuse ... ok
+test access_before_registration_denies ... ok
+test query_beyond_budget_denies ... ok
+test unsealed_feedback_denies ... ok
+test confirmatory_access_time_must_match_data_opened ... ok
+test confirmatory_access_needs_exactly_one_match ... ok
+test confirmatory_access_requires_external_trust ... ok
+
+test result: ok. 14 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/search_orchestrator.rs (target/debug/deps/search_orchestrator-ba9c965604dfe8c6)
+
+running 10 tests
+test allocation_policy_is_versioned_and_visible ... ok
+test frontier_exhaustion_stops_cleanly ... ok
+test candidate_bound_stops_expansion ... ok
+test endless_paraphrases_stop_with_duplicate_reason ... ok
+test lineage_walks_to_seed ... ok
+test audit_returns_all_rejections_with_reasons ... ok
+test lineage_through_multiple_generations ... ok
+test archived_rejections_carry_node_and_wave ... ok
+test beam_keeps_at_most_width_per_wave_and_archives_rest ... ok
+test twin_run_byte_identical ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/self_improvement.rs (target/debug/deps/self_improvement-3a5cb6a55aa1ef00)
+
+running 7 tests
+test leaked_holdout_and_confounded_challengers_rejected ... ok
+test rejection_classes_undeployed ... ok
+test promotion_succeeds_and_retains_incumbent ... ok
+test rollback_restores_verified_incumbent ... ok
+test self_attestation_and_budget_multiplication_rejected ... ok
+test twin_run_byte_identical ... ok
+test ledger_append_only_and_restart_survives ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/semantic_parity.rs (target/debug/deps/semantic_parity-544535b8ebd1bb7b)
+
+running 28 tests
+test test_incomplete_execution_cannot_support ... ok
+test test_abstention_has_no_selected_choice ... ok
+test test_capability_not_implicitly_granted ... ok
+test test_missing_reference_rejected ... ok
+test test_non_idempotent_blind_retry_rejected ... ok
+test test_confirmatory_registration_required ... ok
+test test_duplicate_version_rejected ... ok
+test test_fixed_sample_requires_n ... ok
+test test_model_calibration_needs_receipt ... ok
+test test_nonfinite_data_rejected ... ok
+test test_optional_stopping_requires_method ... ok
+test test_compiled_blocked_example_is_not_deleted ... ok
+test test_probability_vector_consistency ... ok
+test test_data_access_cannot_precede_registration ... ok
+test test_reversed_interval_rejected ... ok
+test test_task_cap_respects_mission ... ok
+test test_promotion_does_not_ignore_novelty_scope ... ok
+test test_promotion_needs_real_qualifying_result ... ok
+test test_task_cycle_rejected ... ok
+test test_promotion_requires_reproduction ... ok
+test test_unknown_effect_not_dispatched ... ok
+test test_unknown_prediction_rejected ... ok
+test test_test_ready_needs_discriminator ... ok
+test test_unapproved_mission_not_dispatched ... ok
+test test_test_ready_cannot_be_blocked ... ok
+test test_valid_result_requires_receipts ... ok
+test test_model_decision_cannot_be_authoritative ... ok
+test test_example_schema_and_semantics ... ok
+
+test result: ok. 28 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+
+     Running tests/task_contracts.rs (target/debug/deps/task_contracts-69c2ff25629e3dac)
+
+running 4 tests
+test valid_spec_passes_compile ... ok
+test at049_undeclared_tool_and_missing_limits_rejected ... ok
+test at050_conflicting_same_key_rejected_identical_accepted ... ok
+test deterministic_assembly_twin_run ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/traceability.rs (target/debug/deps/traceability-7782eb621695c5fb)
+
+running 17 tests
+test end_to_end_obligation_is_not_m0 ... ok
+test m5_milestone_not_required_for_m0_through_m4_completion ... ok
+test rendered_documents_match_the_committed_files ... ok
+test release_cannot_omit_a_due_gate ... ok
+test current_package_consistent ... ok
+test release_scope_set_must_be_complete ... ok
+test reverse_test_mapping_required ... ok
+test invalid_scope_id_denied ... ok
+test duplicate_ids_detected ... ok
+test release_scope_cannot_lose_contract_coverage ... ok
+test missing_supplement_denied ... ok
+test incomplete_clause_detected ... ok
+test clause_anchor_must_exist ... ok
+test reverse_requirement_mapping_required ... ok
+test generated_text_drift_detected ... ok
+test source_anchor_missing_file_also_denies ... ok
+test positive_and_negative_cases_required ... ok
+
+test result: ok. 17 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s
+
+     Running tests/trigger_canary.rs (target/debug/deps/trigger_canary-46193b3d8c319d4b)
+
+running 3 tests
+test cycles_are_bounded_typed_and_record_no_justified_change ... ok
+test the_monitor_bounds_checks_and_stops_a_breached_rollout ... ok
+test triggers_persist_on_the_ledger_and_empty_subjects_refuse ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/trust_deny.rs (target/debug/deps/trust_deny-07392b8e7b982d87)
+
+running 6 tests
+test trust_context_has_no_deserialization_surface ... ok
+test record_hash_comparison_fails_closed_when_unknown ... ok
+test empty_context_denies_everything ... ok
+test allowlist_membership_alone_is_not_trust ... ok
+test authenticated_hash_must_match_current_bytes ... ok
+test wrong_version_is_not_trust ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/trust_propagation.rs (target/debug/deps/trust_propagation-acc6d7b45bdbed93)
+
+running 4 tests
+test min_of_inputs_no_laundering ... ok
+test ranking_synthetic_below_observed ... ok
+test twin_run_byte_identical ... ok
+test derived_stamp_serializable ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/workspace_core.rs (target/debug/deps/workspace_core-5d25bf51d112e657)
+
+running 6 tests
+test shared_authorization_gates_both_paths_identically ... ok
+test progress_reads_persisted_state_unknown_stays_unknown ... ok
+test intervention_state_rules ... ok
+test event_cursor_recovery ... ok
+test twin_run_byte_identical ... ok
+test compare_and_drill_down ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/yield_accounting.rs (target/debug/deps/yield_accounting-15182fd77f9245e2)
+
+running 4 tests
+test empty_input_all_zeros ... ok
+test four_quantities_separated ... ok
+test uninformative_excluded_from_useful_denominator ... ok
+test twin_run_byte_identical ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/lib.rs (target/debug/deps/synthetic_evaluator-8c81e644b818567c)
+
+running 6 tests
+test tests::different_seeds_produce_different_noise ... ok
+test tests::grid_covers_the_domain ... ok
+test tests::regime_table_selects_piecewise_truth ... ok
+test tests::sampling_is_bit_deterministic ... ok
+test tests::observations_serialize_to_input_output_only ... ok
+test tests::gaussian_noise_is_centered_enough_for_fixtures ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/corpus_probes.rs (target/debug/deps/corpus_probes-cc3d3ecc2ef90e53)
+
+running 5 tests
+test verdicts_round_trip_through_json ... ok
+test corpus_covers_all_six_scenario_classes ... ok
+test every_probe_lands_on_its_expected_hidden_verdict ... ok
+test every_world_reproduces_its_observation_receipt ... ok
+test corpus_json_never_carries_probe_verdicts_into_observations ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests/e2e_trace_fixture.rs (target/debug/deps/e2e_trace_fixture-dcd198608dfc39bc)
+
+running 1 test
+test e2e_trace_fixture_matches_the_hidden_worlds ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/evaluate_scenarios.rs (target/debug/deps/evaluate_scenarios-a3428b7f0f409e58)
+
+running 8 tests
+test empty_observations_never_confirm ... ok
+test impossible_world_reports_infeasible_not_mechanism_failure ... ok
+test confounder_rejects_causal_claim_despite_perfect_fit ... ok
+test false_mechanism_rejects_beautiful_but_wrong_fit ... ok
+test true_mechanism_confirms_exact_candidate ... ok
+test ambiguous_world_is_inconclusive_not_rejected ... ok
+test true_mechanism_rejects_lookalike_and_far_params ... ok
+test changed_boundary_reports_out_of_scope ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests hephaestus
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests synthetic_evaluator
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+PYTHONPATH=python .venv/bin/python -m unittest discover -s python/tests -t python -v
+test_package_imports (tests.test_smoke.TestWorkerSkeleton.test_package_imports) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+OK
+.venv/bin/python tools/check_manifest_coverage.py
+manifest-check: ok (tracked=712, manifest=81, allowlisted=631, hashes verify)
+.venv/bin/python tools/check_requirement_citations.py
+requirement-citations: ok (119 requirements, 118 cited in code scope, 1 reasoned allowlist entries)
+.venv/bin/python tools/check_repo_about.py
+about: ok (241 chars, 6 topics, verified 2026-10-03, README Hephaestus v1.2)
+.venv/bin/python tools/check_ticket_status.py --format
+ticket-status: ok (132 issue files; statuses valid; open tickets declare Verify+Covers; four-level nesting holds (small<=8, micro<=6, nano<=4, per-level Status/Verify, atomic markers); scope-ID caps hold; open features cover every spec AC)
+.venv/bin/python tools/check_md_links.py
+md-links: ok (380 md files, 0 baseline entries)
+.venv/bin/python tools/check_readme_fences.py
+readme-fences: ok
+.venv/bin/python tools/report_unreferenced.py
+report-unreferenced: 71 tracked file(s) not named by any markdown document (advisory — never fails):
+  .scratch/architecture-efficiency/receipts/ae01-s2-green-focused.log
+  .scratch/architecture-efficiency/receipts/ae01-s2-regressions.log
+  .scratch/architecture-efficiency/receipts/ae01-s2-verify-run.log
+  .scratch/architecture-efficiency/receipts/ae01-s3-green-e1.log
+  .scratch/architecture-efficiency/receipts/ae01-s3-green.log
+  crates/hephaestus/src/campaign.rs
+  crates/hephaestus/src/orchestrator/archive.rs
+  crates/hephaestus/src/security/digest.rs
+  crates/hephaestus/src/security/receipt.rs
+  crates/hephaestus/src/security/trust.rs
+  crates/hephaestus/src/selfimprove/learning_gate.rs
+  crates/hephaestus/tests/amendment_gates.rs
+  crates/hephaestus/tests/containment_races.rs
+  crates/hephaestus/tests/corpus_review.rs
+  crates/hephaestus/tests/digest_conformance.rs
+  crates/hephaestus/tests/docs_domain_pack.rs
+  crates/hephaestus/tests/domain_packs.rs
+  crates/hephaestus/tests/e2e_real_corpus.rs
+  crates/hephaestus/tests/experiment_compiler.rs
+  crates/hephaestus/tests/fixture_campaign.rs
+  crates/hephaestus/tests/fixtures/digest-vectors.json
+  crates/hephaestus/tests/fixtures/qualification-bundle.json
+  crates/hephaestus/tests/guardrail_classes.rs
+  crates/hephaestus/tests/learning_reuse_gates.rs
+  crates/hephaestus/tests/method_registry.rs
+  crates/hephaestus/tests/multi_objective_archive.rs
+  crates/hephaestus/tests/prior_art.rs
+  crates/hephaestus/tests/result_interpreter.rs
+  crates/hephaestus/tests/sealed_deny.rs
+  crates/hephaestus/tests/task_contracts.rs
+  crates/hephaestus/tests/trust_deny.rs
+  crates/hephaestus/tests/workspace_core.rs
+  crates/hephaestus/tests/yield_accounting.rs
+  crates/synthetic-evaluator/corpus/world-ambiguous.json
+  crates/synthetic-evaluator/corpus/world-changed-boundary.json
+  crates/synthetic-evaluator/corpus/world-confounder.json
+  crates/synthetic-evaluator/corpus/world-false-mechanism.json
+  crates/synthetic-evaluator/corpus/world-impossible.json
+  crates/synthetic-evaluator/corpus/world-true-mechanism.json
+  crates/synthetic-evaluator/examples/corpus_receipt.rs
+  crates/synthetic-evaluator/src/corpus.rs
+  crates/synthetic-evaluator/src/evaluate.rs
+  crates/synthetic-evaluator/src/rng.rs
+  crates/synthetic-evaluator/tests/corpus_probes.rs
+  crates/synthetic-evaluator/tests/evaluate_scenarios.rs
+  examples/analysis-plan.txt
+  examples/candidate-description.txt
+  examples/canonicalization-vectors.json
+  examples/evaluator-manifest.txt
+  examples/fixture-source.txt
+  examples/software-mission.v1.0.json
+  examples/software-mission.v1.1.json
+  python/pyproject.toml
+  python/tests/test_smoke.py
+  rust-toolchain.toml
+  schemas/contracts.v1.0.schema.json
+  schemas/contracts.v1.1.schema.json
+  tests/qualification_fixtures.py
+  tests/test_digest_vectors.py
+  tests/test_reference_contracts.py
+  tests/test_self_improvement.py
+  tests/test_traceability.py
+  tools/check_links_online.py
+  tools/check_readme_fences.py
+  tools/generate_contracts_rs.py
+  tools/md_links_baseline.txt
+  tools/report_unreferenced.py
+  validation/historical-review-probes.json
+  validation/pdf-contact-sheet.png
+  validation/v1.0/test_reference_contracts.py
+  validation/v1.1/pdf-contact-sheet.png
+.venv/bin/python tools/gate_seal.py --check
+gate-seal: ok (26 gate files sealed)
+python3 tools/generate_contracts_rs.py --check
+generated.rs is up to date
+.venv/bin/python tools/verify_package.py
+{
+  "status": "PASS",
+  "master_sections": 31,
+  "requirements": 119,
+  "runtime_acceptance_specs": 119,
+  "principal_record_schemas": 18,
+  "schema_valid_example_records": 13,
+  "semantic_validation_errors": 0,
+  "errors": [],
+  "limitations": "Package/reference checks only. No invention runtime, security boundary, scientific study, or runtime acceptance test was executed."
+}
+.venv/bin/python -m unittest discover -s tests
+.......................................................................................................
+----------------------------------------------------------------------
+Ran 103 tests in 0.429s
+
+OK
+hooks-check: ok

@@ -19,9 +19,12 @@ pub struct RetryPosture {
 /// explicit second step (grill Q6).
 #[derive(Debug, Clone, Default)]
 pub struct RecoveryPlan {
-    /// Safe to run again (Planned, or Ambiguous within retry budget).
+    /// Safe to run again (Planned, or Ambiguous within retry budget and
+    /// with no durable cancel intent).
     pub requeue: Vec<String>,
-    /// Needs budget reconciliation (ambiguous outside retry budget).
+    /// Needs budget reconciliation (ambiguous outside retry budget, or
+    /// carrying durable cancel intent — an in-flight effect is reconciled,
+    /// never requeued: MASTER_SPEC:375).
     pub unresolved: Vec<String>,
     /// Receipt-backed terminal states (Succeeded/Failed/TimedOut).
     pub terminal: Vec<String>,
@@ -58,9 +61,14 @@ pub fn recover(view: &OperationView, posture_for: impl Fn(&str) -> RetryPosture)
             | super::OperationState::TimedOut => plan.terminal.push(op.clone()),
             // Ambiguous (incl. executor-declared unknown effects): requeue
             // ONLY when retry is permitted and budget remains — never a
-            // blind retry (MASTER_SPEC:371, AT-057).
+            // blind retry (MASTER_SPEC:371, AT-057). Durable cancel intent
+            // outranks retry permission: cancellation prevents new
+            // reservations (MASTER_SPEC:375), so a dispatched op carrying
+            // cancel intent is reconciled (unresolved), never requeued and
+            // never hidden as Cancelled (AT-056/R-056).
             super::OperationState::Ambiguous => {
-                if posture.retryable && attempts < posture.max_attempts {
+                let retry_permitted = posture.retryable && attempts < posture.max_attempts;
+                if retry_permitted && !view.cancel_requested(op) {
                     plan.requeue.push(op.clone());
                 } else {
                     plan.unresolved.push(op.clone());

@@ -225,11 +225,12 @@ impl ObjectCache {
             return Ok(bytes);
         }
         let bytes = self.store.read(digest)?;
+        // Every disk load is a cold load, cached or bypassed.
+        self.misses += 1;
         if bytes.len() as u64 > self.capacity_bytes {
             self.uncached += 1;
             return Ok(bytes);
         }
-        self.misses += 1;
         while self.resident_bytes + bytes.len() as u64 > self.capacity_bytes {
             self.evict_lru();
         }

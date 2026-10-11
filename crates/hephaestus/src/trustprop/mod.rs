@@ -111,6 +111,13 @@ impl std::fmt::Display for IndexError {
 
 impl std::error::Error for IndexError {}
 
+/// Sort versioned nodes and drop duplicates, for deterministic output.
+fn sorted_unique(mut nodes: Vec<(String, u64)>) -> Vec<(String, u64)> {
+    nodes.sort();
+    nodes.dedup();
+    nodes
+}
+
 /// Rebuildable reverse-dependency index over versioned artifacts.
 ///
 /// Nodes are (id, version) pairs: a derivative of artifact v1 is
@@ -165,12 +172,12 @@ impl DependencyIndex {
         inputs: &[(&str, u64)],
     ) -> Result<(), IndexError> {
         let key = (derivative.to_string(), derivative_version);
-        let mut normalized: Vec<(String, u64)> = inputs
-            .iter()
-            .map(|(id, version)| (id.to_string(), *version))
-            .collect();
-        normalized.sort();
-        normalized.dedup();
+        let normalized = sorted_unique(
+            inputs
+                .iter()
+                .map(|(id, version)| (id.to_string(), *version))
+                .collect(),
+        );
         if let Some(existing) = self.forward.get(&key) {
             if *existing == normalized {
                 return Ok(());
@@ -200,14 +207,12 @@ impl DependencyIndex {
 
     /// Derivative versions built directly from an artifact version, sorted.
     pub fn direct_dependents(&self, artifact: &str, version: u64) -> Vec<(String, u64)> {
-        let mut out = self
-            .reverse
-            .get(&(artifact.to_string(), version))
-            .cloned()
-            .unwrap_or_default();
-        out.sort();
-        out.dedup();
-        out
+        sorted_unique(
+            self.reverse
+                .get(&(artifact.to_string(), version))
+                .cloned()
+                .unwrap_or_default(),
+        )
     }
 
     /// All transitively affected derivative versions, sorted and deduped.
@@ -231,9 +236,7 @@ impl DependencyIndex {
             }
         }
         visited.remove(&(artifact.to_string(), version));
-        let mut out: Vec<(String, u64)> = visited.into_iter().collect();
-        out.sort();
-        out
+        sorted_unique(visited.into_iter().collect())
     }
 
     /// Every recorded input edge, sorted. Feeds `rebuild` for a

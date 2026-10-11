@@ -433,9 +433,10 @@ fn s3_cache_oversize_objects_bypass_without_residence() {
     let store = cache.store().clone();
     let big = commit_bytes(&store, &[b'z'; 64]);
     let bytes = cache.read(&big).expect("oversize read serves");
-    assert_eq!(bytes, vec![b'z'; 64]);
+    assert_eq!(bytes, [b'z'; 64]);
     assert_eq!(cache.resident_bytes(), 0, "nothing cached past capacity");
     assert_eq!(cache.uncached(), 1, "one bypass recorded");
+    assert_eq!(cache.misses(), 1, "bypass still counts its cold load");
     let _ = std::fs::remove_dir_all(&dir);
 }
 

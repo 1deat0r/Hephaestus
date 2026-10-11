@@ -1,6 +1,6 @@
 # 02: Baseline comparison — measure claims at matched envelopes
 
-**Status:** ready-for-agent
+**Status:** done
 **Verify:** test -f docs/BASELINE_COMPARISON_REPORT.md
 **Covers:** 3, 4
 **Blocked by:** None (deterministic arms start immediately)
@@ -15,23 +15,23 @@ their absence stays explicit in the report, never implied as done.
 
 **Small tasks:**
 
-1. [ ] **S1** Compare against deterministic baselines
-   **Status:** pending
+1. [x] **S1** Compare against deterministic baselines
+   **Status:** done
    **Verify:** test -f docs/BASELINE_COMPARISON_REPORT.md
    Run exact-cache and tuned incremental arms; record all seven
    dimensions plus false promotions.
    **Micro-tasks:**
-   1. [ ] **M1** Measure and record deterministic arms
+   1. [x] **M1** Measure and record deterministic arms
       **Verify:** test -f docs/BASELINE_COMPARISON_REPORT.md
       atomic
 
-2. [ ] **S2** Run consented model arms or record absence
-   **Status:** pending
+2. [x] **S2** Run consented model arms or record absence
+   **Status:** done
    **Verify:** test -f docs/BASELINE_COMPARISON_REPORT.md
    With owner keys, run model arms behind contracts; without them,
    record the absence and its consequence for claims.
    **Micro-tasks:**
-   1. [ ] **M1** Execute consented arms or document the gap
+   1. [x] **M1** Execute consented arms or document the gap
       **Verify:** test -f docs/BASELINE_COMPARISON_REPORT.md
       atomic
 

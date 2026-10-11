@@ -455,3 +455,151 @@ fn pilot_batch_refuses_bad_args_and_existing_out() {
     assert_eq!(std::fs::read_to_string(&out).expect("kept"), "keep");
     let _ = std::fs::remove_dir_all(&dir);
 }
+
+#[test]
+fn baseline_compare_writes_measured_report() {
+    // v1-release 02 S1: deterministic arms measured, report out.
+    let dir = temp_dir("baseline");
+    let out = dir.join("baseline-report.md");
+    let run = bin()
+        .args(["fixture", "baseline-compare", "--trace"])
+        .arg(trace_fixture())
+        .arg("--out")
+        .arg(&out)
+        .output()
+        .expect("spawn");
+    assert!(
+        run.status.success(),
+        "baseline-compare failed: {}",
+        String::from_utf8_lossy(&run.stderr)
+    );
+    let text = std::fs::read_to_string(&out).expect("report written");
+    assert!(text.contains("matched envelopes"), "envelope claim");
+    assert!(text.contains("correctness"), "correctness recorded");
+    assert!(text.contains("false promotions: 0"), "promotion count");
+    assert!(text.contains("tokens"), "tokens recorded");
+    assert!(text.contains("provider spend: 0"), "cost honesty");
+    assert!(text.contains("latency"), "latency recorded");
+    assert!(text.contains("peak memory"), "memory recorded");
+    assert!(text.contains("Model arms: absent"), "absence explicit");
+    let _ = std::fs::remove_dir_all(&dir);
+}
+
+#[test]
+fn baseline_compare_deterministic_fields_replay() {
+    // Measured fields vary run to run; deterministic aggregates replay.
+    let dir = temp_dir("baseline-twin");
+    let a = dir.join("a.md");
+    let b = dir.join("b.md");
+    for out in [&a, &b] {
+        let run = bin()
+            .args(["fixture", "baseline-compare", "--trace"])
+            .arg(trace_fixture())
+            .arg("--out")
+            .arg(out)
+            .output()
+            .expect("spawn");
+        assert!(run.status.success());
+    }
+    // Deterministic values replay; measured latency/throughput/memory
+    // vary run to run and stay out of this comparison.
+    let det = |p: &std::path::Path| {
+        let text = std::fs::read_to_string(p).expect("read");
+        let arms: Vec<&str> = text
+            .lines()
+            .filter(|l| l.starts_with("baseline ") || l.starts_with("candidate "))
+            .collect();
+        assert_eq!(arms.len(), 2, "two arm summary lines");
+        let corr: Vec<&str> = arms
+            .iter()
+            .map(|l| {
+                l.split("correctness ")
+                    .nth(1)
+                    .expect("value")
+                    .split(',')
+                    .next()
+                    .expect("end")
+            })
+            .collect();
+        let toks: Vec<&str> = arms
+            .iter()
+            .map(|l| {
+                l.split("tokens: ")
+                    .nth(1)
+                    .expect("value")
+                    .split(',')
+                    .next()
+                    .expect("end")
+            })
+            .collect();
+        let fp = text.contains("false promotions: 0");
+        (corr.join("|"), toks.join("|"), fp)
+    };
+    assert_eq!(det(&a), det(&b), "deterministic aggregates replay");
+    let _ = std::fs::remove_dir_all(&dir);
+}
+
+#[test]
+fn baseline_compare_refuses_bad_args_and_existing_out() {
+    // Review finding: malformed calls and overwrites fail closed.
+    let dir = temp_dir("baseline-bad");
+    let out = dir.join("bad.md");
+    let run = bin()
+        .args(["fixture", "baseline-compare", "--trace"])
+        .arg(trace_fixture())
+        .output()
+        .expect("spawn");
+    assert_eq!(run.status.code(), Some(2));
+    let run = bin()
+        .args(["fixture", "baseline-compare", "--trace"])
+        .arg(trace_fixture())
+        .args(["--out", "--trace"])
+        .output()
+        .expect("spawn");
+    assert_eq!(run.status.code(), Some(2));
+    // Missing --trace: usage error.
+    let run = bin()
+        .args(["fixture", "baseline-compare", "--out"])
+        .arg(&out)
+        .output()
+        .expect("spawn");
+    assert_eq!(run.status.code(), Some(2));
+    std::fs::write(&out, "keep").expect("seed");
+    let run = bin()
+        .args(["fixture", "baseline-compare", "--trace"])
+        .arg(trace_fixture())
+        .arg("--out")
+        .arg(&out)
+        .output()
+        .expect("spawn");
+    assert_eq!(run.status.code(), Some(1));
+    assert_eq!(std::fs::read_to_string(&out).expect("kept"), "keep");
+    let _ = std::fs::remove_dir_all(&dir);
+}
+
+#[test]
+fn baseline_report_carries_run_receipts() {
+    // Review finding: report links the digests it claims.
+    let dir = temp_dir("baseline-receipts");
+    let out = dir.join("r.md");
+    let run = bin()
+        .args(["fixture", "baseline-compare", "--trace"])
+        .arg(trace_fixture())
+        .arg("--out")
+        .arg(&out)
+        .output()
+        .expect("spawn");
+    assert!(run.status.success());
+    let text = std::fs::read_to_string(&out).expect("report");
+    let trace = std::fs::read_to_string(trace_fixture()).expect("trace");
+    let report = hephaestus::campaign::run_fixture_batch(&trace).expect("batch");
+    assert!(text.contains(&report.missions[0].receipt_sha256));
+    assert!(text.contains(&report.missions[1].receipt_sha256));
+    // A later subsample differs: the report tracks input, not prose.
+    assert_ne!(
+        report.missions[2].receipt_sha256,
+        report.missions[0].receipt_sha256
+    );
+    assert!(text.contains(&report.missions[2].receipt_sha256));
+    let _ = std::fs::remove_dir_all(&dir);
+}

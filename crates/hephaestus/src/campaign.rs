@@ -64,7 +64,9 @@ pub struct BatchReport {
 
 /// Subsample the trace: drop the first `drop_heavy` heavy-stage lines.
 /// Pure string transform over caller-supplied data (no I/O).
-fn subsample(trace_text: &str, drop_heavy: usize) -> String {
+/// Visible inside the crate so the baseline comparison measures the
+/// same subsamples the pilot batch runs (v1-release 02).
+pub(crate) fn subsample(trace_text: &str, drop_heavy: usize) -> String {
     let mut dropped = 0usize;
     let kept: Vec<&str> = trace_text
         .split_inclusive('\n')

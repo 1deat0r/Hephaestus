@@ -6,6 +6,7 @@
 //!   hephaestus fixture recover     --state-dir <DIR>
 //!   hephaestus fixture mission-run --trace <FILE>
 //!   hephaestus fixture pilot-batch --trace <FILE> --out <FILE>
+//!   hephaestus fixture baseline-compare --trace <FILE> --out <FILE>
 //!   hephaestus fixture canary-watch
 //!   hephaestus --help
 //!
@@ -22,7 +23,7 @@ use std::io::Write;
 use std::path::PathBuf;
 use std::process::ExitCode;
 
-const USAGE: &str = "usage: hephaestus <fixture run|fixture recover> --state-dir <DIR>\n       hephaestus <fixture mission-run> --trace <FILE>\n       hephaestus <fixture pilot-batch> --trace <FILE> --out <FILE>\n       hephaestus <fixture canary-watch>\n       hephaestus --help\n";
+const USAGE: &str = "usage: hephaestus <fixture run|fixture recover> --state-dir <DIR>\n       hephaestus <fixture mission-run> --trace <FILE>\n       hephaestus <fixture pilot-batch> --trace <FILE> --out <FILE>\n       hephaestus <fixture baseline-compare> --trace <FILE> --out <FILE>\n       hephaestus <fixture canary-watch>\n       hephaestus --help\n";
 
 fn print_help() {
     println!(
@@ -36,6 +37,8 @@ fn print_help() {
          \x20                                       world-derived trace fixture and print\n\
          \x20                                       supported + negative receipts\n\
          \x20   fixture pilot-batch --trace <FILE> --out <FILE>   run the preregistered 20-mission\n         \x20                                       fixture batch and write the pilot report\n\
+         \x20   fixture baseline-compare --trace <FILE> --out <FILE>   measure deterministic\n\
+         \x20                                       arms and write the comparison report\n\
          \x20   fixture canary-watch                monitor the fixture deployment over a\n\
          \x20                                       fixed observation stream and print\n\
          \x20                                       the stop outcome + rollback receipt\n\n\
@@ -194,6 +197,7 @@ fn main() -> ExitCode {
             Some("mission-run") => mission_run(&rest[1..]),
             Some("canary-watch") => canary_watch(),
             Some("pilot-batch") => pilot_batch(&rest[1..]),
+            Some("baseline-compare") => baseline_compare(&rest[1..]),
             _ => usage_error(),
         },
         _ => usage_error(),
@@ -259,6 +263,94 @@ fn pilot_batch(rest: &[String]) -> ExitCode {
                     "report": out.display().to_string(),
                     "missions": report.total_missions,
                     "bytes": doc.len(),
+                })
+            );
+            ExitCode::SUCCESS
+        }
+    }
+}
+
+/// `fixture baseline-compare --trace <FILE> --out <FILE>`: measure the
+/// deterministic base/cand arms over trace subsamples and write the
+/// baseline comparison report (v1-release 02 S1). Correctness, tokens,
+/// cost, and promotion counts replay exactly; measured latency,
+/// throughput, and memory vary run to run and say so in the report.
+fn baseline_compare(rest: &[String]) -> ExitCode {
+    let mut trace: Option<&str> = None;
+    let mut out: Option<&str> = None;
+    let mut args = rest.iter();
+    while let Some(flag) = args.next() {
+        let value = match args.next() {
+            Some(v) if !v.is_empty() && !v.starts_with('-') => v,
+            _ => return usage_error(),
+        };
+        match flag.as_str() {
+            "--trace" if trace.is_none() => trace = Some(value),
+            "--out" if out.is_none() => out = Some(value),
+            _ => return usage_error(),
+        }
+    }
+    let (Some(trace), Some(out)) = (trace, out) else {
+        return usage_error();
+    };
+    let trace = PathBuf::from(trace);
+    let out = PathBuf::from(out);
+    if out.exists() {
+        let _ = writeln!(
+            std::io::stderr(),
+            "error: refusing to overwrite {}",
+            out.display()
+        );
+        return ExitCode::from(1);
+    }
+    let text = match std::fs::read_to_string(&trace) {
+        Err(e) => {
+            let _ = writeln!(std::io::stderr(), "error: read {}: {e}", trace.display());
+            return ExitCode::from(1);
+        }
+        Ok(t) => t,
+    };
+    let envelope = hephaestus::evalsuite::Envelope {
+        compute_budget: 20,
+        tool_access: vec!["missionrun".to_string()],
+        model_access: "none".to_string(),
+        tuning_record: "fixture-fixed".to_string(),
+    };
+    let (base, cand, base_receipts, cand_receipts) =
+        match hephaestus::acceleration::measure_deterministic_arms(&text, envelope) {
+            Err(e) => {
+                let _ = writeln!(std::io::stderr(), "error: measure: {e}");
+                return ExitCode::from(1);
+            }
+            Ok(p) => p,
+        };
+    let comparison = match hephaestus::evalsuite::compare_qualified_efficiency(&base, &cand) {
+        Err(e) => {
+            let _ = writeln!(std::io::stderr(), "error: compare: {e}");
+            return ExitCode::from(1);
+        }
+        Ok(c) => c,
+    };
+    let doc = hephaestus::acceleration::render_baseline_report(
+        &comparison,
+        &base,
+        &cand,
+        &base_receipts,
+        &cand_receipts,
+    );
+    match std::fs::write(&out, &doc) {
+        Err(e) => {
+            let _ = writeln!(std::io::stderr(), "error: write {}: {e}", out.display());
+            ExitCode::from(1)
+        }
+        Ok(()) => {
+            println!(
+                "{}",
+                serde_json::json!({
+                    "report": out.display().to_string(),
+                    "baseline_correctness": comparison.baseline_correctness,
+                    "candidate_correctness": comparison.candidate_correctness,
+                    "false_promotions": comparison.false_promotions,
                 })
             );
             ExitCode::SUCCESS

@@ -185,3 +185,39 @@ fn at_083_a_justified_exclusion_satisfies_review_and_carries_the_reason() {
         other => panic!("expected ExclusionJustified, got {other:?}"),
     }
 }
+
+#[test]
+fn deterministic_arms_measure_real_runs() {
+    // v1-release 02 S1: values match real runs, not prose.
+    use hephaestus::acceleration::measure_deterministic_arms;
+    use hephaestus::evalsuite::{Envelope, compare_qualified_efficiency};
+    let trace = include_str!("fixtures/e2e-trace.log").to_string();
+    let envelope = Envelope {
+        compute_budget: 20,
+        tool_access: vec![s("missionrun")],
+        model_access: s("none"),
+        tuning_record: s("fixture-fixed"),
+    };
+    let (base, cand, base_receipts, cand_receipts) =
+        measure_deterministic_arms(&trace, envelope).expect("measures");
+    assert_eq!(base.runs.len(), 10);
+    assert_eq!(cand.runs.len(), 10);
+    assert_eq!(base_receipts.len(), 10);
+    assert_eq!(cand_receipts.len(), 10);
+    let cmp = compare_qualified_efficiency(&base, &cand).expect("matched");
+    assert!((cmp.baseline_correctness - 0.0).abs() < 1e-12);
+    assert!((cmp.candidate_correctness - 1.0).abs() < 1e-12);
+    assert_eq!(cmp.false_promotions, 0);
+    for run in base.runs.iter().chain(cand.runs.iter()) {
+        assert!(run.tokens > 0, "tokenizer counted real bytes");
+        assert!(run.throughput.is_finite());
+        assert!(run.latency_ms >= 1, "ceiled wall time recorded");
+        assert!((run.cost - 0.0).abs() < 1e-12, "absence-priced cost");
+    }
+    // VmHWM never decreases: peaks are non-decreasing max-so-far.
+    let peaks: Vec<u64> = base.runs.iter().map(|r| r.peak_memory_bytes).collect();
+    assert!(
+        peaks.windows(2).all(|w| w[0] <= w[1]),
+        "monotonic high-water"
+    );
+}

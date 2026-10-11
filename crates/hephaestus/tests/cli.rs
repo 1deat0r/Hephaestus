@@ -767,3 +767,117 @@ fn assemble_release_refuses_foreign_inputs() {
     assert!(!out.exists(), "no dossier from foreign inputs");
     let _ = std::fs::remove_dir_all(&dir);
 }
+
+fn det_lines(text: &str) -> String {
+    // Deterministic sections shared by the committed reports:
+    // correctness, tokens, costs, counts, labels, ranges, run
+    // digests, pins. Measured latency/throughput/memory/compute
+    // stay out. Dossier input-digest provenance lines stay out here;
+    // callers normalize them as run-local before comparing.
+    text.lines()
+        .filter(|l| {
+            l.starts_with("baseline ")
+                || l.starts_with("candidate ")
+                || l.starts_with("positive:")
+                || l.starts_with("negative:")
+                || l.starts_with("inconclusive:")
+                || l.starts_with("invalid:")
+                || l.starts_with("blocked:")
+                || l.starts_with("Scope label:")
+                || l.contains("observed cand-arm value range")
+                || l.starts_with("- pilot report: ")
+                || l.starts_with("- baseline report: ")
+                || l.starts_with("- fixture-cand-arm")
+                || l.starts_with("false promotions:")
+                || l.starts_with("base runs:")
+                || l.starts_with("candidate runs:")
+                || (l.starts_with("- base ") && !l.contains("compute:"))
+                || (l.starts_with("- cand ") && !l.contains("compute:"))
+                || l.starts_with("- tokens:")
+                || l.contains("failures retained: ")
+                || l.contains("paired-difference variance")
+                || l.starts_with("- arm ")
+        })
+        .map(|l| {
+            // Strip measured values riding on deterministic lines.
+            let mut kept = l.to_string();
+            for marker in ["latency total ", "throughput mean ", "peak memory max "] {
+                if let Some((head, _)) = kept.split_once(marker) {
+                    kept = head.to_string();
+                }
+            }
+            kept
+        })
+        .collect::<Vec<_>>()
+        .join("\n")
+}
+
+#[test]
+fn reproduce_v1_committed() {
+    // repro-v1 01: committed reports regenerate from the trace.
+    // Pilot bytes match exactly; baseline and dossier match on
+    // deterministic sections. Measured sections stay out by design.
+    let dir = temp_dir("repro-v1");
+    let pilot = dir.join("pilot.md");
+    let baseline = dir.join("baseline.md");
+    let dossier = dir.join("dossier.md");
+    let run = bin()
+        .args(["fixture", "pilot-batch", "--trace"])
+        .arg(trace_fixture())
+        .arg("--out")
+        .arg(&pilot)
+        .output()
+        .expect("spawn");
+    assert!(run.status.success());
+    let run = bin()
+        .args(["fixture", "baseline-compare", "--trace"])
+        .arg(trace_fixture())
+        .arg("--out")
+        .arg(&baseline)
+        .output()
+        .expect("spawn");
+    assert!(run.status.success());
+    let run = bin()
+        .args(["fixture", "assemble-release", "--trace"])
+        .arg(trace_fixture())
+        .arg("--pilot")
+        .arg(&pilot)
+        .arg("--baseline")
+        .arg(&baseline)
+        .arg("--out")
+        .arg(&dossier)
+        .output()
+        .expect("spawn");
+    assert!(run.status.success());
+    let committed =
+        |name: &str| std::fs::read_to_string(repo_file(name)).expect("committed report");
+    // Pilot: byte-identical.
+    assert_eq!(
+        std::fs::read(&pilot).expect("fresh pilot"),
+        std::fs::read(repo_file("docs/PILOT_CAMPAIGN_REPORT.md")).expect("committed pilot"),
+        "pilot reproduces byte-identical"
+    );
+    // Baseline + dossier: deterministic sections replay. The dossier
+    // regenerates against fresh inputs, so its input-digest lines
+    // track the fresh files, not the committed ones: compare with
+    // the fresh pilot/baseline digests in place.
+    assert_eq!(
+        det_lines(&std::fs::read_to_string(&baseline).expect("fresh baseline")),
+        det_lines(&committed("docs/BASELINE_COMPARISON_REPORT.md")),
+        "baseline deterministic sections replay"
+    );
+    let fresh_dossier = std::fs::read_to_string(&dossier).expect("fresh dossier");
+    let committed_dossier = committed("docs/RELEASE_DOSSIER_V1.md");
+    let normalize = |text: &str| {
+        text.lines()
+            .filter(|l| !l.starts_with("- pilot report: ") && !l.starts_with("- baseline report: "))
+            .collect::<Vec<_>>()
+            .join("\n")
+    };
+    assert_eq!(
+        det_lines(&normalize(&fresh_dossier)),
+        det_lines(&normalize(&committed_dossier)),
+        "dossier deterministic sections replay"
+    );
+    let _ = std::fs::remove_dir_all(&dir);
+}

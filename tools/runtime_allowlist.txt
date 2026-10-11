@@ -692,3 +692,6 @@ CHANGELOG.md
 .scratch/metered-cost/issues/02-close-finding.md
 .scratch/metered-cost/receipts/01-green.md
 .scratch/metered-cost/receipts/02-green.md
+.scratch/repro-v1/spec.md
+.scratch/repro-v1/issues/01-guard-reports.md
+.scratch/repro-v1/receipts/01-green.md

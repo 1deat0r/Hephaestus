@@ -7,8 +7,8 @@ No promotion gate ran: false promotions reads 0 by absence.
 Correctness, tokens, cost, and promotion counts replay exactly;
 latency, throughput, and memory are measured per run and vary.
 
-baseline base: correctness 0.000000, tokens: 2975, cost 0.0, latency total 10 ms, throughput mean 858823.703 tok/s, peak memory max 4648960 bytes
-candidate cand: correctness 1.000000, tokens: 2975, cost 0.0, latency total 11 ms, throughput mean 865125.341 tok/s, peak memory max 4648960 bytes
+baseline base: correctness 0.000000, tokens: 2975, cost 0.0, latency total 10 ms, throughput mean 1337131.498 tok/s, peak memory max 4538368 bytes
+candidate cand: correctness 1.000000, tokens: 2975, cost 0.0, latency total 10 ms, throughput mean 1391177.021 tok/s, peak memory max 4538368 bytes
 
 false promotions: 0 (no gate ran; count by absence).
 
@@ -28,6 +28,16 @@ false promotions: 0 (no gate ran; count by absence).
 ## Runs
 
 base runs: 10; candidate runs: 10.
+
+## Compute (metered local, varies run to run)
+
+Wall and CPU clocks wrap the chain call only; tokenizer and
+harness overhead stay outside. CPU total reads gap where the
+process clock was unreadable for any run. The process clock
+covers all threads in the window; runs here are single-threaded.
+
+- base compute: 10 runs, wall total 2238226 ns, cpu total 2189422 ns
+- cand compute: 10 runs, wall total 2137512 ns, cpu total 2132503 ns
 
 ## Run receipts
 

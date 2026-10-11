@@ -318,7 +318,7 @@ fn baseline_compare(rest: &[String]) -> ExitCode {
         model_access: "none".to_string(),
         tuning_record: "fixture-fixed".to_string(),
     };
-    let (base, cand, base_receipts, cand_receipts) =
+    let (base, cand, base_receipts, cand_receipts, base_compute, cand_compute) =
         match hephaestus::acceleration::measure_deterministic_arms(&text, envelope) {
             Err(e) => {
                 let _ = writeln!(std::io::stderr(), "error: measure: {e}");
@@ -339,6 +339,8 @@ fn baseline_compare(rest: &[String]) -> ExitCode {
         &cand,
         &base_receipts,
         &cand_receipts,
+        &base_compute,
+        &cand_compute,
     );
     match std::fs::write(&out, &doc) {
         Err(e) => {

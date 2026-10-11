@@ -198,7 +198,7 @@ fn deterministic_arms_measure_real_runs() {
         model_access: s("none"),
         tuning_record: s("fixture-fixed"),
     };
-    let (base, cand, base_receipts, cand_receipts) =
+    let (base, cand, base_receipts, cand_receipts, _, _) =
         measure_deterministic_arms(&trace, envelope).expect("measures");
     assert_eq!(base.runs.len(), 10);
     assert_eq!(cand.runs.len(), 10);
@@ -220,4 +220,86 @@ fn deterministic_arms_measure_real_runs() {
         peaks.windows(2).all(|w| w[0] <= w[1]),
         "monotonic high-water"
     );
+}
+
+#[test]
+fn metered_compute_clocks_each_run() {
+    // metered-cost 01 S1: wall and CPU time come from real clocks.
+    use hephaestus::acceleration::{ArmCompute, measure_arm_compute};
+    use hephaestus::evalsuite::Envelope;
+    let trace = include_str!("fixtures/e2e-trace.log").to_string();
+    let envelope = Envelope {
+        compute_budget: 20,
+        tool_access: vec![s("missionrun")],
+        model_access: s("none"),
+        tuning_record: s("fixture-fixed"),
+    };
+    let (base, cand) = measure_arm_compute(&trace, envelope).expect("measures");
+    for arm in [&base, &cand] {
+        let _ = arm as &ArmCompute;
+    }
+    assert_eq!(base.runs, 10);
+    assert!(base.wall_ns_total > 0, "wall clock ran");
+    assert!(base.cpu_ns_total.is_some(), "cpu clock read or gap labeled");
+    assert_eq!(cand.runs, 10);
+}
+
+#[test]
+fn compute_gap_renders_without_zeroing() {
+    // Review finding: the gap label path needs its own proof.
+    use hephaestus::acceleration::{ArmCompute, render_baseline_report};
+    use hephaestus::evalsuite::{ArmMeasurement, EfficiencyComparison, Envelope, RunMeasurement};
+    let envelope = Envelope {
+        compute_budget: 20,
+        tool_access: vec![s("missionrun")],
+        model_access: s("none"),
+        tuning_record: s("fixture-fixed"),
+    };
+    let run = RunMeasurement {
+        correct: true,
+        promoted: false,
+        tokens: 10,
+        cost: 0.0,
+        latency_ms: 1,
+        throughput: 10.0,
+        peak_memory_bytes: 512,
+    };
+    let arm = ArmMeasurement {
+        arm_id: s("base"),
+        envelope,
+        runs: vec![run],
+    };
+    let comparison = EfficiencyComparison {
+        baseline_id: s("base"),
+        candidate_id: s("cand"),
+        baseline_correctness: 1.0,
+        candidate_correctness: 1.0,
+        false_promotions: 0,
+        baseline_tokens: 10,
+        candidate_tokens: 10,
+        baseline_cost: 0.0,
+        candidate_cost: 0.0,
+        baseline_latency_ms: 1,
+        candidate_latency_ms: 1,
+        baseline_throughput: 10.0,
+        candidate_throughput: 10.0,
+        baseline_peak_memory_bytes: 512,
+        candidate_peak_memory_bytes: 512,
+    };
+    let gap = ArmCompute {
+        arm_id: s("base"),
+        runs: 1,
+        wall_ns_total: 100,
+        cpu_ns_total: None,
+    };
+    let full = ArmCompute {
+        arm_id: s("cand"),
+        runs: 1,
+        wall_ns_total: 200,
+        cpu_ns_total: Some(150),
+    };
+    let doc = render_baseline_report(&comparison, &arm, &arm, &[], &[], &gap, &full);
+    assert!(doc.contains("gap: process CPU clock unreadable"));
+    assert!(!doc.contains("cpu total 0 ns"), "gaps never zero");
+    assert!(doc.contains("wall total 100 ns"));
 }

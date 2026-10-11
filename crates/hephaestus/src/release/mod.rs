@@ -92,8 +92,9 @@ pub fn assemble_v1_dossier(
         model_access: "none".to_string(),
         tuning_record: "fixture-fixed".to_string(),
     };
-    let (base, cand, _, _) = crate::acceleration::measure_deterministic_arms(trace_text, envelope)
-        .map_err(|e| format!("baseline measure: {e}"))?;
+    let (base, cand, _, _, _, _) =
+        crate::acceleration::measure_deterministic_arms(trace_text, envelope)
+            .map_err(|e| format!("baseline measure: {e}"))?;
     let comparison = crate::evalsuite::compare_qualified_efficiency(&base, &cand)
         .map_err(|e| format!("baseline compare: {e}"))?;
 

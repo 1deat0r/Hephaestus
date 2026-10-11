@@ -481,6 +481,20 @@ fn baseline_compare_writes_measured_report() {
     assert!(text.contains("provider spend: 0"), "cost honesty");
     assert!(text.contains("latency"), "latency recorded");
     assert!(text.contains("peak memory"), "memory recorded");
+    assert!(
+        text.contains("## Compute (metered local"),
+        "compute section"
+    );
+    assert!(text.contains("wall total"), "wall totals");
+    let wall_lines: Vec<&str> = text.lines().filter(|l| l.contains("wall total")).collect();
+    assert_eq!(wall_lines.len(), 2, "one compute line per arm");
+    for line in wall_lines {
+        let after = line.split("wall total ").nth(1).expect("total value");
+        let digits: String = after.chars().take_while(|c| c.is_ascii_digit()).collect();
+        let nanos: u64 = digits.parse().expect("numeric wall total");
+        assert!(nanos > 0, "measured wall time, not zero");
+    }
+    assert!(text.contains("cpu total"), "cpu totals or gap");
     assert!(text.contains("Model arms: absent"), "absence explicit");
     let _ = std::fs::remove_dir_all(&dir);
 }

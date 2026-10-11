@@ -26,15 +26,15 @@ Test names below are planned. Existing passing tests cannot substitute for these
        - [x] Add positive, refusal, and regression cases in `crates/hephaestus/tests/architecture_qualified_reasoning_routing.rs`.
        - [x] Implement the specified behavior in `crates/hephaestus/src/backend/mod.rs`.
 
-2. [ ] **S2** Select qualified providers
-   **Status:** pending
+2. [x] **S2** Select qualified providers
+   **Status:** done
    **Verify:** cargo test -p hephaestus --test architecture_qualified_reasoning_routing s2_routing
    Select the least costly eligible provider using qualified task evidence; keep optional providers behind capability contracts.
    **Micro-tasks:**
-   1. [ ] **M1** Demonstrate the missing behavior; implement it; pass the same acceptance tests.
+   1. [x] **M1** Demonstrate the missing behavior; implement it; pass the same acceptance tests.
       **Verify:** cargo test -p hephaestus --test architecture_qualified_reasoning_routing s2_routing
-      - [ ] Add positive, refusal, and regression cases in `crates/hephaestus/tests/architecture_qualified_reasoning_routing.rs`.
-      - [ ] Implement the specified behavior in `crates/hephaestus/src/advisory/mod.rs`.
+      - [x] Add positive, refusal, and regression cases in `crates/hephaestus/tests/architecture_qualified_reasoning_routing.rs`.
+      - [x] Implement the specified behavior in `crates/hephaestus/src/advisory/mod.rs`.
 
 3. [ ] **S3** Bound escalation and alternatives
    **Status:** pending

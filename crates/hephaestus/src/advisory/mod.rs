@@ -173,3 +173,106 @@ pub fn assert_control_authority() -> ControlAttestation {
         core_runs_without_provider: true,
     }
 }
+
+/// One candidate provider with qualified task evidence (AC 17).
+///
+/// `quality` is the end-to-end quality measured on known-outcome
+/// cases (`evaluate_provider` output); `None` means no qualified
+/// evidence exists. `qualified_cases` counts the cases behind the
+/// measurement. `capabilities` lists the provider capability contract
+/// (for example "triage"). `cost` uses one unit per selection call.
+#[derive(Debug, Clone, PartialEq)]
+pub struct ProviderOffer {
+    pub identity: ProviderIdentity,
+    pub cost: f64,
+    pub quality: Option<f64>,
+    pub qualified_cases: usize,
+    pub capabilities: Vec<String>,
+}
+
+/// What the task needs: required capabilities from the capability
+/// contract, minimum measured quality, and minimum evidence size.
+#[derive(Debug, Clone, PartialEq)]
+pub struct TaskRequirements {
+    pub required_capabilities: Vec<String>,
+    pub min_quality: f64,
+    pub min_qualified_cases: usize,
+}
+
+/// Why provider selection refused.
+#[derive(Debug, Clone, PartialEq)]
+pub enum SelectError {
+    /// No offer passes the capability contract and evidence gates.
+    NoEligibleProvider { evaluated: usize },
+    /// One offer carries an unusable cost (NaN, infinite, negative).
+    InvalidOffer { name: String, reason: String },
+}
+
+impl std::fmt::Display for SelectError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::NoEligibleProvider { evaluated } => {
+                write!(f, "no eligible provider among {evaluated} offers")
+            }
+            Self::InvalidOffer { name, reason } => {
+                write!(f, "invalid offer {name}: {reason}")
+            }
+        }
+    }
+}
+
+impl std::error::Error for SelectError {}
+
+fn offer_eligible(offer: &ProviderOffer, req: &TaskRequirements) -> bool {
+    // Capability contract: every required capability present.
+    if !req
+        .required_capabilities
+        .iter()
+        .all(|c| offer.capabilities.contains(c))
+    {
+        return false;
+    }
+    // Qualified task evidence: measured quality meets the floor on
+    // enough known-outcome cases. Missing evidence never qualifies.
+    match offer.quality {
+        Some(q) if q >= req.min_quality && offer.qualified_cases >= req.min_qualified_cases => {}
+        _ => return false,
+    }
+    true
+}
+
+/// Select the least costly eligible provider.
+///
+/// Eligibility needs the capability contract plus qualified task
+/// evidence (measured quality on enough known-outcome cases).
+/// Unqualified offers never win, however cheap. Ties break by
+/// provider name so repeated calls agree. Costs must be finite
+/// and non-negative; any invalid cost refuses the whole call.
+pub fn select_provider(
+    offers: &[ProviderOffer],
+    req: &TaskRequirements,
+) -> Result<ProviderIdentity, SelectError> {
+    for offer in offers {
+        if !offer.cost.is_finite() || offer.cost < 0.0 {
+            return Err(SelectError::InvalidOffer {
+                name: offer.identity.name.clone(),
+                reason: "cost must be finite and non-negative".to_string(),
+            });
+        }
+    }
+    let mut eligible: Vec<&ProviderOffer> =
+        offers.iter().filter(|o| offer_eligible(o, req)).collect();
+    if eligible.is_empty() {
+        return Err(SelectError::NoEligibleProvider {
+            evaluated: offers.len(),
+        });
+    }
+    // Least cost first; name breaks ties deterministically.
+    eligible.sort_by(|a, b| {
+        a.cost
+            .partial_cmp(&b.cost)
+            .unwrap_or(std::cmp::Ordering::Equal)
+            .then_with(|| a.identity.name.cmp(&b.identity.name))
+    });
+    Ok(eligible[0].identity.clone())
+}

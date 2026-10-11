@@ -1,0 +1,11 @@
+{"commands": [{"small": "S2", "command": "cargo test -p hephaestus --test architecture_qualified_reasoning_routing s2_routing"}], "cwd": "/run/media/ideator/Projects/AI Agents/Hephaestus"}
+### S2: cargo test -p hephaestus --test architecture_qualified_reasoning_routing s2_routing
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.08s
+     Running tests/architecture_qualified_reasoning_routing.rs (target/debug/deps/architecture_qualified_reasoning_routing-2d29d40088e9c4ab)
+
+running 3 tests
+test s2_routing_refuses_unqualified ... ok
+test s2_routing_selects_cheapest_eligible ... ok
+test s2_routing_tie_breaks_deterministically ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 3 filtered out; finished in 0.00s

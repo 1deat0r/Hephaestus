@@ -662,4 +662,6 @@ crates/hephaestus/tests/architecture_task_context_assembly.rs
 crates/hephaestus/tests/architecture_qualified_reasoning_routing.rs
 .scratch/architecture-efficiency/receipts/ae06-s1-workflow-verify.log
 .scratch/architecture-efficiency/receipts/ae06-s1-green.md
+.scratch/architecture-efficiency/receipts/ae06-s2-green.md
+.scratch/architecture-efficiency/receipts/ae06-s2-workflow-verify.log
 docs/V0_01_EXPERIMENTAL.md

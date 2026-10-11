@@ -52,3 +52,91 @@ fn s1_deterministic_advisory_may_route_to_provider() {
     assert_eq!(route_operation(&op), Route::Advisory);
     assert_eq!(op.request_route(Route::Advisory), Ok(Route::Advisory));
 }
+
+/// AE-06 S2 — select qualified providers (R-005, R-055, R-106).
+/// The router selects the least costly eligible provider using
+/// qualified task evidence. Optional providers stay behind
+/// capability contracts: no evidence means no selection.
+use hephaestus::advisory::record::ProviderIdentity;
+use hephaestus::advisory::{ProviderOffer, SelectError, TaskRequirements, select_provider};
+
+fn identity(name: &str) -> ProviderIdentity {
+    ProviderIdentity {
+        name: name.to_string(),
+        digest: format!("digest-{name}"),
+        official_jev: false,
+    }
+}
+
+fn offer(
+    name: &str,
+    cost: f64,
+    quality: Option<f64>,
+    cases: usize,
+    caps: &[&str],
+) -> ProviderOffer {
+    ProviderOffer {
+        identity: identity(name),
+        cost,
+        quality,
+        qualified_cases: cases,
+        capabilities: caps.iter().map(|c| c.to_string()).collect(),
+    }
+}
+
+fn req(caps: &[&str], min_quality: f64, min_cases: usize) -> TaskRequirements {
+    TaskRequirements {
+        required_capabilities: caps.iter().map(|c| c.to_string()).collect(),
+        min_quality,
+        min_qualified_cases: min_cases,
+    }
+}
+
+#[test]
+fn s2_routing_selects_cheapest_eligible() {
+    // AC 17 positive: least costly eligible provider wins.
+    let offers = vec![
+        offer("expensive-good", 10.0, Some(0.9), 20, &["triage"]),
+        offer("cheap-good", 2.0, Some(0.8), 20, &["triage"]),
+        offer("mid-good", 5.0, Some(0.85), 20, &["triage"]),
+    ];
+    let selected = select_provider(&offers, &req(&["triage"], 0.7, 10)).expect("eligible exists");
+    assert_eq!(selected.name, "cheap-good");
+}
+
+#[test]
+fn s2_routing_refuses_unqualified() {
+    // AC 17 refusal: no evidence means no selection, even when cheap.
+    let offers = vec![
+        offer("cheap-unknown", 1.0, None, 0, &["triage"]),
+        offer("weak-evidence", 2.0, Some(0.4), 20, &["triage"]),
+        offer("thin-evidence", 2.0, Some(0.9), 2, &["triage"]),
+        offer("missing-cap", 2.0, Some(0.9), 20, &["other"]),
+    ];
+    match select_provider(&offers, &req(&["triage"], 0.7, 10)) {
+        Err(SelectError::NoEligibleProvider { .. }) => {}
+        other => panic!("expected NoEligibleProvider, got: {other:?}"),
+    }
+    // Invalid cost is refused with the reason named.
+    let bad = vec![offer("bad-cost", f64::NAN, Some(0.9), 20, &["triage"])];
+    assert!(matches!(
+        select_provider(&bad, &req(&["triage"], 0.7, 10)),
+        Err(SelectError::InvalidOffer { .. })
+    ));
+}
+
+#[test]
+fn s2_routing_tie_breaks_deterministically() {
+    // AC 17 regression: equal costs break ties by name; twin calls
+    // agree; an unqualified cheap offer never beats a qualified one.
+    let offers = vec![
+        offer("beta", 3.0, Some(0.8), 10, &["triage"]),
+        offer("alpha", 3.0, Some(0.8), 10, &["triage"]),
+        offer("cheap-unknown", 0.5, None, 0, &["triage"]),
+    ];
+    let r = req(&["triage"], 0.7, 10);
+    let first = select_provider(&offers, &r).expect("eligible exists");
+    let second = select_provider(&offers, &r).expect("eligible exists");
+    assert_eq!(first.name, "alpha");
+    assert_eq!(first, second);
+}

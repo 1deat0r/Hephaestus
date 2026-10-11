@@ -270,3 +270,131 @@ impl DependencyIndex {
         out
     }
 }
+
+/// Why a derivative went stale. The three propagation causes share one
+/// version-scoped traversal; the cause stays distinct in audit.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum InvalidationCause {
+    Correction,
+    Quarantine,
+    Retraction,
+}
+
+/// One append-only invalidation event. The audit log retains every
+/// event; no API erases or rewrites history.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct InvalidationEvent {
+    pub target_id: String,
+    pub target_version: u64,
+    pub cause: InvalidationCause,
+    pub reason: String,
+}
+
+/// Why qualification refused.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum QualificationError {
+    /// The derivative is stale and its review stays pending.
+    StalePendingReview { derivative: String, version: u64 },
+}
+
+impl std::fmt::Display for QualificationError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::StalePendingReview {
+                derivative,
+                version,
+            } => {
+                write!(f, "stale pending review: {derivative} v{version}")
+            }
+        }
+    }
+}
+
+impl std::error::Error for QualificationError {}
+
+/// Version-scoped invalidation tracker over a dependency index.
+///
+/// `apply` marks the target plus its transitive dependents stale and
+/// appends the event to audit. Staleness never erases originals: audit
+/// only grows. `can_qualify` refuses a stale derivative while its
+/// review stays pending; resolving the review lifts the block while
+/// the stale flag remains for audit.
+#[derive(Debug, Clone, Default)]
+pub struct InvalidationTracker {
+    index: DependencyIndex,
+    stale: HashSet<(String, u64)>,
+    audit: Vec<InvalidationEvent>,
+    pending_review: HashSet<(String, u64)>,
+}
+
+impl InvalidationTracker {
+    /// Empty tracker.
+    pub fn new() -> Self {
+        InvalidationTracker {
+            index: DependencyIndex::new(),
+            stale: HashSet::new(),
+            audit: Vec::new(),
+            pending_review: HashSet::new(),
+        }
+    }
+
+    /// Record that a derivative version consumed exact input versions.
+    pub fn record(
+        &mut self,
+        derivative: &str,
+        derivative_version: u64,
+        inputs: &[(&str, u64)],
+    ) -> Result<(), IndexError> {
+        self.index.record(derivative, derivative_version, inputs)
+    }
+
+    /// Apply one invalidation event. Returns the newly stale nodes
+    /// (target plus transitive dependents), sorted.
+    pub fn apply(&mut self, event: InvalidationEvent) -> Vec<(String, u64)> {
+        let target = (event.target_id.clone(), event.target_version);
+        let mut newly = vec![target.clone()];
+        newly.extend(self.index.affected(&event.target_id, event.target_version));
+        let newly = sorted_unique(newly);
+        for node in &newly {
+            self.stale.insert(node.clone());
+        }
+        self.audit.push(event);
+        newly
+    }
+
+    /// Stale flag for one versioned node.
+    pub fn is_stale(&self, artifact: &str, version: u64) -> bool {
+        self.stale.contains(&(artifact.to_string(), version))
+    }
+
+    /// Append-only audit log. No removal API exists.
+    pub fn audit(&self) -> &[InvalidationEvent] {
+        &self.audit
+    }
+
+    /// Mark a derivative version as awaiting review.
+    pub fn mark_review_pending(&mut self, derivative: &str, version: u64) {
+        self.pending_review
+            .insert((derivative.to_string(), version));
+    }
+
+    /// Resolve a pending review. The stale flag stays for audit.
+    pub fn resolve_review(&mut self, derivative: &str, version: u64) {
+        self.pending_review
+            .remove(&(derivative.to_string(), version));
+    }
+
+    /// Qualification gate: stale plus pending review refuses; all else
+    /// passes.
+    pub fn can_qualify(&self, derivative: &str, version: u64) -> Result<(), QualificationError> {
+        let key = (derivative.to_string(), version);
+        if self.stale.contains(&key) && self.pending_review.contains(&key) {
+            Err(QualificationError::StalePendingReview {
+                derivative: derivative.to_string(),
+                version,
+            })
+        } else {
+            Ok(())
+        }
+    }
+}

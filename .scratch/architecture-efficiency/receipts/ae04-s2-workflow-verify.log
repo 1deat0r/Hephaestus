@@ -1,0 +1,17 @@
+{"commands": [{"small": "S2", "command": "cargo test -p hephaestus --test architecture_incremental_invalidation s2_invalidation"}], "cwd": "/run/media/ideator/Projects/AI Agents/Hephaestus"}
+### S2: cargo test -p hephaestus --test architecture_incremental_invalidation s2_invalidation
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on build directory
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.54s
+     Running tests/architecture_incremental_invalidation.rs (target/debug/deps/architecture_incremental_invalidation-9dc233285e39204a)
+
+running 5 tests
+test s2_invalidation_correction_marks_target_and_dependents_stale ... ok
+test s2_invalidation_blocks_stale_qualification_while_review_pending ... ok
+test s2_invalidation_allows_qualification_after_review_resolves ... ok
+test s2_invalidation_quarantine_and_retraction_propagate ... ok
+test s2_invalidation_preserves_audit_originals ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 5 filtered out; finished in 0.00s

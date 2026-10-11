@@ -1,6 +1,6 @@
 {
   "version": "1.2",
-  "status": "Future gates; no runtime acceptance executed",
+  "status": "v1.0.0 EXPERIMENTAL (fixture scope): pilot batch and deterministic comparison measured with receipts; live missions, model arms, metered cost, and confirmatory campaign not run",
   "scopes": [
     {
       "id": "M0",

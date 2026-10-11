@@ -1,6 +1,6 @@
 # 04: Version bump — ship v1.0.0
 
-**Status:** blocked
+**Status:** done
 **Verify:** grep -q '^version = "1.0.0"' Cargo.toml
 **Covers:** 7, 8
 **Blocked by:** 03 (needs the assembled packet)
@@ -15,13 +15,13 @@ qualification inputs present in the packet.
 
 **Small tasks:**
 
-1. [ ] **S1** Bump version and record the release
-   **Status:** pending
+1. [x] **S1** Bump version and record the release
+   **Status:** done
    **Verify:** grep -q '^version = "1.0.0"' Cargo.toml
    Update version, changelog, and release scopes in one commit;
    keep the label honest to the packet.
    **Micro-tasks:**
-   1. [ ] **M1** Land the version commit
+   1. [x] **M1** Land the version commit
       **Verify:** grep -q '^version = "1.0.0"' Cargo.toml
       atomic
 

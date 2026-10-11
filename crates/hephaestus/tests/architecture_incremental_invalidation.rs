@@ -5,6 +5,7 @@
 //! dependents resolve in reverse, and traversal terminates on cycles
 //! while counting multiply-reached derivatives once.
 
+use hephaestus::knowledge::{ReuseKey, ReusePresentation, ReuseRefusal, authorize_reuse};
 use hephaestus::trustprop::{
     DependencyIndex, IndexError, InvalidationCause, InvalidationEvent, InvalidationTracker,
     QualificationError,
@@ -201,5 +202,104 @@ fn s2_invalidation_allows_qualification_after_review_resolves() {
         tracker.can_qualify("D2", 1),
         Ok(()),
         "stale without pending review still qualifies"
+    );
+}
+
+fn reuse_key() -> ReuseKey {
+    ReuseKey::bind(
+        "aaaabbbbccccddddeeeeffffgggghhhhiiiijjjjkkkkllllmmmmnnnnoooo",
+        &["lowercase", "trim"],
+        "provider-7",
+        "policy-3",
+    )
+}
+
+fn reuse_presentation() -> ReusePresentation {
+    ReusePresentation {
+        content_digest: "aaaabbbbccccddddeeeeffffgggghhhhiiiijjjjkkkkllllmmmmnnnnoooo".to_string(),
+        transforms: vec!["lowercase".to_string(), "trim".to_string()],
+        provider_version: "provider-7".to_string(),
+        policy_version: "policy-3".to_string(),
+        grant_current: true,
+        dependencies_valid: true,
+    }
+}
+
+#[test]
+fn s3_reuse_exact_match_authorizes() {
+    // AC 12 positive: identical bindings plus a current grant and valid
+    // dependencies authorize reuse; the key digest stays deterministic.
+    let key = reuse_key();
+    assert_eq!(authorize_reuse(&key, &reuse_presentation()), Ok(()));
+    assert_eq!(key.digest(), reuse_key().digest());
+}
+
+#[test]
+fn s3_reuse_each_mismatch_names_its_cause() {
+    // AC 12 refusal: every bound dimension refuses with its own cause.
+    let key = reuse_key();
+    let cases: Vec<(ReusePresentation, ReuseRefusal)> = vec![
+        (
+            ReusePresentation {
+                content_digest: "0".repeat(64),
+                ..reuse_presentation()
+            },
+            ReuseRefusal::ContentChanged,
+        ),
+        (
+            ReusePresentation {
+                transforms: vec!["lowercase".to_string()],
+                ..reuse_presentation()
+            },
+            ReuseRefusal::TransformsChanged,
+        ),
+        (
+            ReusePresentation {
+                provider_version: "provider-8".to_string(),
+                ..reuse_presentation()
+            },
+            ReuseRefusal::ProviderChanged,
+        ),
+        (
+            ReusePresentation {
+                policy_version: "policy-4".to_string(),
+                ..reuse_presentation()
+            },
+            ReuseRefusal::PolicyChanged,
+        ),
+        (
+            ReusePresentation {
+                grant_current: false,
+                ..reuse_presentation()
+            },
+            ReuseRefusal::GrantStale,
+        ),
+        (
+            ReusePresentation {
+                dependencies_valid: false,
+                ..reuse_presentation()
+            },
+            ReuseRefusal::DependenciesStale,
+        ),
+    ];
+    for (presented, expected) in cases {
+        assert_eq!(authorize_reuse(&key, &presented), Err(expected));
+    }
+}
+
+#[test]
+fn s3_reuse_stale_tracker_derivative_refuses() {
+    // AC 12 regression: a derivative the S2 tracker marks stale presents
+    // invalid dependencies, so reuse refuses even with matching bindings.
+    let mut tracker = tracked_chain();
+    tracker.apply(event("A", 1, InvalidationCause::Correction));
+    assert!(tracker.is_stale("D2", 1));
+    let presented = ReusePresentation {
+        dependencies_valid: !tracker.is_stale("D2", 1),
+        ..reuse_presentation()
+    };
+    assert_eq!(
+        authorize_reuse(&reuse_key(), &presented),
+        Err(ReuseRefusal::DependenciesStale)
     );
 }

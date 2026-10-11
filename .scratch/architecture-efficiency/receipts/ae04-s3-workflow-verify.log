@@ -1,0 +1,14 @@
+{"commands": [{"small": "S3", "command": "cargo test -p hephaestus --test architecture_incremental_invalidation s3_reuse"}], "cwd": "/run/media/ideator/Projects/AI Agents/Hephaestus"}
+### S3: cargo test -p hephaestus --test architecture_incremental_invalidation s3_reuse
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on build directory
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.33s
+     Running tests/architecture_incremental_invalidation.rs (target/debug/deps/architecture_incremental_invalidation-9dc233285e39204a)
+
+running 3 tests
+test s3_reuse_each_mismatch_names_its_cause ... ok
+test s3_reuse_exact_match_authorizes ... ok
+test s3_reuse_stale_tracker_derivative_refuses ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 10 filtered out; finished in 0.00s

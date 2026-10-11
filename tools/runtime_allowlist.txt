@@ -650,4 +650,6 @@ crates/hephaestus/tests/architecture_incremental_invalidation.rs
 .scratch/architecture-efficiency/receipts/ae04-s1-green.md
 .scratch/architecture-efficiency/receipts/ae04-s2-workflow-verify.log
 .scratch/architecture-efficiency/receipts/ae04-s2-green.md
+.scratch/architecture-efficiency/receipts/ae04-s3-workflow-verify.log
+.scratch/architecture-efficiency/receipts/ae04-s3-green.md
 docs/V0_01_EXPERIMENTAL.md

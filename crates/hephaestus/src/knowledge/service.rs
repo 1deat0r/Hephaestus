@@ -452,6 +452,115 @@ pub fn read_verified_span(
     Ok(bytes[start..end].to_vec())
 }
 
+/// A cache-reuse key bound to the exact inputs that produced the cached
+/// value: content digest, ordered transforms, provider version, and
+/// policy version. Any change in any binding refuses reuse.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct ReuseKey {
+    content_digest: String,
+    transforms: Vec<String>,
+    provider_version: String,
+    policy_version: String,
+}
+
+impl ReuseKey {
+    /// Bind the four dimensions. Transforms keep caller order: order is
+    /// part of the binding because replay order changes bytes.
+    pub fn bind(
+        content_digest: &str,
+        transforms: &[&str],
+        provider_version: &str,
+        policy_version: &str,
+    ) -> Self {
+        ReuseKey {
+            content_digest: content_digest.to_string(),
+            transforms: transforms.iter().map(|t| t.to_string()).collect(),
+            provider_version: provider_version.to_string(),
+            policy_version: policy_version.to_string(),
+        }
+    }
+
+    /// Deterministic digest of the canonical binding, for cache lookup.
+    pub fn digest(&self) -> String {
+        let mut canonical = String::new();
+        canonical.push_str(&self.content_digest);
+        canonical.push('\n');
+        canonical.push_str(&self.transforms.join(","));
+        canonical.push('\n');
+        canonical.push_str(&self.provider_version);
+        canonical.push('\n');
+        canonical.push_str(&self.policy_version);
+        sha256_hex(canonical.as_bytes())
+    }
+}
+
+/// The presented state at reuse time. The caller evaluates the two
+/// live flags: `grant_current` rechecks the current grant, and
+/// `dependencies_valid` rechecks dependency validity (for example via
+/// the invalidation tracker). This mirrors `review::advance`, which
+/// takes the caller-supplied deterministic outcome rather than
+/// computing authority itself.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct ReusePresentation {
+    pub content_digest: String,
+    pub transforms: Vec<String>,
+    pub provider_version: String,
+    pub policy_version: String,
+    pub grant_current: bool,
+    pub dependencies_valid: bool,
+}
+
+/// Why exact reuse refused. Each bound dimension names its own cause.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum ReuseRefusal {
+    ContentChanged,
+    TransformsChanged,
+    ProviderChanged,
+    PolicyChanged,
+    GrantStale,
+    DependenciesStale,
+}
+
+impl std::fmt::Display for ReuseRefusal {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::ContentChanged => write!(f, "content digest changed"),
+            Self::TransformsChanged => write!(f, "transforms changed"),
+            Self::ProviderChanged => write!(f, "provider version changed"),
+            Self::PolicyChanged => write!(f, "policy version changed"),
+            Self::GrantStale => write!(f, "grant no longer current"),
+            Self::DependenciesStale => write!(f, "dependencies no longer valid"),
+        }
+    }
+}
+
+impl std::error::Error for ReuseRefusal {}
+
+/// Authorize exact cache reuse: every binding must match and both live
+/// flags must hold. The first mismatch refuses with its named cause;
+/// nothing about the cached value leaks through a refusal.
+pub fn authorize_reuse(key: &ReuseKey, presented: &ReusePresentation) -> Result<(), ReuseRefusal> {
+    if presented.content_digest != key.content_digest {
+        return Err(ReuseRefusal::ContentChanged);
+    }
+    if presented.transforms != key.transforms {
+        return Err(ReuseRefusal::TransformsChanged);
+    }
+    if presented.provider_version != key.provider_version {
+        return Err(ReuseRefusal::ProviderChanged);
+    }
+    if presented.policy_version != key.policy_version {
+        return Err(ReuseRefusal::PolicyChanged);
+    }
+    if !presented.grant_current {
+        return Err(ReuseRefusal::GrantStale);
+    }
+    if !presented.dependencies_valid {
+        return Err(ReuseRefusal::DependenciesStale);
+    }
+    Ok(())
+}
+
 /// Evidence-class attestation (R-007/AT-007, MASTER_SPEC §3,
 /// Verification service): an Observation must be grounded in a source
 /// span — repetition of a model statement is seen and recorded in the

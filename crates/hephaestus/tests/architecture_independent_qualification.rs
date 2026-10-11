@@ -191,3 +191,112 @@ fn s2_evidence_replays_deterministically() {
     assert_eq!(first, second);
     assert_eq!(first.verdict, ClaimVerdict::Contested);
 }
+
+use hephaestus::evalsuite::Envelope;
+/// AE-07 S3 — measure qualified efficiency (R-074, R-106).
+/// Baseline and candidate compare at matched envelopes. The record
+/// carries correctness, false promotion, tokens, cost, latency,
+/// throughput, and peak memory. Missing measures stay explicit.
+use hephaestus::evalsuite::{
+    ArmMeasurement, ComparisonError, RunMeasurement, compare_qualified_efficiency,
+};
+
+fn envelope(budget: u64) -> Envelope {
+    Envelope {
+        compute_budget: budget,
+        tool_access: vec!["search".to_string(), "files".to_string()],
+        model_access: "none".to_string(),
+        tuning_record: "2h".to_string(),
+    }
+}
+
+fn run(correct: bool, promoted: bool, tokens: u64, cost: f64) -> RunMeasurement {
+    RunMeasurement {
+        correct,
+        promoted,
+        tokens,
+        cost,
+        latency_ms: 100,
+        throughput: 10.0,
+        peak_memory_bytes: 512,
+    }
+}
+
+fn arm(id: &str, budget: u64, runs: Vec<RunMeasurement>) -> ArmMeasurement {
+    ArmMeasurement {
+        arm_id: id.to_string(),
+        envelope: envelope(budget),
+        runs,
+    }
+}
+
+#[test]
+fn s3_measurement_compares_matched_arms() {
+    // AC 21 positive: matched envelopes compare; every recorded
+    // dimension aggregates deterministically.
+    let baseline = arm(
+        "baseline",
+        100,
+        vec![run(true, false, 10, 1.0), run(false, false, 20, 2.0)],
+    );
+    let candidate = arm(
+        "candidate",
+        100,
+        vec![run(true, true, 5, 0.5), run(false, true, 5, 0.5)],
+    );
+    let out = compare_qualified_efficiency(&baseline, &candidate).expect("matched");
+    assert_eq!(out.baseline_id, "baseline");
+    assert_eq!(out.candidate_id, "candidate");
+    assert!((out.baseline_correctness - 0.5).abs() < 1e-12);
+    assert!((out.candidate_correctness - 0.5).abs() < 1e-12);
+    // The candidate promoted an incorrect run: one false promotion.
+    assert_eq!(out.false_promotions, 1);
+    assert_eq!(out.baseline_tokens, 30);
+    assert_eq!(out.candidate_tokens, 10);
+    assert!((out.candidate_cost - 1.0).abs() < 1e-12);
+    assert_eq!(out.candidate_latency_ms, 200);
+    assert!((out.candidate_throughput - 10.0).abs() < 1e-12);
+    assert_eq!(out.candidate_peak_memory_bytes, 512);
+    assert_eq!(out.baseline_peak_memory_bytes, 512);
+}
+
+#[test]
+fn s3_measurement_refuses_unmatched_and_invalid() {
+    // AC 21 refusal: unmatched envelopes never compare.
+    let baseline = arm("baseline", 100, vec![run(true, false, 10, 1.0)]);
+    let richer = arm("candidate", 200, vec![run(true, true, 10, 1.0)]);
+    assert!(matches!(
+        compare_qualified_efficiency(&baseline, &richer),
+        Err(ComparisonError::UnmatchedEnvelopes { .. })
+    ));
+    // Empty runs measure nothing.
+    let empty = arm("candidate", 100, vec![]);
+    assert!(matches!(
+        compare_qualified_efficiency(&baseline, &empty),
+        Err(ComparisonError::EmptyRuns { .. })
+    ));
+    // Unusable measures refuse with the reason named.
+    let mut bad = run(true, true, 10, 1.0);
+    bad.cost = f64::NAN;
+    let bad_arm = arm("candidate", 100, vec![bad]);
+    assert!(matches!(
+        compare_qualified_efficiency(&baseline, &bad_arm),
+        Err(ComparisonError::InvalidMeasurement { .. })
+    ));
+}
+
+#[test]
+fn s3_measurement_ignores_run_order() {
+    // AC 21 regression: run order never changes the comparison;
+    // twin calls agree exactly.
+    let baseline = arm("baseline", 100, vec![run(true, false, 10, 1.0)]);
+    let runs_a = vec![run(true, true, 5, 0.5), run(false, false, 15, 1.5)];
+    let mut runs_b = runs_a.clone();
+    runs_b.reverse();
+    let first =
+        compare_qualified_efficiency(&baseline, &arm("candidate", 100, runs_a)).expect("matched");
+    let second =
+        compare_qualified_efficiency(&baseline, &arm("candidate", 100, runs_b)).expect("matched");
+    assert_eq!(first, second);
+    assert_eq!(first.false_promotions, 0);
+}

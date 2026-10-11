@@ -1,6 +1,6 @@
 # AE-07: Independent qualification
 
-**Status:** ready-for-agent
+**Status:** done
 **Verify:** cargo test -p hephaestus --test architecture_independent_qualification
 **Covers:** 19, 20, 21
 **Blocked by:** 01, 02, 03, 04, 05, 06
@@ -36,15 +36,15 @@ Test names below are planned. Existing passing tests cannot substitute for these
       - [x] Add positive, refusal, and regression cases in `crates/hephaestus/tests/architecture_independent_qualification.rs`.
       - [x] Implement the specified behavior in `crates/hephaestus/src/knowledge/service.rs`.
 
-3. [ ] **S3** Measure qualified efficiency
-   **Status:** pending
+3. [x] **S3** Measure qualified efficiency
+   **Status:** done
    **Verify:** cargo test -p hephaestus --test architecture_independent_qualification s3_measurement
    Compare baseline and candidate at matched envelopes; record correctness, false promotion, tokens, cost, latency, throughput, and peak memory.
    **Micro-tasks:**
-   1. [ ] **M1** Demonstrate the missing behavior; implement it; pass the same acceptance tests.
+   1. [x] **M1** Demonstrate the missing behavior; implement it; pass the same acceptance tests.
       **Verify:** cargo test -p hephaestus --test architecture_independent_qualification s3_measurement
-      - [ ] Add positive, refusal, and regression cases in `crates/hephaestus/tests/architecture_independent_qualification.rs`.
-      - [ ] Implement the specified behavior in `crates/hephaestus/src/evalsuite/mod.rs`.
+      - [x] Add positive, refusal, and regression cases in `crates/hephaestus/tests/architecture_independent_qualification.rs`.
+      - [x] Implement the specified behavior in `crates/hephaestus/src/evalsuite/mod.rs`.
 
 ## Comments
 

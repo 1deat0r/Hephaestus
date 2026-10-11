@@ -139,3 +139,175 @@ pub fn begin_benchmark(
         hypothesis_ids: hypotheses.iter().map(|h| h.hypothesis_id.clone()).collect(),
     })
 }
+
+/// One measured run (AC 21): correctness, promotion decision, and
+/// resource use. All quantities use one unit per comparison; missing
+/// measures never enter — runs carry complete data or refuse.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct RunMeasurement {
+    pub correct: bool,
+    pub promoted: bool,
+    pub tokens: u64,
+    pub cost: f64,
+    pub latency_ms: u64,
+    pub throughput: f64,
+    pub peak_memory_bytes: u64,
+}
+
+/// One measured arm: its envelope plus its runs.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct ArmMeasurement {
+    pub arm_id: String,
+    pub envelope: Envelope,
+    pub runs: Vec<RunMeasurement>,
+}
+
+/// Baseline-vs-candidate comparison at matched envelopes (AC 21).
+/// Correctness is the fraction correct. Tokens, cost, and latency
+/// total. Throughput means. Peak memory maxes. False promotions
+/// count candidate runs promoted while incorrect.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct EfficiencyComparison {
+    pub baseline_id: String,
+    pub candidate_id: String,
+    pub baseline_correctness: f64,
+    pub candidate_correctness: f64,
+    pub false_promotions: usize,
+    pub baseline_tokens: u64,
+    pub candidate_tokens: u64,
+    pub baseline_cost: f64,
+    pub candidate_cost: f64,
+    pub baseline_latency_ms: u64,
+    pub candidate_latency_ms: u64,
+    pub baseline_throughput: f64,
+    pub candidate_throughput: f64,
+    pub baseline_peak_memory_bytes: u64,
+    pub candidate_peak_memory_bytes: u64,
+}
+
+/// Why a comparison refused.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub enum ComparisonError {
+    /// The envelopes differ on the named resource.
+    UnmatchedEnvelopes { resource: String, detail: String },
+    /// One arm carries no runs.
+    EmptyRuns { arm_id: String },
+    /// One run carries an unusable measure.
+    InvalidMeasurement { arm_id: String, reason: String },
+}
+
+impl std::fmt::Display for ComparisonError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::UnmatchedEnvelopes { resource, detail } => {
+                write!(f, "unmatched envelopes on {resource}: {detail}")
+            }
+            Self::EmptyRuns { arm_id } => {
+                write!(f, "arm {arm_id} carries no runs")
+            }
+            Self::InvalidMeasurement { arm_id, reason } => {
+                write!(f, "arm {arm_id} carries an invalid measure: {reason}")
+            }
+        }
+    }
+}
+
+impl std::error::Error for ComparisonError {}
+
+fn envelopes_match(a: &Envelope, b: &Envelope) -> Option<(String, String)> {
+    if a.compute_budget != b.compute_budget {
+        return Some((
+            "compute_budget".to_string(),
+            format!("{} vs {}", a.compute_budget, b.compute_budget),
+        ));
+    }
+    let set_a: BTreeSet<&String> = a.tool_access.iter().collect();
+    let set_b: BTreeSet<&String> = b.tool_access.iter().collect();
+    if set_a != set_b {
+        return Some((
+            "tool_access".to_string(),
+            "tool access sets differ".to_string(),
+        ));
+    }
+    if a.model_access != b.model_access {
+        return Some((
+            "model_access".to_string(),
+            format!("{} vs {}", a.model_access, b.model_access),
+        ));
+    }
+    None
+}
+
+fn check_runs(arm: &ArmMeasurement) -> Result<(), ComparisonError> {
+    if arm.runs.is_empty() {
+        return Err(ComparisonError::EmptyRuns {
+            arm_id: arm.arm_id.clone(),
+        });
+    }
+    for run in &arm.runs {
+        if !run.cost.is_finite() || run.cost < 0.0 {
+            return Err(ComparisonError::InvalidMeasurement {
+                arm_id: arm.arm_id.clone(),
+                reason: "cost must be finite and non-negative".to_string(),
+            });
+        }
+        if !run.throughput.is_finite() || run.throughput < 0.0 {
+            return Err(ComparisonError::InvalidMeasurement {
+                arm_id: arm.arm_id.clone(),
+                reason: "throughput must be finite and non-negative".to_string(),
+            });
+        }
+    }
+    Ok(())
+}
+
+fn summarize(runs: &[RunMeasurement]) -> (f64, u64, f64, u64, f64, u64) {
+    let n = runs.len() as f64;
+    let correct = runs.iter().filter(|r| r.correct).count() as f64 / n;
+    let tokens = runs.iter().map(|r| r.tokens).sum();
+    let cost = runs.iter().map(|r| r.cost).sum();
+    let latency = runs.iter().map(|r| r.latency_ms).sum();
+    let throughput = runs.iter().map(|r| r.throughput).sum::<f64>() / n;
+    let peak = runs.iter().map(|r| r.peak_memory_bytes).max().unwrap_or(0);
+    (correct, tokens, cost, latency, throughput, peak)
+}
+
+/// Compare baseline and candidate at matched envelopes (AC 21).
+///
+/// Envelopes must match on budget, tool access, and model access;
+/// both arms must carry runs with usable measures. Order of runs
+/// never affects the outcome.
+pub fn compare_qualified_efficiency(
+    baseline: &ArmMeasurement,
+    candidate: &ArmMeasurement,
+) -> Result<EfficiencyComparison, ComparisonError> {
+    if let Some((resource, detail)) = envelopes_match(&baseline.envelope, &candidate.envelope) {
+        return Err(ComparisonError::UnmatchedEnvelopes { resource, detail });
+    }
+    check_runs(baseline)?;
+    check_runs(candidate)?;
+    let (b_correct, b_tokens, b_cost, b_lat, b_thr, b_peak) = summarize(&baseline.runs);
+    let (c_correct, c_tokens, c_cost, c_lat, c_thr, c_peak) = summarize(&candidate.runs);
+    let false_promotions = candidate
+        .runs
+        .iter()
+        .filter(|r| r.promoted && !r.correct)
+        .count();
+    Ok(EfficiencyComparison {
+        baseline_id: baseline.arm_id.clone(),
+        candidate_id: candidate.arm_id.clone(),
+        baseline_correctness: b_correct,
+        candidate_correctness: c_correct,
+        false_promotions,
+        baseline_tokens: b_tokens,
+        candidate_tokens: c_tokens,
+        baseline_cost: b_cost,
+        candidate_cost: c_cost,
+        baseline_latency_ms: b_lat,
+        candidate_latency_ms: c_lat,
+        baseline_throughput: b_thr,
+        candidate_throughput: c_thr,
+        baseline_peak_memory_bytes: b_peak,
+        candidate_peak_memory_bytes: c_peak,
+    })
+}

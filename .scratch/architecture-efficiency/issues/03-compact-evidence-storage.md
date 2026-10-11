@@ -26,15 +26,15 @@ Test names below are planned. Existing passing tests cannot substitute for these
        - [x] Add positive, refusal, and regression cases in `crates/hephaestus/tests/architecture_compact_evidence_storage.rs`.
        - [x] Implement the specified behavior in `crates/hephaestus/src/ledger/event_ledger.rs`.
 
-2. [ ] **S2** Load source bytes on demand
-   **Status:** pending
+2. [x] **S2** Load source bytes on demand
+   **Status:** done
    **Verify:** cargo test -p hephaestus --test architecture_compact_evidence_storage s2_source
    Store immutable source bytes once; retrieve verified spans through artifact identities without copying entire corpora.
    **Micro-tasks:**
-   1. [ ] **M1** Demonstrate the missing behavior; implement it; pass the same acceptance tests.
-      **Verify:** cargo test -p hephaestus --test architecture_compact_evidence_storage s2_source
-      - [ ] Add positive, refusal, and regression cases in `crates/hephaestus/tests/architecture_compact_evidence_storage.rs`.
-      - [ ] Implement the specified behavior in `crates/hephaestus/src/knowledge/service.rs`.
+    1. [x] **M1** Demonstrate the missing behavior; implement it; pass the same acceptance tests.
+       **Verify:** cargo test -p hephaestus --test architecture_compact_evidence_storage s2_source
+       - [x] Add positive, refusal, and regression cases in `crates/hephaestus/tests/architecture_compact_evidence_storage.rs`.
+       - [x] Implement the specified behavior in `crates/hephaestus/src/knowledge/service.rs`.
 
 3. [ ] **S3** Bound storage caches
    **Status:** pending

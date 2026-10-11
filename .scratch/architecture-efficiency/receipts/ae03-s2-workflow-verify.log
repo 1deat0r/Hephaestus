@@ -1,0 +1,17 @@
+{"commands": [{"small": "S2", "command": "cargo test -p hephaestus --test architecture_compact_evidence_storage s2_source"}], "cwd": "/run/media/ideator/Projects/AI Agents/Hephaestus"}
+### S2: cargo test -p hephaestus --test architecture_compact_evidence_storage s2_source
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on build directory
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 25.40s
+     Running tests/architecture_compact_evidence_storage.rs (target/debug/deps/architecture_compact_evidence_storage-c85ba8308bf8fa42)
+
+running 5 tests
+test s2_source_identity_refuses_unknown_and_quarantined ... ok
+test s2_source_corpus_span_resolves_to_its_identity ... ok
+test s2_source_identical_bytes_share_one_identity ... ok
+test s2_source_span_reads_through_identity_without_full_copy ... ok
+test s2_source_refusals_name_the_cause ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 6 filtered out; finished in 0.00s

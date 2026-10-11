@@ -19,6 +19,8 @@ pub use record::{
     QueryCoverage, SearchHit, Span, SpanError, StatementIngestion,
 };
 pub use service::{
-    AdapterError, LocalFileAdapter, SourceAdapter, attest_evidence_class, corpus_coverage, correct,
-    count_origins, ingest_bytes, link_edge, quarantine, search, sha256_hex, tokenize, verify_span,
+    AdapterError, LocalFileAdapter, OnDemandError, SourceAdapter, attest_evidence_class,
+    corpus_coverage, correct, count_origins, ingest_bytes, link_edge, quarantine,
+    read_verified_span, search, sha256_hex, source_artifact_identity, store_source_bytes, tokenize,
+    verify_span,
 };

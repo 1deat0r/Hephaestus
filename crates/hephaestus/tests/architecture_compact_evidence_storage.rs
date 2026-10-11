@@ -7,7 +7,11 @@
 use hephaestus::contracts::generated::{
     Event, EventKind, MissionDataOrigin, Provenance, RecordRef, SchemaVersion, TrustOrigin,
 };
-use hephaestus::ledger::{EventLedger, LedgerError};
+use hephaestus::knowledge::{
+    Corpus, ParserId, ingest_bytes, quarantine, read_verified_span, source_artifact_identity,
+    store_source_bytes,
+};
+use hephaestus::ledger::{ArtifactStore, EventLedger, LedgerError};
 
 fn temp_dir(tag: &str) -> std::path::PathBuf {
     let nanos = std::time::SystemTime::now()
@@ -203,4 +207,157 @@ fn s1_ledger_empty_open_has_no_offsets() {
     assert!(ledger.line_offsets().is_empty());
     assert_eq!(ledger.resident_line_bytes(), 0);
     let _ = std::fs::remove_dir_all(&dir);
+}
+
+fn parser() -> ParserId {
+    ParserId {
+        name: "text-plain".to_string(),
+        version: "1".to_string(),
+    }
+}
+
+fn byte_store(tag: &str) -> (std::path::PathBuf, ArtifactStore) {
+    let dir = temp_dir(tag);
+    let store = ArtifactStore::open(&dir.join("store")).expect("open store");
+    (dir, store)
+}
+
+/// Count regular files under the store objects namespace.
+fn object_count(store_root: &std::path::Path) -> usize {
+    let mut count = 0;
+    let objects = store_root.join("objects");
+    let mut dirs = vec![objects];
+    while let Some(dir) = dirs.pop() {
+        for entry in std::fs::read_dir(&dir).expect("read dir") {
+            let entry = entry.expect("dir entry");
+            let kind = entry.file_type().expect("file type");
+            if kind.is_dir() {
+                dirs.push(entry.path());
+            } else {
+                count += 1;
+            }
+        }
+    }
+    count
+}
+
+#[test]
+fn s2_source_identical_bytes_share_one_identity() {
+    // AC 8 positive: immutable bytes are stored once; the digest is the
+    // identity and the second store creates no duplicate object.
+    let (dir, store) = byte_store("dedup");
+    let bytes = b"pressure point: conflicting objectives on latency".to_vec();
+    let first = store_source_bytes(&store, &bytes).expect("first store");
+    let second = store_source_bytes(&store, &bytes).expect("second store");
+    assert_eq!(first, second, "identical bytes share one identity");
+    assert_eq!(
+        object_count(&dir.join("store")),
+        1,
+        "one object on disk for identical bytes"
+    );
+    let _ = std::fs::remove_dir_all(&dir);
+}
+
+#[test]
+fn s2_source_span_reads_through_identity_without_full_copy() {
+    // AC 8 positive: a verified span returns only its slice through the
+    // artifact identity; sibling sources never load.
+    let (dir, store) = byte_store("span");
+    let a = b"alpha line one\nshared evidence span here\n".to_vec();
+    let b = b"beta lines live elsewhere and stay unread\n".to_vec();
+    let digest_a = store_source_bytes(&store, &a).expect("store a");
+    store_source_bytes(&store, &b).expect("store b");
+    let start = a.iter().position(|c| *c == b's').expect("span start");
+    let slice = read_verified_span(&store, &digest_a, start, a.len()).expect("read span");
+    assert_eq!(slice, &a[start..], "only the requested slice returns");
+    assert!(slice.len() < a.len() + b.len());
+    let _ = std::fs::remove_dir_all(&dir);
+}
+
+#[test]
+fn s2_source_corpus_span_resolves_to_its_identity() {
+    // AC 8 positive: a corpus span resolves to the source's artifact
+    // identity, and the stored bytes verify the span's coordinates.
+    let (dir, store) = byte_store("corpus-link");
+    let bytes = b"bottleneck extraction grounds opportunities\n".to_vec();
+    let mut corpus = Corpus::new();
+    let id = ingest_bytes(
+        &mut corpus,
+        "inline:real",
+        bytes.clone(),
+        "2026-10-11",
+        parser(),
+    );
+    let identity = source_artifact_identity(&corpus, id).expect("resolve identity");
+    assert_eq!(identity, corpus.get(id).expect("source").sha256);
+    store_source_bytes(&store, &bytes).expect("store bytes");
+    let end = bytes.iter().position(|c| *c == b'\n').expect("line end");
+    let slice = read_verified_span(&store, &identity, 0, end).expect("read span");
+    assert_eq!(slice, &bytes[..end]);
+    let _ = std::fs::remove_dir_all(&dir);
+}
+
+#[test]
+fn s2_source_refusals_name_the_cause() {
+    // AC 8 refusal: malformed digests, missing objects, bad ranges, and
+    // tampered bytes each fail with a named cause.
+    use hephaestus::knowledge::OnDemandError;
+    let (dir, store) = byte_store("refuse");
+    let bytes = b"bounded retrieval refuses bad coordinates\n".to_vec();
+    let digest = store_source_bytes(&store, &bytes).expect("store");
+    match read_verified_span(&store, "not-a-digest", 0, 1) {
+        Err(OnDemandError::BadDigest { .. }) => {}
+        other => panic!("expected BadDigest, got: {other:?}"),
+    }
+    let missing = "f".repeat(64);
+    match read_verified_span(&store, &missing, 0, 1) {
+        Err(OnDemandError::UnknownArtifact { .. }) => {}
+        other => panic!("expected UnknownArtifact, got: {other:?}"),
+    }
+    match read_verified_span(&store, &digest, 5, 4) {
+        Err(OnDemandError::OutOfBounds { .. }) => {}
+        other => panic!("expected OutOfBounds (start > end), got: {other:?}"),
+    }
+    match read_verified_span(&store, &digest, 0, bytes.len() + 1) {
+        Err(OnDemandError::OutOfBounds { .. }) => {}
+        other => panic!("expected OutOfBounds (past end), got: {other:?}"),
+    }
+    // Tamper the object file: the identity no longer matches its bytes.
+    let object = dir
+        .join("store")
+        .join("objects")
+        .join(&digest[..2])
+        .join(&digest);
+    let mut raw = std::fs::read(&object).expect("read object");
+    raw[0] ^= 0xff;
+    std::fs::write(&object, &raw).expect("tamper object");
+    match read_verified_span(&store, &digest, 0, 1) {
+        Err(OnDemandError::DigestMismatch { .. }) => {}
+        other => panic!("expected DigestMismatch, got: {other:?}"),
+    }
+    let _ = std::fs::remove_dir_all(&dir);
+}
+
+#[test]
+fn s2_source_identity_refuses_unknown_and_quarantined() {
+    // AC 8 refusal: identity resolution fails closed on unknown and
+    // quarantined sources.
+    use hephaestus::knowledge::OnDemandError;
+    let mut corpus = Corpus::new();
+    let id = ingest_bytes(
+        &mut corpus,
+        "inline:quarantine-me",
+        b"counterevidence stays visible\n".to_vec(),
+        "2026-10-11",
+        parser(),
+    );
+    match source_artifact_identity(&corpus, id + 99) {
+        Err(OnDemandError::UnknownSource(_)) => {}
+        other => panic!("expected UnknownSource, got: {other:?}"),
+    }
+    quarantine(&mut corpus, id, "suspect provenance").expect("quarantine");
+    match source_artifact_identity(&corpus, id) {
+        Err(OnDemandError::QuarantinedSource(_)) => {}
+        other => panic!("expected QuarantinedSource, got: {other:?}"),
+    }
 }

@@ -13,6 +13,7 @@ use super::record::{
     CapturedSource, Corpus, CorpusCoverage, Edge, EdgeError, EdgeType, ParserId, QueryCoverage,
     SearchHit, Span, SpanError,
 };
+use crate::ledger::{ArtifactStore, LedgerError};
 
 /// Lowercase hex sha256 of raw bytes.
 pub fn sha256_hex(bytes: &[u8]) -> String {
@@ -338,6 +339,117 @@ impl SourceAdapter for LocalFileAdapter {
             self.parser.clone(),
         ))
     }
+}
+
+/// Why on-demand byte retrieval refused.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum OnDemandError {
+    /// The artifact identity is not a valid sha256 digest.
+    BadDigest {
+        /// The rejected value.
+        value: String,
+    },
+    /// No committed object carries the identity.
+    UnknownArtifact {
+        /// The requested digest.
+        digest: String,
+    },
+    /// The requested range falls outside the verified bytes.
+    OutOfBounds {
+        /// Requested start.
+        start: usize,
+        /// Requested end.
+        end: usize,
+        /// Verified byte length.
+        len: usize,
+    },
+    /// The stored bytes no longer hash to the requested identity.
+    DigestMismatch {
+        /// The requested digest.
+        expected: String,
+        /// The digest the bytes actually hash to.
+        actual: String,
+    },
+    /// No corpus source carries the id.
+    UnknownSource(u64),
+    /// The source is quarantined; its bytes stay out of retrieval.
+    QuarantinedSource(u64),
+}
+
+impl std::fmt::Display for OnDemandError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::BadDigest { value } => write!(f, "invalid artifact identity: {value}"),
+            Self::UnknownArtifact { digest } => {
+                write!(f, "unknown artifact identity: {digest}")
+            }
+            Self::OutOfBounds { start, end, len } => {
+                write!(f, "span [{start}..{end}] outside {len} verified bytes")
+            }
+            Self::DigestMismatch { expected, actual } => {
+                write!(f, "artifact mismatch: expected {expected}, actual {actual}")
+            }
+            Self::UnknownSource(id) => write!(f, "unknown source: {id}"),
+            Self::QuarantinedSource(id) => write!(f, "quarantined source: {id}"),
+        }
+    }
+}
+
+impl std::error::Error for OnDemandError {}
+
+/// Store immutable source bytes once, addressed by their sha256 digest.
+///
+/// Identical bytes commit to the same object: the second store creates no
+/// duplicate. The returned digest is the artifact identity that
+/// [`read_verified_span`] accepts.
+pub fn store_source_bytes(store: &ArtifactStore, bytes: &[u8]) -> Result<String, LedgerError> {
+    let staged = store.stage(bytes)?;
+    store.commit(&staged)
+}
+
+/// Resolve a corpus source to its artifact identity (its recorded sha256).
+/// Refuses unknown and quarantined sources; quarantine keeps bytes out of
+/// retrieval even though the bytes stay retained for audit.
+pub fn source_artifact_identity(corpus: &Corpus, source: u64) -> Result<String, OnDemandError> {
+    let src = corpus
+        .get(source)
+        .ok_or(OnDemandError::UnknownSource(source))?;
+    if src.quarantined.is_some() {
+        return Err(OnDemandError::QuarantinedSource(source));
+    }
+    Ok(src.sha256.clone())
+}
+
+/// Read one verified span through its artifact identity.
+///
+/// The store re-hashes the object on read, so returned bytes provably match
+/// the identity. Only the requested slice returns: each artifact is its own
+/// object, so sibling sources never load and no corpus is copied.
+pub fn read_verified_span(
+    store: &ArtifactStore,
+    digest: &str,
+    start: usize,
+    end: usize,
+) -> Result<Vec<u8>, OnDemandError> {
+    let bytes = store.read(digest).map_err(|e| match e {
+        LedgerError::BadDigest { value } => OnDemandError::BadDigest { value },
+        LedgerError::DigestMismatch { expected, actual } => {
+            OnDemandError::DigestMismatch { expected, actual }
+        }
+        // `read` returns nothing else; any store failure fails closed as
+        // unknown rather than succeeding.
+        _ => OnDemandError::UnknownArtifact {
+            digest: digest.to_string(),
+        },
+    })?;
+    if start > end || end > bytes.len() {
+        return Err(OnDemandError::OutOfBounds {
+            start,
+            end,
+            len: bytes.len(),
+        });
+    }
+    Ok(bytes[start..end].to_vec())
 }
 
 /// Evidence-class attestation (R-007/AT-007, MASTER_SPEC §3,

@@ -12,7 +12,7 @@ mod artifact_store;
 mod event_ledger;
 mod timeline;
 
-pub use artifact_store::{ArtifactStore, StagedArtifact};
+pub use artifact_store::{ArtifactStore, ObjectCache, StagedArtifact, process_peak_bytes};
 pub use event_ledger::{EventLedger, Recovery};
 pub use timeline::{Timeline, TimelineEntry};
 

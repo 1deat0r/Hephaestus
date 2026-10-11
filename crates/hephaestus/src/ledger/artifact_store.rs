@@ -1,5 +1,6 @@
 //! Content-addressed artifact storage: stage, commit, verify, sweep.
 
+use std::collections::{HashMap, VecDeque};
 use std::io::Write;
 use std::path::{Path, PathBuf};
 use std::sync::atomic::{AtomicU64, Ordering};
@@ -125,4 +126,150 @@ impl ArtifactStore {
         }
         Ok(removed)
     }
+}
+
+/// Bounded least-recently-used cache over committed store objects.
+///
+/// Resident bytes never exceed `capacity_bytes`: on a miss the cache evicts
+/// the least-recently-used entries until the incoming object fits. Eviction
+/// drops memory only — committed objects reload from disk, so evicted data
+/// is always reloadable and originals stay retained. Objects larger than the
+/// whole capacity bypass the cache: they are served verified but uncached
+/// and counted as `uncached`. Counters record cold loads (`misses`), warm
+/// reads (`hits`), evictions, bypasses, current residence, and the resident
+/// high-water mark (`peak_bytes`).
+#[derive(Debug)]
+pub struct ObjectCache {
+    store: ArtifactStore,
+    capacity_bytes: u64,
+    entries: HashMap<String, Vec<u8>>,
+    /// Identities from least- to most-recently-used.
+    order: VecDeque<String>,
+    resident_bytes: u64,
+    peak_bytes: u64,
+    hits: u64,
+    misses: u64,
+    evictions: u64,
+    uncached: u64,
+}
+
+impl ObjectCache {
+    /// Open an empty cache over `store` with a resident-byte capacity.
+    pub fn new(store: ArtifactStore, capacity_bytes: u64) -> Self {
+        ObjectCache {
+            store,
+            capacity_bytes,
+            entries: HashMap::new(),
+            order: VecDeque::new(),
+            resident_bytes: 0,
+            peak_bytes: 0,
+            hits: 0,
+            misses: 0,
+            evictions: 0,
+            uncached: 0,
+        }
+    }
+
+    /// The backing content-addressed store.
+    pub fn store(&self) -> &ArtifactStore {
+        &self.store
+    }
+
+    /// Resident cached bytes. Never exceeds the configured capacity.
+    pub fn resident_bytes(&self) -> u64 {
+        self.resident_bytes
+    }
+
+    /// Highest resident bytes observed since construction or `clear`.
+    pub fn peak_bytes(&self) -> u64 {
+        self.peak_bytes
+    }
+
+    /// Warm reads served from memory.
+    pub fn hits(&self) -> u64 {
+        self.hits
+    }
+
+    /// Cold loads read from disk into the cache.
+    pub fn misses(&self) -> u64 {
+        self.misses
+    }
+
+    /// Entries evicted to hold the capacity bound.
+    pub fn evictions(&self) -> u64 {
+        self.evictions
+    }
+
+    /// Reads served verified but uncached (object exceeds capacity).
+    pub fn uncached(&self) -> u64 {
+        self.uncached
+    }
+
+    /// Drop all entries. Counters for hits, misses, evictions, and bypasses
+    /// are retained; residence and peak restart for a new cold measurement.
+    pub fn clear(&mut self) {
+        self.entries.clear();
+        self.order.clear();
+        self.resident_bytes = 0;
+        self.peak_bytes = 0;
+    }
+
+    /// Read the object at `digest`: a warm hit returns the resident copy;
+    /// a cold miss loads the verified bytes, evicts as needed, and caches
+    /// them. Store verification (digest format, hash match) applies on
+    /// every path — the cache never launders it.
+    pub fn read(&mut self, digest: &str) -> Result<Vec<u8>, LedgerError> {
+        if let Some(bytes) = self.entries.get(digest).cloned() {
+            self.touch(digest);
+            self.hits += 1;
+            return Ok(bytes);
+        }
+        let bytes = self.store.read(digest)?;
+        if bytes.len() as u64 > self.capacity_bytes {
+            self.uncached += 1;
+            return Ok(bytes);
+        }
+        self.misses += 1;
+        while self.resident_bytes + bytes.len() as u64 > self.capacity_bytes {
+            self.evict_lru();
+        }
+        self.resident_bytes += bytes.len() as u64;
+        self.peak_bytes = self.peak_bytes.max(self.resident_bytes);
+        self.entries.insert(digest.to_string(), bytes.clone());
+        self.order.push_back(digest.to_string());
+        Ok(bytes)
+    }
+
+    /// Move `digest` to the most-recently-used end.
+    fn touch(&mut self, digest: &str) {
+        if let Some(pos) = self.order.iter().position(|id| id == digest) {
+            self.order.remove(pos);
+        }
+        self.order.push_back(digest.to_string());
+    }
+
+    /// Drop the least-recently-used entry. The cache never holds an empty
+    /// slot it cannot evict: callers only invoke this while full, and a
+    /// full cache always holds at least one entry.
+    fn evict_lru(&mut self) {
+        if let Some(id) = self.order.pop_front()
+            && let Some(bytes) = self.entries.remove(&id)
+        {
+            self.resident_bytes -= bytes.len() as u64;
+            self.evictions += 1;
+        }
+    }
+}
+
+/// Process high-water resident memory in bytes, read from
+/// `/proc/self/status` (`VmHWM`). Returns `None` where the platform
+/// exposes no such file. The mark never recedes within a process, so a
+/// later reading is always greater than or equal to an earlier one.
+pub fn process_peak_bytes() -> Option<u64> {
+    let status = std::fs::read_to_string("/proc/self/status").ok()?;
+    status.lines().find_map(|line| {
+        let rest = line.strip_prefix("VmHWM:")?;
+        let kb: u64 = rest.split_whitespace().next()?.parse().ok()?;
+        Some(kb * 1024)
+    })
 }

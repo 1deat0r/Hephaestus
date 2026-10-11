@@ -11,7 +11,9 @@ use hephaestus::knowledge::{
     Corpus, ParserId, ingest_bytes, quarantine, read_verified_span, source_artifact_identity,
     store_source_bytes,
 };
-use hephaestus::ledger::{ArtifactStore, EventLedger, LedgerError};
+use hephaestus::ledger::{
+    ArtifactStore, EventLedger, LedgerError, ObjectCache, process_peak_bytes,
+};
 
 fn temp_dir(tag: &str) -> std::path::PathBuf {
     let nanos = std::time::SystemTime::now()
@@ -360,4 +362,136 @@ fn s2_source_identity_refuses_unknown_and_quarantined() {
         Err(OnDemandError::QuarantinedSource(_)) => {}
         other => panic!("expected QuarantinedSource, got: {other:?}"),
     }
+}
+
+fn cached_store(tag: &str, capacity: u64) -> (std::path::PathBuf, ObjectCache) {
+    let dir = temp_dir(tag);
+    let store = ArtifactStore::open(&dir.join("store")).expect("open store");
+    (dir, ObjectCache::new(store, capacity))
+}
+
+fn commit_bytes(store: &ArtifactStore, bytes: &[u8]) -> String {
+    let staged = store.stage(bytes).expect("stage");
+    store.commit(&staged).expect("commit")
+}
+
+#[test]
+fn s3_cache_bounds_resident_bytes_with_lru_eviction() {
+    // AC 9 positive: resident bytes stay within capacity; the
+    // least-recently-used reloadable entry evicts first.
+    let (dir, mut cache) = cached_store("bounds", 90);
+    let store = cache.store().clone();
+    let a = commit_bytes(&store, &[b'a'; 30]);
+    let b = commit_bytes(&store, &[b'b'; 30]);
+    let c = commit_bytes(&store, &[b'c'; 30]);
+    let d = commit_bytes(&store, &[b'd'; 30]);
+    cache.read(&a).expect("read a");
+    cache.read(&b).expect("read b");
+    cache.read(&c).expect("read c");
+    assert_eq!(cache.resident_bytes(), 90);
+    cache.read(&a).expect("re-read a");
+    cache.read(&d).expect("read d evicts");
+    assert!(
+        cache.resident_bytes() <= 90,
+        "resident bytes stay bounded: {}",
+        cache.resident_bytes()
+    );
+    assert_eq!(cache.evictions(), 1, "exactly one LRU eviction");
+    assert_eq!(cache.hits(), 1, "one warm hit recorded");
+    assert_eq!(cache.misses(), 4, "four cold loads recorded");
+    // The evicted entry (b: untouched since load) reloads byte-identical.
+    let reloaded = cache.read(&b).expect("reload evicted b");
+    assert_eq!(reloaded, vec![b'b'; 30]);
+    assert_eq!(cache.evictions(), 2);
+    let _ = std::fs::remove_dir_all(&dir);
+}
+
+#[test]
+fn s3_cache_evicts_reloadable_data_and_retains_originals() {
+    // AC 9 positive: eviction drops memory only; committed originals stay
+    // readable through a fresh cache and through the store itself.
+    let (dir, mut cache) = cached_store("retain", 30);
+    let store = cache.store().clone();
+    let a = commit_bytes(&store, &[b'a'; 30]);
+    let b = commit_bytes(&store, &[b'b'; 30]);
+    cache.read(&a).expect("read a");
+    cache.read(&b).expect("read b evicts a");
+    assert_eq!(cache.evictions(), 1);
+    assert_eq!(store.read(&a).expect("store still holds a"), vec![b'a'; 30]);
+    let fresh = ObjectCache::new(store, 30);
+    drop(cache);
+    let mut fresh = fresh;
+    assert_eq!(fresh.read(&a).expect("fresh cache reads a"), vec![b'a'; 30]);
+    let _ = std::fs::remove_dir_all(&dir);
+}
+
+#[test]
+fn s3_cache_oversize_objects_bypass_without_residence() {
+    // AC 9 refusal path: an object larger than capacity is served
+    // without caching, so the bound holds and the bytes stay exact.
+    let (dir, mut cache) = cached_store("oversize", 10);
+    let store = cache.store().clone();
+    let big = commit_bytes(&store, &[b'z'; 64]);
+    let bytes = cache.read(&big).expect("oversize read serves");
+    assert_eq!(bytes, vec![b'z'; 64]);
+    assert_eq!(cache.resident_bytes(), 0, "nothing cached past capacity");
+    assert_eq!(cache.uncached(), 1, "one bypass recorded");
+    let _ = std::fs::remove_dir_all(&dir);
+}
+
+#[test]
+fn s3_cache_tampered_and_malformed_identities_still_refuse() {
+    // AC 9 regression: the cache never launders store verification.
+    let (dir, mut cache) = cached_store("verify", 1024);
+    let store = cache.store().clone();
+    let digest = commit_bytes(&store, b"cache never launders verification");
+    match cache.read("not-a-digest") {
+        Err(LedgerError::BadDigest { .. }) => {}
+        other => panic!("expected BadDigest, got: {other:?}"),
+    }
+    let object = dir
+        .join("store")
+        .join("objects")
+        .join(&digest[..2])
+        .join(&digest);
+    let mut raw = std::fs::read(&object).expect("read object");
+    raw[0] ^= 0xff;
+    std::fs::write(&object, &raw).expect("tamper object");
+    match cache.read(&digest) {
+        Err(LedgerError::DigestMismatch { .. }) => {}
+        other => panic!("expected DigestMismatch, got: {other:?}"),
+    }
+    let _ = std::fs::remove_dir_all(&dir);
+}
+
+#[test]
+fn s3_cache_measures_cold_and_warm_peaks() {
+    // AC 9 measurement: cold load raises resident bytes to the object
+    // size and records the peak; warm reads hold both steady while the
+    // process high-water mark is observed.
+    let (dir, mut cache) = cached_store("peaks", 1024);
+    let store = cache.store().clone();
+    let digest = commit_bytes(&store, &[b'p'; 128]);
+    cache.clear();
+    assert_eq!(cache.resident_bytes(), 0);
+    cache.read(&digest).expect("cold read");
+    let cold_resident = cache.resident_bytes();
+    let cold_peak = cache.peak_bytes();
+    assert_eq!(cold_resident, 128);
+    assert_eq!(cold_peak, 128, "peak records the cold high-water mark");
+    let cold_process = process_peak_bytes();
+    for _ in 0..8 {
+        cache.read(&digest).expect("warm read");
+    }
+    assert_eq!(
+        cache.resident_bytes(),
+        cold_resident,
+        "warm reads add nothing"
+    );
+    assert_eq!(cache.peak_bytes(), cold_peak, "peak holds without growth");
+    assert_eq!(cache.hits(), 8);
+    if let (Some(before), Some(after)) = (cold_process, process_peak_bytes()) {
+        assert!(after >= before, "process high-water mark never recedes");
+    }
+    let _ = std::fs::remove_dir_all(&dir);
 }

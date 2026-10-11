@@ -1,0 +1,15 @@
+{"commands": [{"small": "S3", "command": "cargo test -p hephaestus --test architecture_compact_evidence_storage s3_cache"}], "cwd": "/run/media/ideator/Projects/AI Agents/Hephaestus"}
+### S3: cargo test -p hephaestus --test architecture_compact_evidence_storage s3_cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on build directory
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 16.52s
+     Running tests/architecture_compact_evidence_storage.rs (target/debug/deps/architecture_compact_evidence_storage-c85ba8308bf8fa42)
+
+running 5 tests
+test s3_cache_oversize_objects_bypass_without_residence ... ok
+test s3_cache_measures_cold_and_warm_peaks ... ok
+test s3_cache_tampered_and_malformed_identities_still_refuse ... ok
+test s3_cache_evicts_reloadable_data_and_retains_originals ... ok
+test s3_cache_bounds_resident_bytes_with_lru_eviction ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 11 filtered out; finished in 0.00s

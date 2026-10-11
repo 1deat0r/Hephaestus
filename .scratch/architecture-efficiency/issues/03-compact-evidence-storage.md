@@ -1,6 +1,6 @@
 # AE-03: Compact evidence storage
 
-**Status:** ready-for-agent
+**Status:** done
 **Verify:** cargo test -p hephaestus --test architecture_compact_evidence_storage
 **Covers:** 7, 8, 9
 **Blocked by:** None
@@ -36,15 +36,15 @@ Test names below are planned. Existing passing tests cannot substitute for these
        - [x] Add positive, refusal, and regression cases in `crates/hephaestus/tests/architecture_compact_evidence_storage.rs`.
        - [x] Implement the specified behavior in `crates/hephaestus/src/knowledge/service.rs`.
 
-3. [ ] **S3** Bound storage caches
-   **Status:** pending
+3. [x] **S3** Bound storage caches
+   **Status:** done
    **Verify:** cargo test -p hephaestus --test architecture_compact_evidence_storage s3_cache
    Limit resident cache bytes; evict reloadable data; retain referenced originals; measure cold and warm memory peaks.
    **Micro-tasks:**
-   1. [ ] **M1** Demonstrate the missing behavior; implement it; pass the same acceptance tests.
-      **Verify:** cargo test -p hephaestus --test architecture_compact_evidence_storage s3_cache
-      - [ ] Add positive, refusal, and regression cases in `crates/hephaestus/tests/architecture_compact_evidence_storage.rs`.
-      - [ ] Implement the specified behavior in `crates/hephaestus/src/ledger/artifact_store.rs`.
+    1. [x] **M1** Demonstrate the missing behavior; implement it; pass the same acceptance tests.
+       **Verify:** cargo test -p hephaestus --test architecture_compact_evidence_storage s3_cache
+       - [x] Add positive, refusal, and regression cases in `crates/hephaestus/tests/architecture_compact_evidence_storage.rs`.
+       - [x] Implement the specified behavior in `crates/hephaestus/src/ledger/artifact_store.rs`.
 
 ## Comments
 

@@ -643,3 +643,5 @@ tests/test_ticket_status.py
 .scratch/architecture-efficiency/receipts/ae03-s1-green.md
 .scratch/architecture-efficiency/receipts/ae03-s2-workflow-verify.log
 .scratch/architecture-efficiency/receipts/ae03-s2-green.md
+.scratch/architecture-efficiency/receipts/ae03-s3-workflow-verify.log
+.scratch/architecture-efficiency/receipts/ae03-s3-green.md

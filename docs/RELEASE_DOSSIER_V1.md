@@ -8,8 +8,8 @@ Campaign: prereg-fixture-campaign-1 over 20 missions; failures retained: 0.
 
 ## Comparison carried
 
-baseline base: correctness 0.000000, tokens: 2975, cost 0.0, latency total 10 ms, throughput mean 1387547.888 tok/s, peak memory max 4624384 bytes
-candidate cand: correctness 1.000000, tokens: 2975, cost 0.0, latency total 10 ms, throughput mean 1323449.192 tok/s, peak memory max 4624384 bytes
+baseline base: correctness 0.000000, tokens: 2975, cost 0.0, latency total 10 ms, throughput mean 1355121.789 tok/s, peak memory max 4579328 bytes
+candidate cand: correctness 1.000000, tokens: 2975, cost 0.0, latency total 10 ms, throughput mean 1340517.812 tok/s, peak memory max 4579328 bytes
 
 false promotions: 0 (no gate ran; count by absence).
 
@@ -29,11 +29,13 @@ suite prereg-fixture-campaign-1; n 20; observed cand-arm value range (0.330538, 
 
 - tokens: 5950 fixed-tokenizer-tokens
 - latency: 20 ms-wall-local-total
-- peak-memory: 4624384 bytes-vmhwm-max
+- wall-time: 4416851 ns-wall-local-total
+- cpu-time: 4399934 ns-cpu-local-total
+- peak-memory: 4579328 bytes-vmhwm-max
 
 ## Findings (R-077 gate: passed: no critical unresolved finding in scope)
 
-- compute-wall-time-unmetered [Minor, open] Compute spend and wall time are not metered; local latency stands in.
+- compute-wall-time-metered [Minor, resolved] Wall and CPU time metered per run by local clocks; currency spend stays absent.
 - model-arms-absent [Minor, open] No consented provider contract exists; no model arm ran.
 
 ## Reproducibility
@@ -60,4 +62,4 @@ suite prereg-fixture-campaign-1; n 20; observed cand-arm value range (0.330538, 
 ## Input digests (run-local provenance)
 
 - pilot report: c67110b0274b9a360da1e07d32f67014147384a95a68e729bb7357eddadabe0e
-- baseline report: fc397131e9f97deb6be64c31551af82060981d18c29f311fc3cb89afbb913cbf
+- baseline report: 8ebd32f677ca180bf0342b0aecf8932fed8b7e480ba3a42d1153df025f340341

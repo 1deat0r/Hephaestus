@@ -92,7 +92,7 @@ pub fn assemble_v1_dossier(
         model_access: "none".to_string(),
         tuning_record: "fixture-fixed".to_string(),
     };
-    let (base, cand, _, _, _, _) =
+    let (base, cand, _, _, base_compute, cand_compute) =
         crate::acceleration::measure_deterministic_arms(trace_text, envelope)
             .map_err(|e| format!("baseline measure: {e}"))?;
     let comparison = crate::evalsuite::compare_qualified_efficiency(&base, &cand)
@@ -135,11 +135,11 @@ pub fn assemble_v1_dossier(
         declared_scope: "fixture pilot batch + deterministic baseline comparison (v0.0.1 track)".to_string(),
         findings: vec![
             record::Finding {
-                id: "compute-wall-time-unmetered".to_string(),
+                id: "compute-wall-time-metered".to_string(),
                 severity: record::Severity::Minor,
-                resolved: false,
+                resolved: true,
                 in_scope: true,
-                description: "Compute spend and wall time are not metered; local latency stands in.".to_string(),
+                description: "Wall and CPU time metered per run by local clocks; currency spend stays absent.".to_string(),
             },
             record::Finding {
                 id: "model-arms-absent".to_string(),
@@ -165,6 +165,19 @@ pub fn assemble_v1_dossier(
                 kind: "latency".to_string(),
                 quantity: latency_total.to_string(),
                 unit: "ms-wall-local-total".to_string(),
+            },
+            record::Measurement {
+                kind: "wall-time".to_string(),
+                quantity: (base_compute.wall_ns_total + cand_compute.wall_ns_total).to_string(),
+                unit: "ns-wall-local-total".to_string(),
+            },
+            record::Measurement {
+                kind: "cpu-time".to_string(),
+                quantity: match (base_compute.cpu_ns_total, cand_compute.cpu_ns_total) {
+                    (Some(a), Some(b)) => (a + b).to_string(),
+                    _ => "gap".to_string(),
+                },
+                unit: "ns-cpu-local-total".to_string(),
             },
             record::Measurement {
                 kind: "peak-memory".to_string(),

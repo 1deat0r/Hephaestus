@@ -1,0 +1,16 @@
+{"commands": [{"small": "S1", "command": "cargo test -p hephaestus --test architecture_compact_evidence_storage s1_ledger"}], "cwd": "/run/media/ideator/Projects/AI Agents/Hephaestus"}
+### S1: cargo test -p hephaestus --test architecture_compact_evidence_storage s1_ledger
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on build directory
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 20.15s
+     Running tests/architecture_compact_evidence_storage.rs (target/debug/deps/architecture_compact_evidence_storage-c85ba8308bf8fa42)
+
+running 6 tests
+test s1_ledger_empty_open_has_no_offsets ... ok
+test s1_ledger_corrupt_middle_line_names_the_line ... ok
+test s1_ledger_torn_tail_trims_and_reports_offsets ... ok
+test s1_ledger_broken_link_names_the_line ... ok
+test s1_ledger_missing_final_newline_normalizes_and_appends ... ok
+test s1_ledger_stream_verifies_chain_and_retains_compact_offsets ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s

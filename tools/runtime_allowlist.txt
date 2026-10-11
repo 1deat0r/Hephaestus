@@ -117,6 +117,7 @@ crates/hephaestus/tests/scheduler_deny.rs
 crates/hephaestus/tests/scheduler_run.rs
 crates/hephaestus/tests/architecture_resource_admission.rs
 crates/hephaestus/tests/architecture_concurrent_execution.rs
+crates/hephaestus/tests/architecture_compact_evidence_storage.rs
 crates/hephaestus/src/sandbox/executor.rs
 crates/hephaestus/src/sandbox/launch.rs
 crates/hephaestus/src/sandbox/mod.rs
@@ -638,3 +639,5 @@ tests/test_ticket_status.py
 .scratch/architecture-efficiency/receipts/ae01-s3-20261010-sweep.log
 .scratch/architecture-efficiency/receipts/ae01-s3-20261010-verify.json
 .scratch/architecture-efficiency/receipts/ae01-s3-20261010-verify.log
+.scratch/architecture-efficiency/receipts/ae03-s1-workflow-verify.log
+.scratch/architecture-efficiency/receipts/ae03-s1-green.md

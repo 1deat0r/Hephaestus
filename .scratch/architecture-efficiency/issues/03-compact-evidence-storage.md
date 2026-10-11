@@ -16,15 +16,15 @@ Test names below are planned. Existing passing tests cannot substitute for these
 
 **Small tasks:**
 
-1. [ ] **S1** Stream ledger verification
-   **Status:** pending
+1. [x] **S1** Stream ledger verification
+   **Status:** done
    **Verify:** cargo test -p hephaestus --test architecture_compact_evidence_storage s1_ledger
    Verify exact-byte chains incrementally; retain compact offsets; preserve corruption and torn-tail recovery behavior.
    **Micro-tasks:**
-   1. [ ] **M1** Demonstrate the missing behavior; implement it; pass the same acceptance tests.
-      **Verify:** cargo test -p hephaestus --test architecture_compact_evidence_storage s1_ledger
-      - [ ] Add positive, refusal, and regression cases in `crates/hephaestus/tests/architecture_compact_evidence_storage.rs`.
-      - [ ] Implement the specified behavior in `crates/hephaestus/src/ledger/event_ledger.rs`.
+    1. [x] **M1** Demonstrate the missing behavior; implement it; pass the same acceptance tests.
+       **Verify:** cargo test -p hephaestus --test architecture_compact_evidence_storage s1_ledger
+       - [x] Add positive, refusal, and regression cases in `crates/hephaestus/tests/architecture_compact_evidence_storage.rs`.
+       - [x] Implement the specified behavior in `crates/hephaestus/src/ledger/event_ledger.rs`.
 
 2. [ ] **S2** Load source bytes on demand
    **Status:** pending

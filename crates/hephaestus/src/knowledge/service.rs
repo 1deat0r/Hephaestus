@@ -586,6 +586,13 @@ pub enum AssemblyError {
         tokens_needed: usize,
         token_limit: usize,
     },
+    /// A mandatory requirement resolves to no span (unknown,
+    /// quarantined, or out-of-bounds source). Unlike budget omission,
+    /// no token count applies — the bytes do not exist.
+    MandatoryUnresolvable {
+        requirement_id: String,
+        reason: String,
+    },
 }
 
 impl std::fmt::Display for AssemblyError {
@@ -601,6 +608,12 @@ impl std::fmt::Display for AssemblyError {
                     f,
                     "budget {token_limit} omits mandatory {requirement_id} needing {tokens_needed}"
                 )
+            }
+            Self::MandatoryUnresolvable {
+                requirement_id,
+                reason,
+            } => {
+                write!(f, "mandatory {requirement_id} unresolvable: {reason}")
             }
         }
     }
@@ -621,6 +634,34 @@ pub fn assemble_bounded_context(
     request: &ContextRequest,
 ) -> Result<BoundedContext, AssemblyError> {
     let intake = assemble_intake(corpus, request).map_err(AssemblyError::Intake)?;
+    // Mandatory requirements must resolve: an unresolvable mandatory
+    // span refuses by identity before budgeting, so it never vanishes
+    // into the skip below. Optional unresolvable spans skip; intake
+    // missing carries them explicitly.
+    for req in &request.requirements {
+        if !req.mandatory {
+            continue;
+        }
+        let reason = match corpus.get(req.source) {
+            None => Some(format!("unknown source: {}", req.source)),
+            Some(src) if src.quarantined.is_some() => {
+                Some(format!("quarantined source: {}", req.source))
+            }
+            Some(src) if req.start > req.end || req.end > src.bytes.len() => Some(format!(
+                "span [{}, {}) outside {} captured bytes",
+                req.start,
+                req.end,
+                src.bytes.len()
+            )),
+            Some(_) => None,
+        };
+        if let Some(reason) = reason {
+            return Err(AssemblyError::MandatoryUnresolvable {
+                requirement_id: req.id.clone(),
+                reason,
+            });
+        }
+    }
     // Re-resolve with requirement identity for dedupe + budget order.
     let mut seen: HashSet<(u64, usize, usize)> = HashSet::new();
     let mut unique: Vec<(String, bool, Span, String)> = Vec::new();

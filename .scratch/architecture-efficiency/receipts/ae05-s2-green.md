@@ -47,3 +47,17 @@ before landing.
 Token cost sums span byte lengths; no tokenizer budget exists.
 Live grant/dependency flags enter through S1 intake and S3 reuse.
 This unblocks AE-05 S3.
+
+## Addendum 2026-10-11 — refuse unresolvable mandatory requirements
+
+Independent review found a hole: a mandatory out-of-bounds,
+unknown, or quarantined requirement skipped silently instead of
+refusing. `assemble_bounded_context` now pre-checks every
+mandatory requirement and returns `MandatoryUnresolvable` with its
+id and cause. Optional ghosts still list missing and pass.
+New tests: `s2_assembly_mandatory_unresolvable_refuses`,
+`s1_interface_quarantined_source_lists_missing`. The
+`BlockedDisagreement` arm stays untested by construction: a
+`Matched` closure implies equal digests, so the arm is unreachable
+defense in depth. Rename handling stays a stale-plus-missing pair;
+no identity oracle exists for explicit rename links.

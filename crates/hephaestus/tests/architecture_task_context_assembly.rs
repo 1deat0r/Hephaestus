@@ -294,3 +294,45 @@ fn s3_correctness_unsupported_blocks_conservatively() {
         other => panic!("expected BlockedUnsupported, got: {other:?}"),
     }
 }
+
+#[test]
+fn s2_assembly_mandatory_unresolvable_refuses() {
+    // AC 14 refusal: a mandatory requirement with no resolvable bytes
+    // (out-of-bounds, unknown source) refuses by identity instead of
+    // vanishing; optional ghosts still list missing and pass.
+    let corpus = corpus_two();
+    match assemble_bounded_context(&corpus, &request(vec![req("must-oob", 0, 0, 9999)])) {
+        Err(AssemblyError::MandatoryUnresolvable { requirement_id, .. }) => {
+            assert_eq!(requirement_id, "must-oob");
+        }
+        other => panic!("expected MandatoryUnresolvable, got: {other:?}"),
+    }
+    match assemble_bounded_context(&corpus, &request(vec![req("must-ghost", 77, 0, 5)])) {
+        Err(AssemblyError::MandatoryUnresolvable { requirement_id, .. }) => {
+            assert_eq!(requirement_id, "must-ghost");
+        }
+        other => panic!("expected MandatoryUnresolvable, got: {other:?}"),
+    }
+    let ctx = assemble_bounded_context(
+        &corpus,
+        &request(vec![req("must", 0, 0, 5), opt_req("nice-ghost", 77, 0, 5)]),
+    )
+    .expect("optional ghost lists missing");
+    assert_eq!(ctx.spans.len(), 1);
+    assert_eq!(ctx.missing.len(), 1);
+    assert_eq!(ctx.missing[0].requirement_id, "nice-ghost");
+}
+
+#[test]
+fn s1_interface_quarantined_source_lists_missing() {
+    // AC 13 regression: a quarantined source resolves to missing with
+    // a named cause, never to a span.
+    use hephaestus::knowledge::quarantine;
+    let mut corpus = corpus_two();
+    quarantine(&mut corpus, 0, "suspect provenance").expect("quarantine");
+    let ctx = assemble_intake(&corpus, &request(vec![req("q", 0, 0, 5)]))
+        .expect("quarantine lists missing");
+    assert!(ctx.spans.is_empty());
+    assert_eq!(ctx.missing.len(), 1);
+    assert!(ctx.missing[0].reason.contains("quarantined"));
+}

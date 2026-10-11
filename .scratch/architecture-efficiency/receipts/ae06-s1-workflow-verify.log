@@ -1,0 +1,12 @@
+{"commands": [{"small": "S1", "command": "cargo test -p hephaestus --test architecture_qualified_reasoning_routing s1_deterministic"}], "cwd": "/run/media/ideator/Projects/AI Agents/Hephaestus"}
+### S1: cargo test -p hephaestus --test architecture_qualified_reasoning_routing s1_deterministic
+   Compiling hephaestus v0.1.0 (/run/media/ideator/Projects/AI Agents/Hephaestus/crates/hephaestus)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.29s
+     Running tests/architecture_qualified_reasoning_routing.rs (target/debug/deps/architecture_qualified_reasoning_routing-2d29d40088e9c4ab)
+
+running 3 tests
+test s1_deterministic_advisory_may_route_to_provider ... ok
+test s1_deterministic_ops_refuse_model_route ... ok
+test s1_deterministic_ops_route_local ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s

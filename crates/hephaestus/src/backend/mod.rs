@@ -233,3 +233,80 @@ pub fn check_contract(backend_name: &str, backend: &mut dyn ExecutionBackend) ->
 pub fn tachyon_status() -> TachyonStatus {
     TachyonStatus::BlockedPendingRealProtocol
 }
+
+/// One operation class for routing (AC16): the five deterministic
+/// classes must never reach a model; genuinely advisory tasks alone
+/// may route to a provider behind its capability contract.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum OperationKind {
+    Parsing,
+    Arithmetic,
+    Authorization,
+    Hashing,
+    StatisticalDecision,
+    AdvisoryTask { task: String },
+}
+
+impl OperationKind {
+    /// Stable name for receipts and refusals.
+    pub fn name(&self) -> String {
+        match self {
+            Self::Parsing => "parsing".to_string(),
+            Self::Arithmetic => "arithmetic".to_string(),
+            Self::Authorization => "authorization".to_string(),
+            Self::Hashing => "hashing".to_string(),
+            Self::StatisticalDecision => "statistical-decision".to_string(),
+            Self::AdvisoryTask { .. } => "advisory-task".to_string(),
+        }
+    }
+
+    /// Request a route explicitly. Deterministic operations accept
+    /// local only; advisory tasks accept either route.
+    pub fn request_route(&self, route: Route) -> Result<Route, RouteError> {
+        match (self, route) {
+            (Self::AdvisoryTask { .. }, route) => Ok(route),
+            (_, Route::Local) => Ok(Route::Local),
+            (op, Route::Advisory) => Err(RouteError::ModelRefusedForDeterministicOp {
+                operation: op.name(),
+            }),
+        }
+    }
+}
+
+/// Where an operation executes.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum Route {
+    Local,
+    Advisory,
+}
+
+/// Why an explicit route request refused.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum RouteError {
+    /// A model route was requested for a deterministic operation.
+    ModelRefusedForDeterministicOp { operation: String },
+}
+
+impl std::fmt::Display for RouteError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::ModelRefusedForDeterministicOp { operation } => {
+                write!(
+                    f,
+                    "model route refused for deterministic operation: {operation}"
+                )
+            }
+        }
+    }
+}
+
+impl std::error::Error for RouteError {}
+
+/// Route one operation: deterministic classes always route local;
+/// advisory tasks route to the provider. Total: every class maps.
+pub fn route_operation(op: &OperationKind) -> Route {
+    match op {
+        OperationKind::AdvisoryTask { .. } => Route::Advisory,
+        _ => Route::Local,
+    }
+}

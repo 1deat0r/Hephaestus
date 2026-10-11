@@ -1,6 +1,6 @@
 # AE-06: Qualified reasoning routing
 
-**Status:** blocked
+**Status:** ready-for-agent
 **Verify:** cargo test -p hephaestus --test architecture_qualified_reasoning_routing
 **Covers:** 16, 17, 18
 **Blocked by:** 05
@@ -16,15 +16,15 @@ Test names below are planned. Existing passing tests cannot substitute for these
 
 **Small tasks:**
 
-1. [ ] **S1** Route deterministic operations
-   **Status:** pending
+1. [x] **S1** Route deterministic operations
+   **Status:** done
    **Verify:** cargo test -p hephaestus --test architecture_qualified_reasoning_routing s1_deterministic
    Keep parsing, arithmetic, authorization, hashing, and statistical decisions deterministic; avoid model calls for these operations.
    **Micro-tasks:**
-   1. [ ] **M1** Demonstrate the missing behavior; implement it; pass the same acceptance tests.
-      **Verify:** cargo test -p hephaestus --test architecture_qualified_reasoning_routing s1_deterministic
-      - [ ] Add positive, refusal, and regression cases in `crates/hephaestus/tests/architecture_qualified_reasoning_routing.rs`.
-      - [ ] Implement the specified behavior in `crates/hephaestus/src/backend/mod.rs`.
+    1. [x] **M1** Demonstrate the missing behavior; implement it; pass the same acceptance tests.
+       **Verify:** cargo test -p hephaestus --test architecture_qualified_reasoning_routing s1_deterministic
+       - [x] Add positive, refusal, and regression cases in `crates/hephaestus/tests/architecture_qualified_reasoning_routing.rs`.
+       - [x] Implement the specified behavior in `crates/hephaestus/src/backend/mod.rs`.
 
 2. [ ] **S2** Select qualified providers
    **Status:** pending

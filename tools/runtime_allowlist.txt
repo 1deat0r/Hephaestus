@@ -660,10 +660,13 @@ crates/hephaestus/tests/architecture_task_context_assembly.rs
 .scratch/architecture-efficiency/receipts/ae05-s3-workflow-verify.log
 .scratch/architecture-efficiency/receipts/ae05-s3-green.md
 crates/hephaestus/tests/architecture_qualified_reasoning_routing.rs
+crates/hephaestus/tests/architecture_independent_qualification.rs
 .scratch/architecture-efficiency/receipts/ae06-s1-workflow-verify.log
 .scratch/architecture-efficiency/receipts/ae06-s1-green.md
 .scratch/architecture-efficiency/receipts/ae06-s2-green.md
 .scratch/architecture-efficiency/receipts/ae06-s2-workflow-verify.log
 .scratch/architecture-efficiency/receipts/ae06-s3-green.md
 .scratch/architecture-efficiency/receipts/ae06-s3-workflow-verify.log
+.scratch/architecture-efficiency/receipts/ae07-s1-green.md
+.scratch/architecture-efficiency/receipts/ae07-s1-workflow-verify.log
 docs/V0_01_EXPERIMENTAL.md

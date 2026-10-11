@@ -185,3 +185,80 @@ pub fn check_confirmatory_access(
         vec![error("CONFIRMATORY_ACCESS_NOT_VERIFIED", owner)]
     }
 }
+
+/// Plane roles for evaluation-artifact access (AC 19). Generators
+/// propose; evaluators and reviewers judge. The roles never share
+/// protected bytes.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum Role {
+    Generator,
+    Evaluator,
+    Reviewer,
+}
+
+/// One evaluation or work artifact reference. `protected` marks
+/// hidden ground truth and sealed workloads. `version` is the
+/// requested artifact version.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct ArtifactRef {
+    pub id: String,
+    pub version: i64,
+    pub protected: bool,
+}
+
+/// One access request: who asks, for which artifact version.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct AccessRequest {
+    pub role: Role,
+    pub artifact: ArtifactRef,
+    pub current_version: i64,
+}
+
+/// Why artifact access refused.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum AccessError {
+    /// A generator asked for a protected evaluation artifact.
+    /// The artifact is named; no version facts leak.
+    GeneratorDeniedProtected { artifact: String },
+    /// The requested version is not current. Qualification gates
+    /// bind the current version only.
+    StaleVersion { requested: i64, current: i64 },
+}
+
+impl std::fmt::Display for AccessError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::GeneratorDeniedProtected { artifact } => {
+                write!(f, "generator denied protected artifact: {artifact}")
+            }
+            Self::StaleVersion { requested, current } => {
+                write!(f, "stale version {requested}; current is {current}")
+            }
+        }
+    }
+}
+
+impl std::error::Error for AccessError {}
+
+/// Authorize one artifact access (AC 19).
+///
+/// Role denial runs first: a generator never reaches protected
+/// evaluation artifacts and learns nothing about version currency.
+/// Version gates run second: stale versions refuse for every role,
+/// so old approvals never carry forward. Advisory-only authority
+/// is preserved: the gate grants no promotion, budget, or method
+/// qualification — it only opens artifact bytes.
+pub fn authorize_access(req: &AccessRequest) -> Result<(), AccessError> {
+    if req.role == Role::Generator && req.artifact.protected {
+        return Err(AccessError::GeneratorDeniedProtected {
+            artifact: req.artifact.id.clone(),
+        });
+    }
+    if req.artifact.version != req.current_version {
+        return Err(AccessError::StaleVersion {
+            requested: req.artifact.version,
+            current: req.current_version,
+        });
+    }
+    Ok(())
+}

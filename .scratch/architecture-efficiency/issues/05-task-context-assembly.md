@@ -1,6 +1,6 @@
 # AE-05: Task context assembly
 
-**Status:** blocked
+**Status:** ready-for-agent
 **Verify:** cargo test -p hephaestus --test architecture_task_context_assembly
 **Covers:** 13, 14, 15
 **Blocked by:** 04
@@ -16,15 +16,15 @@ Test names below are planned. Existing passing tests cannot substitute for these
 
 **Small tasks:**
 
-1. [ ] **S1** Define context assembly interface
-   **Status:** pending
+1. [x] **S1** Define context assembly interface
+   **Status:** done
    **Verify:** cargo test -p hephaestus --test architecture_task_context_assembly s1_interface
    Accept authorized snapshot, task, evidence requirements, and token limit; return provenance and explicit missing evidence.
    **Micro-tasks:**
-   1. [ ] **M1** Demonstrate the missing behavior; implement it; pass the same acceptance tests.
-      **Verify:** cargo test -p hephaestus --test architecture_task_context_assembly s1_interface
-      - [ ] Add positive, refusal, and regression cases in `crates/hephaestus/tests/architecture_task_context_assembly.rs`.
-      - [ ] Implement the specified behavior in `crates/hephaestus/src/knowledge/record.rs`.
+    1. [x] **M1** Demonstrate the missing behavior; implement it; pass the same acceptance tests.
+       **Verify:** cargo test -p hephaestus --test architecture_task_context_assembly s1_interface
+       - [x] Add positive, refusal, and regression cases in `crates/hephaestus/tests/architecture_task_context_assembly.rs`.
+       - [x] Implement the specified behavior in `crates/hephaestus/src/knowledge/record.rs`.
 
 2. [ ] **S2** Assemble bounded evidence context
    **Status:** pending

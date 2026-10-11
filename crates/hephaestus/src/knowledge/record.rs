@@ -201,3 +201,133 @@ pub enum ClassifyError {
     /// it must never be the basis of promotion.
     UngroundedObservation { ingestions: usize },
 }
+
+/// One evidence requirement for a task context: exact source span
+/// plus whether the span is mandatory (S2 enforces the budget rule).
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct EvidenceRequirement {
+    pub id: String,
+    pub source: u64,
+    pub start: usize,
+    pub end: usize,
+    pub mandatory: bool,
+}
+
+/// Intake request for one bounded task context (AC13): an authorized
+/// snapshot, a task statement, evidence requirements, and a token
+/// limit. Authorization is caller-evaluated; the flag carries it.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct ContextRequest {
+    pub snapshot_id: String,
+    pub snapshot_authorized: bool,
+    pub task: String,
+    pub requirements: Vec<EvidenceRequirement>,
+    pub token_limit: usize,
+}
+
+/// One requirement that resolves to no span, with its cause.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct MissingEvidence {
+    pub requirement_id: String,
+    pub reason: String,
+}
+
+/// Intake result: resolved spans with provenance plus explicit
+/// missing evidence. `tokens_used` sums resolved span byte lengths.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct AssembledContext {
+    pub spans: Vec<Span>,
+    pub provenance: Vec<String>,
+    pub missing: Vec<MissingEvidence>,
+    pub tokens_used: usize,
+}
+
+/// Why intake refused. Missing spans never refuse; they list under
+/// `missing` so absence stays explicit.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum ContextError {
+    UnauthorizedSnapshot,
+    EmptyTask,
+    EmptyRequirements,
+    InvalidTokenLimit,
+}
+
+impl std::fmt::Display for ContextError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::UnauthorizedSnapshot => write!(f, "snapshot not authorized"),
+            Self::EmptyTask => write!(f, "task is empty"),
+            Self::EmptyRequirements => write!(f, "requirements are empty"),
+            Self::InvalidTokenLimit => write!(f, "token limit must be nonzero"),
+        }
+    }
+}
+
+impl std::error::Error for ContextError {}
+
+/// Validate intake and resolve requirement spans against the corpus.
+/// Quarantined, unknown, and out-of-bounds sources list as missing.
+pub fn assemble_intake(
+    corpus: &Corpus,
+    request: &ContextRequest,
+) -> Result<AssembledContext, ContextError> {
+    if !request.snapshot_authorized {
+        return Err(ContextError::UnauthorizedSnapshot);
+    }
+    if request.task.is_empty() {
+        return Err(ContextError::EmptyTask);
+    }
+    if request.requirements.is_empty() {
+        return Err(ContextError::EmptyRequirements);
+    }
+    if request.token_limit == 0 {
+        return Err(ContextError::InvalidTokenLimit);
+    }
+    let mut spans = Vec::new();
+    let mut provenance = Vec::new();
+    let mut missing = Vec::new();
+    for req in &request.requirements {
+        match corpus.get(req.source) {
+            None => missing.push(MissingEvidence {
+                requirement_id: req.id.clone(),
+                reason: format!("unknown source: {}", req.source),
+            }),
+            Some(src) if src.quarantined.is_some() => missing.push(MissingEvidence {
+                requirement_id: req.id.clone(),
+                reason: format!("quarantined source: {}", req.source),
+            }),
+            Some(src) if req.start > req.end || req.end > src.bytes.len() => {
+                missing.push(MissingEvidence {
+                    requirement_id: req.id.clone(),
+                    reason: format!(
+                        "span [{}, {}) outside {} captured bytes",
+                        req.start,
+                        req.end,
+                        src.bytes.len()
+                    ),
+                });
+            }
+            Some(src) => {
+                let text = String::from_utf8_lossy(&src.bytes[req.start..req.end]).into_owned();
+                spans.push(Span {
+                    source: req.source,
+                    start: req.start,
+                    end: req.end,
+                    text,
+                    transforms: Vec::new(),
+                });
+                provenance.push(format!(
+                    "source:{}:[{}..{})@{}",
+                    req.source, req.start, req.end, src.sha256
+                ));
+            }
+        }
+    }
+    let tokens_used = spans.iter().map(|s| s.text.len()).sum();
+    Ok(AssembledContext {
+        spans,
+        provenance,
+        missing,
+        tokens_used,
+    })
+}

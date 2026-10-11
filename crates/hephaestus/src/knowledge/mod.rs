@@ -15,8 +15,9 @@
 pub mod record;
 pub mod service;
 pub use record::{
-    CapturedSource, ClassifyError, Corpus, CorpusCoverage, Edge, EdgeError, EdgeType, ParserId,
-    QueryCoverage, SearchHit, Span, SpanError, StatementIngestion,
+    AssembledContext, CapturedSource, ClassifyError, ContextError, ContextRequest, Corpus,
+    CorpusCoverage, Edge, EdgeError, EdgeType, EvidenceRequirement, MissingEvidence, ParserId,
+    QueryCoverage, SearchHit, Span, SpanError, StatementIngestion, assemble_intake,
 };
 pub use service::{
     AdapterError, LocalFileAdapter, OnDemandError, ReuseKey, ReusePresentation, ReuseRefusal,

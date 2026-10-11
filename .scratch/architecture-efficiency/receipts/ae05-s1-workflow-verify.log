@@ -1,0 +1,11 @@
+{"commands": [{"small": "S1", "command": "cargo test -p hephaestus --test architecture_task_context_assembly s1_interface"}], "cwd": "/run/media/ideator/Projects/AI Agents/Hephaestus"}
+### S1: cargo test -p hephaestus --test architecture_task_context_assembly s1_interface
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.08s
+     Running tests/architecture_task_context_assembly.rs (target/debug/deps/architecture_task_context_assembly-711d5d7b9788371c)
+
+running 3 tests
+test s1_interface_refuses_unauthorized_and_bad_intake ... ok
+test s1_interface_reports_missing_evidence_explicitly ... ok
+test s1_interface_returns_spans_with_provenance ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s

@@ -1,6 +1,13 @@
 # Changelog
 
-## 1.0.0 (2026-10-12) — EXPERIMENTAL, fixture scope
+## 0.2.0 (2026-10-12) — EXPERIMENTAL, fixture scope
+
+Correction note: this release briefly read 1.0.0 on the same day.
+That number overclaimed: open findings, unrun campaigns, and
+unmeasured targets remain, so v1 is unearned. The number comes
+down to 0.2.0 until the qualification inputs exist. No code
+changed in the correction; only the version, this note, and the
+release scope status.
 
 First versioned release. Scope label: EXPERIMENTAL. The packet in
 `docs/RELEASE_DOSSIER_V1.md` carries the evidence; no claim in this

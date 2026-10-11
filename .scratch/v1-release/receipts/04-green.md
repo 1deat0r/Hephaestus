@@ -31,3 +31,10 @@ inputs absent, per the dossier packet.
 Version number marks a scoped EXPERIMENTAL shipment, not
 maturity. Live, model, metered, and confirmatory work stays
 unrun and stated. The v0.01 packet doc stays as history.
+
+## Correction (same day)
+
+Version came down 1.0.0 to 0.2.0: v1 is unearned while
+findings stay open and campaigns stay unrun. Changelog carries
+the correction note; scopes reworded; manifest resealed. No
+code changed.

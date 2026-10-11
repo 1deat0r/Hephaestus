@@ -1,6 +1,6 @@
 {
   "version": "1.2",
-  "status": "v1.0.0 EXPERIMENTAL (fixture scope): pilot batch and deterministic comparison measured with receipts; live missions, model arms, metered cost, and confirmatory campaign not run",
+  "status": "v0.2.0 EXPERIMENTAL (fixture scope): pilot batch and deterministic comparison measured with receipts; live missions, model arms, metered cost, and confirmatory campaign not run; v1 waits on qualification inputs",
   "scopes": [
     {
       "id": "M0",

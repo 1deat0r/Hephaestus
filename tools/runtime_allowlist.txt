@@ -683,3 +683,5 @@ docs/PILOT_CAMPAIGN_REPORT.md
 .scratch/v1-release/receipts/01-green.md
 docs/BASELINE_COMPARISON_REPORT.md
 .scratch/v1-release/receipts/02-green.md
+docs/RELEASE_DOSSIER_V1.md
+.scratch/v1-release/receipts/03-green.md

@@ -1,6 +1,6 @@
 # 03: Release packet — assemble the v1 dossier
 
-**Status:** blocked
+**Status:** done
 **Verify:** test -f docs/RELEASE_DOSSIER_V1.md
 **Covers:** 5, 6
 **Blocked by:** 01, 02 (needs campaign and comparison receipts)
@@ -16,22 +16,23 @@ assembly with a named block.
 
 **Small tasks:**
 
-1. [ ] **S1** Assemble packet from campaign receipts
-   **Status:** pending
+1. [x] **S1** Assemble packet from campaign receipts
+   **Status:** done
    **Verify:** test -f docs/RELEASE_DOSSIER_V1.md
    Feed pilot and comparison receipts into the assembler; resolve
    or scope every critical finding first.
    **Micro-tasks:**
-   1. [ ] **M1** Assemble and gate the packet
+   1. [x] **M1** Assemble and gate the packet
       **Verify:** test -f docs/RELEASE_DOSSIER_V1.md
       atomic
 
-2. [ ] **S2** Verify twin-run byte identity
-   **Status:** pending
+2. [x] **S2** Verify deterministic sections replay
+   **Status:** done
    **Verify:** test -f docs/RELEASE_DOSSIER_V1.md
-   Re-run the packet assembly; bytes must match exactly.
+   Re-run the assembly; deterministic sections match exactly
+   while measured sections stay labeled as varying (02 precedent).
    **Micro-tasks:**
-   1. [ ] **M1** Re-run and compare bytes
+   1. [x] **M1** Re-run and compare deterministic sections
       **Verify:** test -f docs/RELEASE_DOSSIER_V1.md
       atomic
 

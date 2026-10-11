@@ -7,6 +7,7 @@
 //!   hephaestus fixture mission-run --trace <FILE>
 //!   hephaestus fixture pilot-batch --trace <FILE> --out <FILE>
 //!   hephaestus fixture baseline-compare --trace <FILE> --out <FILE>
+//!   hephaestus fixture assemble-release --trace <FILE> --pilot <FILE> --baseline <FILE> --out <FILE>
 //!   hephaestus fixture canary-watch
 //!   hephaestus --help
 //!
@@ -23,7 +24,7 @@ use std::io::Write;
 use std::path::PathBuf;
 use std::process::ExitCode;
 
-const USAGE: &str = "usage: hephaestus <fixture run|fixture recover> --state-dir <DIR>\n       hephaestus <fixture mission-run> --trace <FILE>\n       hephaestus <fixture pilot-batch> --trace <FILE> --out <FILE>\n       hephaestus <fixture baseline-compare> --trace <FILE> --out <FILE>\n       hephaestus <fixture canary-watch>\n       hephaestus --help\n";
+const USAGE: &str = "usage: hephaestus <fixture run|fixture recover> --state-dir <DIR>\n       hephaestus <fixture mission-run> --trace <FILE>\n       hephaestus <fixture pilot-batch> --trace <FILE> --out <FILE>\n       hephaestus <fixture baseline-compare> --trace <FILE> --out <FILE>\n       hephaestus <fixture assemble-release> --trace <FILE> --pilot <FILE> --baseline <FILE> --out <FILE>\n       hephaestus <fixture canary-watch>\n       hephaestus --help\n";
 
 fn print_help() {
     println!(
@@ -198,6 +199,7 @@ fn main() -> ExitCode {
             Some("canary-watch") => canary_watch(),
             Some("pilot-batch") => pilot_batch(&rest[1..]),
             Some("baseline-compare") => baseline_compare(&rest[1..]),
+            Some("assemble-release") => assemble_release_cmd(&rest[1..]),
             _ => usage_error(),
         },
         _ => usage_error(),
@@ -351,6 +353,126 @@ fn baseline_compare(rest: &[String]) -> ExitCode {
                     "baseline_correctness": comparison.baseline_correctness,
                     "candidate_correctness": comparison.candidate_correctness,
                     "false_promotions": comparison.false_promotions,
+                })
+            );
+            ExitCode::SUCCESS
+        }
+    }
+}
+
+/// `fixture assemble-release --trace <FILE> --pilot <FILE> --baseline
+/// <FILE> --out <FILE>`: gate and render the v1 fixture-scope dossier
+/// (v1-release 03). Reads the committed campaign reports for digest
+/// provenance, measures fresh from the trace, and writes the dossier.
+/// Fails closed on any gate block or missing input.
+fn assemble_release_cmd(rest: &[String]) -> ExitCode {
+    let mut trace: Option<&str> = None;
+    let mut pilot: Option<&str> = None;
+    let mut baseline: Option<&str> = None;
+    let mut out: Option<&str> = None;
+    let mut args = rest.iter();
+    while let Some(flag) = args.next() {
+        let value = match args.next() {
+            Some(v) if !v.is_empty() && !v.starts_with('-') => v,
+            _ => return usage_error(),
+        };
+        match flag.as_str() {
+            "--trace" if trace.is_none() => trace = Some(value),
+            "--pilot" if pilot.is_none() => pilot = Some(value),
+            "--baseline" if baseline.is_none() => baseline = Some(value),
+            "--out" if out.is_none() => out = Some(value),
+            _ => return usage_error(),
+        }
+    }
+    let (Some(trace), Some(pilot), Some(baseline), Some(out)) = (trace, pilot, baseline, out)
+    else {
+        return usage_error();
+    };
+    let out = PathBuf::from(out);
+    if out.exists() {
+        let _ = writeln!(
+            std::io::stderr(),
+            "error: refusing to overwrite {}",
+            out.display()
+        );
+        return ExitCode::from(1);
+    }
+    let read = |p: &str| match std::fs::read(p) {
+        Err(e) => {
+            let _ = writeln!(std::io::stderr(), "error: read {p}: {e}");
+            None
+        }
+        Ok(b) => Some(b),
+    };
+    let (Some(trace_bytes), Some(pilot_bytes), Some(baseline_bytes)) =
+        (read(trace), read(pilot), read(baseline))
+    else {
+        return ExitCode::from(1);
+    };
+    let trace_text = match String::from_utf8(trace_bytes) {
+        Err(e) => {
+            let _ = writeln!(std::io::stderr(), "error: trace utf8: {e}");
+            return ExitCode::from(1);
+        }
+        Ok(s) => s,
+    };
+    // Provenance is a marker check, not a full parse: the inputs must
+    // read as the campaign reports they claim to be. Any other file
+    // refuses here, before any digest binds.
+    let pilot_text = match String::from_utf8(pilot_bytes) {
+        Err(e) => {
+            let _ = writeln!(std::io::stderr(), "error: pilot utf8: {e}");
+            return ExitCode::from(1);
+        }
+        Ok(s) => s,
+    };
+    if !pilot_text.contains("prereg-fixture-campaign-1") {
+        let _ = writeln!(
+            std::io::stderr(),
+            "error: --pilot is not a pilot campaign report"
+        );
+        return ExitCode::from(1);
+    }
+    let baseline_text = match String::from_utf8(baseline_bytes) {
+        Err(e) => {
+            let _ = writeln!(std::io::stderr(), "error: baseline utf8: {e}");
+            return ExitCode::from(1);
+        }
+        Ok(s) => s,
+    };
+    if !baseline_text.contains("Baseline comparison report") {
+        let _ = writeln!(
+            std::io::stderr(),
+            "error: --baseline is not a baseline comparison report"
+        );
+        return ExitCode::from(1);
+    }
+    let pilot_digest = hephaestus::knowledge::sha256_hex(pilot_text.as_bytes());
+    let baseline_digest = hephaestus::knowledge::sha256_hex(baseline_text.as_bytes());
+    let (packet, doc) = match hephaestus::release::assemble_v1_dossier(
+        &trace_text,
+        &pilot_digest,
+        &baseline_digest,
+    ) {
+        Err(e) => {
+            let _ = writeln!(std::io::stderr(), "error: assemble: {e}");
+            return ExitCode::from(1);
+        }
+        Ok(p) => p,
+    };
+    match std::fs::write(&out, &doc) {
+        Err(e) => {
+            let _ = writeln!(std::io::stderr(), "error: write {}: {e}", out.display());
+            ExitCode::from(1)
+        }
+        Ok(()) => {
+            println!(
+                "{}",
+                serde_json::json!({
+                    "report": out.display().to_string(),
+                    "label": format!("{:?}", packet.label),
+                    "positive": packet.outcome_counts.positive,
+                    "negative": packet.outcome_counts.negative,
                 })
             );
             ExitCode::SUCCESS

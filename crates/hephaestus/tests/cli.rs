@@ -603,3 +603,153 @@ fn baseline_report_carries_run_receipts() {
     assert!(text.contains(&report.missions[2].receipt_sha256));
     let _ = std::fs::remove_dir_all(&dir);
 }
+
+fn repo_file(name: &str) -> std::path::PathBuf {
+    std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .join("../../")
+        .join(name)
+}
+
+#[test]
+fn assemble_release_writes_v1_dossier() {
+    // v1-release 03 S1: packet assembles from campaign receipts.
+    let dir = temp_dir("dossier");
+    let out = dir.join("dossier.md");
+    let run = bin()
+        .args(["fixture", "assemble-release", "--trace"])
+        .arg(trace_fixture())
+        .arg("--pilot")
+        .arg(repo_file("docs/PILOT_CAMPAIGN_REPORT.md"))
+        .arg("--baseline")
+        .arg(repo_file("docs/BASELINE_COMPARISON_REPORT.md"))
+        .arg("--out")
+        .arg(&out)
+        .output()
+        .expect("spawn");
+    assert!(
+        run.status.success(),
+        "assemble-release failed: {}",
+        String::from_utf8_lossy(&run.stderr)
+    );
+    let text = std::fs::read_to_string(&out).expect("dossier written");
+    assert!(text.contains("EXPERIMENTAL"), "default label");
+    assert!(text.contains("prereg-fixture-campaign-1"), "campaign bound");
+    assert!(text.contains("false promotions: 0"), "comparison carried");
+    assert!(text.contains("positive: 10"), "outcome counts");
+    assert!(text.contains("negative: 10"), "honest negatives kept");
+    assert!(text.contains("pilot-report:"), "benchmark receipt pinned");
+    assert!(text.contains("= 1 fraction"), "measured value pinned");
+    assert!(
+        text.contains(std::env::consts::ARCH),
+        "reference machine pinned"
+    );
+    assert!(
+        text.contains("Unresolved research questions"),
+        "questions visible"
+    );
+    let _ = std::fs::remove_dir_all(&dir);
+}
+
+#[test]
+fn twin_dossiers_replay_deterministic_sections() {
+    // v1-release 03 S2: deterministic sections replay; measured
+    // sections stay labeled as varying.
+    let dir = temp_dir("dossier-twin");
+    let a = dir.join("a.md");
+    let b = dir.join("b.md");
+    for out in [&a, &b] {
+        let run = bin()
+            .args(["fixture", "assemble-release", "--trace"])
+            .arg(trace_fixture())
+            .arg("--pilot")
+            .arg(repo_file("docs/PILOT_CAMPAIGN_REPORT.md"))
+            .arg("--baseline")
+            .arg(repo_file("docs/BASELINE_COMPARISON_REPORT.md"))
+            .arg("--out")
+            .arg(out)
+            .output()
+            .expect("spawn");
+        assert!(run.status.success());
+    }
+    // Measured latency/throughput/memory vary; only the
+    // deterministic values replay.
+    let det = |p: &std::path::Path| {
+        let text = std::fs::read_to_string(p).expect("read");
+        let arms: Vec<&str> = text
+            .lines()
+            .filter(|l| l.starts_with("baseline ") || l.starts_with("candidate "))
+            .collect();
+        assert_eq!(arms.len(), 2, "two arm summary lines");
+        let corr: Vec<&str> = arms
+            .iter()
+            .map(|l| {
+                l.split("correctness ")
+                    .nth(1)
+                    .expect("value")
+                    .split(',')
+                    .next()
+                    .expect("end")
+            })
+            .collect();
+        let label = text
+            .lines()
+            .find(|l| l.starts_with("Scope label:"))
+            .expect("label line");
+        let range = text
+            .lines()
+            .find(|l| l.contains("observed cand-arm value range"))
+            .expect("uncertainty range line");
+        let digests: Vec<&str> = text
+            .lines()
+            .filter(|l| l.starts_with("- pilot report: ") || l.starts_with("- baseline report: "))
+            .collect();
+        assert_eq!(digests.len(), 2, "both input digests");
+        let pins: Vec<&str> = text
+            .lines()
+            .filter(|l| l.starts_with("- fixture-cand-arm"))
+            .collect();
+        assert_eq!(pins.len(), 1, "benchmark pin line");
+        let outcomes: Vec<&str> = text
+            .lines()
+            .filter(|l| {
+                l.starts_with("positive:")
+                    || l.starts_with("negative:")
+                    || l.starts_with("inconclusive:")
+                    || l.starts_with("invalid:")
+                    || l.starts_with("blocked:")
+            })
+            .collect();
+        assert_eq!(outcomes.len(), 5, "all five outcome classes");
+        (
+            corr.join("|"),
+            label.to_string(),
+            outcomes.join("|"),
+            range.to_string(),
+            digests.join("|"),
+            pins.join("|"),
+        )
+    };
+    assert_eq!(det(&a), det(&b), "deterministic sections replay");
+    let _ = std::fs::remove_dir_all(&dir);
+}
+
+#[test]
+fn assemble_release_refuses_foreign_inputs() {
+    // Finding 2: provenance markers gate; any other file refuses.
+    let dir = temp_dir("dossier-foreign");
+    let out = dir.join("f.md");
+    let run = bin()
+        .args(["fixture", "assemble-release", "--trace"])
+        .arg(trace_fixture())
+        .arg("--pilot")
+        .arg(repo_file("docs/BASELINE_COMPARISON_REPORT.md"))
+        .arg("--baseline")
+        .arg(repo_file("docs/PILOT_CAMPAIGN_REPORT.md"))
+        .arg("--out")
+        .arg(&out)
+        .output()
+        .expect("spawn");
+    assert_eq!(run.status.code(), Some(1));
+    assert!(!out.exists(), "no dossier from foreign inputs");
+    let _ = std::fs::remove_dir_all(&dir);
+}

@@ -101,6 +101,7 @@ fn help_documents_both_subcommands() {
     assert!(text.contains("fixture run"), "{text}");
     assert!(text.contains("fixture recover"), "{text}");
     assert!(text.contains("fixture mission-run"), "{text}");
+    assert!(text.contains("fixture pilot-batch"), "{text}");
     assert!(text.contains("fixture canary-watch"), "{text}");
 }
 
@@ -294,4 +295,163 @@ fn malformed_state_dir_arguments_exit_two() {
         let out = bin().args(&args).output().expect("spawn");
         assert_eq!(out.status.code(), Some(2), "args {args:?} => usage error");
     }
+}
+
+fn trace_fixture() -> std::path::PathBuf {
+    let dir = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+    dir.join("tests/fixtures/e2e-trace.log")
+}
+
+#[test]
+fn pilot_batch_writes_preregistered_report() {
+    // v1-release 01 S1: predeclared metrics in, report file out.
+    let dir = temp_dir("pilot");
+    let out = dir.join("pilot-report.md");
+    let run = bin()
+        .args(["fixture", "pilot-batch", "--trace"])
+        .arg(trace_fixture())
+        .arg("--out")
+        .arg(&out)
+        .output()
+        .expect("spawn");
+    assert!(
+        run.status.success(),
+        "pilot-batch failed: {}",
+        String::from_utf8_lossy(&run.stderr)
+    );
+    let text = std::fs::read_to_string(&out).expect("report written");
+    assert!(text.contains("prereg-fixture-campaign-1"), "plan named");
+    assert!(text.contains("20 missions"), "batch size stated");
+    assert!(
+        text.contains("failures retained: 0"),
+        "denominator explicit"
+    );
+    assert!(
+        text.contains("paired-difference variance"),
+        "variance recorded"
+    );
+    assert!(text.contains("provider spend: 0"), "cost honesty explicit");
+    let _ = std::fs::remove_dir_all(&dir);
+}
+
+#[test]
+fn twin_pilot_batches_are_byte_identical() {
+    // v1-release 01 S2: identical inputs, identical report bytes.
+    let dir = temp_dir("pilot-twin");
+    let a = dir.join("a.md");
+    let b = dir.join("b.md");
+    for out in [&a, &b] {
+        let run = bin()
+            .args(["fixture", "pilot-batch", "--trace"])
+            .arg(trace_fixture())
+            .arg("--out")
+            .arg(out)
+            .output()
+            .expect("spawn");
+        assert!(run.status.success());
+    }
+    assert_eq!(
+        std::fs::read(&a).expect("a"),
+        std::fs::read(&b).expect("b"),
+        "deterministic report"
+    );
+    let _ = std::fs::remove_dir_all(&dir);
+}
+
+#[test]
+fn pilot_batch_rows_match_library_receipts() {
+    // Review finding 8: the report tracks the real batch, not prose.
+    let dir = temp_dir("pilot-rows");
+    let out = dir.join("rows.md");
+    let run = bin()
+        .args(["fixture", "pilot-batch", "--trace"])
+        .arg(trace_fixture())
+        .arg("--out")
+        .arg(&out)
+        .output()
+        .expect("spawn");
+    assert!(run.status.success());
+    let text = std::fs::read_to_string(&out).expect("report");
+    let rows = text
+        .lines()
+        .filter(|l| l.starts_with("| ") && !l.contains("mission |") && !l.contains("---"))
+        .count();
+    assert_eq!(rows, 20, "one table row per mission");
+    let trace = std::fs::read_to_string(trace_fixture()).expect("trace");
+    let report = hephaestus::campaign::run_fixture_batch(&trace).expect("batch");
+    let first = &report.missions[0];
+    assert!(
+        text.contains(&first.receipt_sha256),
+        "report carries the actual run receipt"
+    );
+    assert!(text.contains(&format!("{:.6}", first.value)));
+    let _ = std::fs::remove_dir_all(&dir);
+}
+
+#[test]
+fn pilot_batch_accepts_swapped_flag_order() {
+    // Review finding 9: output tracks the call, not flag positions.
+    let dir = temp_dir("pilot-swap");
+    let a = dir.join("a.md");
+    let b = dir.join("b.md");
+    for (path, order) in [(&a, true), (&b, false)] {
+        let mut cmd = bin();
+        if order {
+            cmd.args(["fixture", "pilot-batch", "--trace"])
+                .arg(trace_fixture())
+                .arg("--out")
+                .arg(path);
+        } else {
+            cmd.args(["fixture", "pilot-batch", "--out"])
+                .arg(path)
+                .arg("--trace")
+                .arg(trace_fixture());
+        }
+        assert!(cmd.output().expect("spawn").status.success());
+    }
+    assert_eq!(std::fs::read(&a).expect("a"), std::fs::read(&b).expect("b"));
+    let _ = std::fs::remove_dir_all(&dir);
+}
+
+#[test]
+fn pilot_batch_refuses_bad_args_and_existing_out() {
+    // Review finding 10: malformed calls and overwrites fail closed.
+    let dir = temp_dir("pilot-bad");
+    let out = dir.join("bad.md");
+    // Missing --out: usage error.
+    let run = bin()
+        .args(["fixture", "pilot-batch", "--trace"])
+        .arg(trace_fixture())
+        .output()
+        .expect("spawn");
+    assert_eq!(run.status.code(), Some(2));
+    // Flag-like --out value: usage error.
+    let run = bin()
+        .args(["fixture", "pilot-batch", "--trace"])
+        .arg(trace_fixture())
+        .args(["--out", "--trace"])
+        .output()
+        .expect("spawn");
+    assert_eq!(run.status.code(), Some(2));
+    // Missing trace file: operational failure.
+    let run = bin()
+        .args(["fixture", "pilot-batch", "--trace"])
+        .arg(dir.join("absent.log"))
+        .arg("--out")
+        .arg(&out)
+        .output()
+        .expect("spawn");
+    assert_eq!(run.status.code(), Some(1));
+    // Existing --out: refused, never truncated.
+    std::fs::write(&out, "keep").expect("seed");
+    let run = bin()
+        .args(["fixture", "pilot-batch", "--trace"])
+        .arg(trace_fixture())
+        .arg("--out")
+        .arg(&out)
+        .output()
+        .expect("spawn");
+    assert_eq!(run.status.code(), Some(1));
+    assert_eq!(std::fs::read_to_string(&out).expect("kept"), "keep");
+    let _ = std::fs::remove_dir_all(&dir);
 }

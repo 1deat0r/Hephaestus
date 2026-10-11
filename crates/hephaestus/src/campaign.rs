@@ -151,3 +151,86 @@ pub fn run_fixture_batch(trace_text: &str) -> Result<BatchReport, String> {
         variance,
     })
 }
+
+fn fmt_num(value: Option<f64>) -> String {
+    match value {
+        Some(v) => format!("{v:.6}"),
+        None => "none".to_string(),
+    }
+}
+
+/// Render the batch report as a deterministic Markdown document
+/// (v1-release 01). No clock, no I/O: same report in, same bytes
+/// out. Provider spend is 0 with an explicit note - the fixture
+/// chain runs no metered provider, and the report says so instead
+/// of implying a measured zero-cost deployment.
+pub fn render_pilot_report(report: &BatchReport) -> String {
+    let mut out = String::new();
+    out.push_str("# Pilot campaign report - fixture batch\n\n");
+    out.push_str(&format!(
+        "Preregistration: {}\n\nIntent: {}\n\nBatch: {} missions ({} repositories x 2 arms); clustering unit: {}; plan budget: {}.\n\n",
+        report.plan.preregistration_id,
+        report.plan.intent,
+        report.plan.batch_size,
+        report.plan.assignments.len(),
+        report.variance.clustering_unit,
+        report.plan.budget,
+    ));
+    out.push_str("Predeclared metrics: per-arm mean and variance,\npaired-difference variance across repositories, denominator\nreceipts with failures retained.\n\n");
+    out.push_str("## Results\n\n");
+    out.push_str("Theta shows 2 decimals and value 6 decimals for reading;\nthe receipt digest binds the full-precision run inputs, and\nvalue equals the interval lower bound minus theta.\n\n");
+    out.push_str("| mission | repository | arm | dropped | theta | interval | value | receipt |\n");
+    out.push_str("| --- | --- | --- | --- | --- | --- | --- | --- |\n");
+    for m in &report.missions {
+        out.push_str(&format!(
+            "| {} | {} | {} | {} | {:.2} | ({:.6}, {:.6}) | {:.6} | {} |\n",
+            m.index,
+            m.repo_id,
+            m.arm_id,
+            m.dropped_heavy_lines,
+            m.theta,
+            m.interval.0,
+            m.interval.1,
+            m.value,
+            m.receipt_sha256,
+        ));
+    }
+    out.push_str("\n## Variance (from actual runs)\n\n");
+    for (arm, mean, var) in &report.variance.per_arm {
+        out.push_str(&format!(
+            "- arm {arm}: mean {}, variance {}\n",
+            fmt_num(*mean),
+            fmt_num(*var),
+        ));
+    }
+    out.push_str(&format!(
+        "- paired-difference variance: {}\n",
+        fmt_num(report.variance.paired_difference_variance),
+    ));
+    out.push_str(&format!(
+        "\nDenominators: total missions {}; failures retained: {}.\n",
+        report.total_missions, report.failures_retained,
+    ));
+    out.push_str("\n## Cost\n\n");
+    out.push_str(&format!(
+        "- plan budget reserved: {} (fixture units).\n- provider spend: 0 - the fixture chain runs no metered provider;\n  this is absence of spend, not a measured zero-cost deployment.\n- compute and wall time: not metered in this batch (explicit gap).\n",
+        report.plan.budget,
+    ));
+    out.push_str("\n## Failures\n\n");
+    if report.failures_retained == 0 {
+        out.push_str(
+            "No mission failed or blocked in this batch. The count is\nrecorded, not omitted: failures retained in the denominator\nreads 0 above. Prospective live missions are out of scope for\nthis fixture report.\n",
+        );
+    } else {
+        out.push_str(&format!(
+            "{} mission(s) failed or blocked and stay in the denominator:\n\n",
+            report.failures_retained,
+        ));
+        for o in &report.outcomes {
+            if o.failed_or_blocked {
+                out.push_str(&format!("- {} {}\n", o.repo_id, o.arm_id));
+            }
+        }
+    }
+    out
+}

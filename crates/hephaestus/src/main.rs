@@ -5,6 +5,7 @@
 //!   hephaestus fixture run         --state-dir <DIR>
 //!   hephaestus fixture recover     --state-dir <DIR>
 //!   hephaestus fixture mission-run --trace <FILE>
+//!   hephaestus fixture pilot-batch --trace <FILE> --out <FILE>
 //!   hephaestus fixture canary-watch
 //!   hephaestus --help
 //!
@@ -21,7 +22,7 @@ use std::io::Write;
 use std::path::PathBuf;
 use std::process::ExitCode;
 
-const USAGE: &str = "usage: hephaestus <fixture run|fixture recover> --state-dir <DIR>\n       hephaestus <fixture mission-run> --trace <FILE>\n       hephaestus <fixture canary-watch>\n       hephaestus --help\n";
+const USAGE: &str = "usage: hephaestus <fixture run|fixture recover> --state-dir <DIR>\n       hephaestus <fixture mission-run> --trace <FILE>\n       hephaestus <fixture pilot-batch> --trace <FILE> --out <FILE>\n       hephaestus <fixture canary-watch>\n       hephaestus --help\n";
 
 fn print_help() {
     println!(
@@ -34,6 +35,7 @@ fn print_help() {
          \x20   fixture mission-run --trace <FILE>   run the E2E mission chain over a\n\
          \x20                                       world-derived trace fixture and print\n\
          \x20                                       supported + negative receipts\n\
+         \x20   fixture pilot-batch --trace <FILE> --out <FILE>   run the preregistered 20-mission\n         \x20                                       fixture batch and write the pilot report\n\
          \x20   fixture canary-watch                monitor the fixture deployment over a\n\
          \x20                                       fixed observation stream and print\n\
          \x20                                       the stop outcome + rollback receipt\n\n\
@@ -191,8 +193,75 @@ fn main() -> ExitCode {
             }),
             Some("mission-run") => mission_run(&rest[1..]),
             Some("canary-watch") => canary_watch(),
+            Some("pilot-batch") => pilot_batch(&rest[1..]),
             _ => usage_error(),
         },
         _ => usage_error(),
+    }
+}
+
+/// `fixture pilot-batch --trace <FILE> --out <FILE>`: run the
+/// preregistered 20-mission fixture batch and write the Markdown
+/// pilot report (v1-release 01). Deterministic: twin runs emit
+/// byte-identical files.
+fn pilot_batch(rest: &[String]) -> ExitCode {
+    let mut trace: Option<&str> = None;
+    let mut out: Option<&str> = None;
+    let mut args = rest.iter();
+    while let Some(flag) = args.next() {
+        let value = match args.next() {
+            Some(v) if !v.is_empty() && !v.starts_with('-') => v,
+            _ => return usage_error(),
+        };
+        match flag.as_str() {
+            "--trace" if trace.is_none() => trace = Some(value),
+            "--out" if out.is_none() => out = Some(value),
+            _ => return usage_error(),
+        }
+    }
+    let (Some(trace), Some(out)) = (trace, out) else {
+        return usage_error();
+    };
+    let trace = PathBuf::from(trace);
+    let out = PathBuf::from(out);
+    if out.exists() {
+        let _ = writeln!(
+            std::io::stderr(),
+            "error: refusing to overwrite {}",
+            out.display()
+        );
+        return ExitCode::from(1);
+    }
+    let text = match std::fs::read_to_string(&trace) {
+        Err(e) => {
+            let _ = writeln!(std::io::stderr(), "error: read {}: {e}", trace.display());
+            return ExitCode::from(1);
+        }
+        Ok(t) => t,
+    };
+    let report = match hephaestus::campaign::run_fixture_batch(&text) {
+        Err(e) => {
+            let _ = writeln!(std::io::stderr(), "error: batch: {e}");
+            return ExitCode::from(1);
+        }
+        Ok(r) => r,
+    };
+    let doc = hephaestus::campaign::render_pilot_report(&report);
+    match std::fs::write(&out, &doc) {
+        Err(e) => {
+            let _ = writeln!(std::io::stderr(), "error: write {}: {e}", out.display());
+            ExitCode::from(1)
+        }
+        Ok(()) => {
+            println!(
+                "{}",
+                serde_json::json!({
+                    "report": out.display().to_string(),
+                    "missions": report.total_missions,
+                    "bytes": doc.len(),
+                })
+            );
+            ExitCode::SUCCESS
+        }
     }
 }

@@ -679,3 +679,5 @@ docs/V0_01_EXPERIMENTAL.md
 .scratch/v1-release/issues/02-baseline-comparison.md
 .scratch/v1-release/issues/03-release-packet.md
 .scratch/v1-release/issues/04-version-bump.md
+docs/PILOT_CAMPAIGN_REPORT.md
+.scratch/v1-release/receipts/01-green.md

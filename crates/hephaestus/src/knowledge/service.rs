@@ -834,3 +834,92 @@ pub fn verify_dependency_context(ctx: &CandidateContext) -> ContextCorrectness {
         }
     }
 }
+
+/// One evidence item for a claim check (AC 20): a span plus the
+/// stance it takes toward the claim.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct EvidenceItem {
+    pub item_id: String,
+    pub span: Span,
+    pub stance: Stance,
+}
+
+/// The stance of one evidence item: it supports the claim or
+/// contests it. Both stay in the record.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum Stance {
+    Support,
+    Contest,
+}
+
+/// One claim with its evidence items, for independent checking.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct ClaimCase {
+    pub claim_id: String,
+    pub items: Vec<EvidenceItem>,
+}
+
+/// The verdict of one claim check.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum ClaimVerdict {
+    /// At least one verified support, no verified contest.
+    Supported,
+    /// At least one verified contest defeats support.
+    Contested,
+    /// Nothing verified either way.
+    Inconclusive,
+}
+
+/// The outcome of one claim check (AC 20). `disagreements` keeps
+/// verified contesting item ids; `unresolved` keeps item ids whose
+/// spans fail verification. Neither list is ever dropped.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct ClaimEvidence {
+    pub claim_id: String,
+    pub verdict: ClaimVerdict,
+    pub verified_spans: usize,
+    pub distinct_origins: usize,
+    pub disagreements: Vec<String>,
+    pub unresolved: Vec<String>,
+}
+
+/// Check one claim against captured spans (AC 20, R-106/R-107).
+///
+/// Every item span verifies through `verify_span` over captured
+/// bytes. Verified spans feed the verdict and the origin count;
+/// shared origins count once. Failed spans land in `unresolved`
+/// and feed nothing. A verified contest defeats support but stays
+/// listed; no verified span either way means `Inconclusive`.
+pub fn check_claim_evidence(corpus: &Corpus, case: &ClaimCase) -> ClaimEvidence {
+    let mut verified_sources: HashSet<u64> = HashSet::new();
+    let mut verified_supports = 0usize;
+    let mut disagreements = Vec::new();
+    let mut unresolved = Vec::new();
+    for item in &case.items {
+        if verify_span(corpus, &item.span).is_ok() {
+            verified_sources.insert(item.span.source);
+            match item.stance {
+                Stance::Support => verified_supports += 1,
+                Stance::Contest => disagreements.push(item.item_id.clone()),
+            }
+        } else {
+            unresolved.push(item.item_id.clone());
+        }
+    }
+    let verified_spans = verified_supports + disagreements.len();
+    let verdict = if !disagreements.is_empty() {
+        ClaimVerdict::Contested
+    } else if verified_supports > 0 {
+        ClaimVerdict::Supported
+    } else {
+        ClaimVerdict::Inconclusive
+    };
+    ClaimEvidence {
+        claim_id: case.claim_id.clone(),
+        verdict,
+        verified_spans,
+        distinct_origins: verified_sources.len(),
+        disagreements,
+        unresolved,
+    }
+}

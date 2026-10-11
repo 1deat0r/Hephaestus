@@ -26,15 +26,15 @@ Test names below are planned. Existing passing tests cannot substitute for these
       - [x] Add positive, refusal, and regression cases in `crates/hephaestus/tests/architecture_independent_qualification.rs`.
       - [x] Implement the specified behavior in `crates/hephaestus/src/security/sealed.rs`.
 
-2. [ ] **S2** Verify independent evidence checks
-   **Status:** pending
+2. [x] **S2** Verify independent evidence checks
+   **Status:** done
    **Verify:** cargo test -p hephaestus --test architecture_independent_qualification s2_evidence
    Verify claims against captured spans; count shared origins once; retain disagreements and inconclusive outcomes.
    **Micro-tasks:**
-   1. [ ] **M1** Demonstrate the missing behavior; implement it; pass the same acceptance tests.
+   1. [x] **M1** Demonstrate the missing behavior; implement it; pass the same acceptance tests.
       **Verify:** cargo test -p hephaestus --test architecture_independent_qualification s2_evidence
-      - [ ] Add positive, refusal, and regression cases in `crates/hephaestus/tests/architecture_independent_qualification.rs`.
-      - [ ] Implement the specified behavior in `crates/hephaestus/src/knowledge/service.rs`.
+      - [x] Add positive, refusal, and regression cases in `crates/hephaestus/tests/architecture_independent_qualification.rs`.
+      - [x] Implement the specified behavior in `crates/hephaestus/src/knowledge/service.rs`.
 
 3. [ ] **S3** Measure qualified efficiency
    **Status:** pending

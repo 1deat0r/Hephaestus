@@ -493,3 +493,25 @@ Toolchain note, recorded and not changed: the Pi preparation protocol
 `pi --version` to `1.0.0`; the installed Pi reports `1.0.3` (an
 earlier spec note recorded `1.0.2`). No install change belongs to this
 decision.
+
+## ADR-035 — M4 entry runs consent-free; provider, corpus, and ship stay gated
+
+The user approves a live advisory provider in principle (Meta Muse
+Spark 1.3, contributor tier, via omp), wants a real corpus test, and
+holds shipment. No runtime provider adapter exists today: the
+advisory contract offers `NullProvider` (always abstains) and
+`FixtureProvider` (replays fixture answers), and no code reads a
+provider key. Session judgments stay agent-written suggestions. They
+cannot satisfy deployment gates. A bounded adapter with receipts and
+fixture-measured calibration stays a T-029 small task. No secret file
+changes today. Corpus stays local-only: repo-docs receipts are fresh
+(`e2e_real_corpus` 3 passed, `docs_domain_pack` 3 passed). The next
+real corpus needs the user to name a local directory. No network
+egress runs until brokered egress is approved. Shipment stays held.
+M4 stays NOT CLAIMED. No release label changes.
+
+Rejected: simulating provider judgments in tests (fabricates model
+behavior); treating session prose as a provider receipt (breaks
+provenance); pulling an external corpus without a named grant
+(breaks authorization); assembling a release while shipment is held
+(breaks the gate).

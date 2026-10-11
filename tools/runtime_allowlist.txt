@@ -695,3 +695,7 @@ CHANGELOG.md
 .scratch/repro-v1/spec.md
 .scratch/repro-v1/issues/01-guard-reports.md
 .scratch/repro-v1/receipts/01-green.md
+docs/CAMPAIGN_MANIFEST.json
+.scratch/frozen-campaign/spec.md
+.scratch/frozen-campaign/issues/01-freeze-manifest.md
+.scratch/frozen-campaign/receipts/01-green.md

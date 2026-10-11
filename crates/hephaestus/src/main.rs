@@ -8,6 +8,7 @@
 //!   hephaestus fixture pilot-batch --trace <FILE> --out <FILE>
 //!   hephaestus fixture baseline-compare --trace <FILE> --out <FILE>
 //!   hephaestus fixture assemble-release --trace <FILE> --pilot <FILE> --baseline <FILE> --out <FILE>
+//!   hephaestus fixture freeze-campaign --trace <FILE> --pilot <FILE> --baseline <FILE> --out <FILE>
 //!   hephaestus fixture canary-watch
 //!   hephaestus --help
 //!
@@ -24,7 +25,7 @@ use std::io::Write;
 use std::path::PathBuf;
 use std::process::ExitCode;
 
-const USAGE: &str = "usage: hephaestus <fixture run|fixture recover> --state-dir <DIR>\n       hephaestus <fixture mission-run> --trace <FILE>\n       hephaestus <fixture pilot-batch> --trace <FILE> --out <FILE>\n       hephaestus <fixture baseline-compare> --trace <FILE> --out <FILE>\n       hephaestus <fixture assemble-release> --trace <FILE> --pilot <FILE> --baseline <FILE> --out <FILE>\n       hephaestus <fixture canary-watch>\n       hephaestus --help\n";
+const USAGE: &str = "usage: hephaestus <fixture run|fixture recover> --state-dir <DIR>\n       hephaestus <fixture mission-run> --trace <FILE>\n       hephaestus <fixture pilot-batch> --trace <FILE> --out <FILE>\n       hephaestus <fixture baseline-compare> --trace <FILE> --out <FILE>\n       hephaestus <fixture assemble-release> --trace <FILE> --pilot <FILE> --baseline <FILE> --out <FILE>\n       hephaestus <fixture freeze-campaign> --trace <FILE> --pilot <FILE> --baseline <FILE> --out <FILE>\n       hephaestus <fixture canary-watch>\n       hephaestus --help\n";
 
 fn print_help() {
     println!(
@@ -40,6 +41,10 @@ fn print_help() {
          \x20   fixture pilot-batch --trace <FILE> --out <FILE>   run the preregistered 20-mission\n         \x20                                       fixture batch and write the pilot report\n\
          \x20   fixture baseline-compare --trace <FILE> --out <FILE>   measure deterministic\n\
          \x20                                       arms and write the comparison report\n\
+         \x20   fixture assemble-release --trace <FILE> --pilot <FILE>\n\
+         \x20       --baseline <FILE> --out <FILE>   gate and render the v1 dossier\n\
+         \x20   fixture freeze-campaign --trace <FILE> --pilot <FILE>\n\
+         \x20       --baseline <FILE> --out <FILE>   freeze campaign inputs\n\
          \x20   fixture canary-watch                monitor the fixture deployment over a\n\
          \x20                                       fixed observation stream and print\n\
          \x20                                       the stop outcome + rollback receipt\n\n\
@@ -200,6 +205,7 @@ fn main() -> ExitCode {
             Some("pilot-batch") => pilot_batch(&rest[1..]),
             Some("baseline-compare") => baseline_compare(&rest[1..]),
             Some("assemble-release") => assemble_release_cmd(&rest[1..]),
+            Some("freeze-campaign") => freeze_campaign_cmd(&rest[1..]),
             _ => usage_error(),
         },
         _ => usage_error(),
@@ -475,6 +481,96 @@ fn assemble_release_cmd(rest: &[String]) -> ExitCode {
                     "label": format!("{:?}", packet.label),
                     "positive": packet.outcome_counts.positive,
                     "negative": packet.outcome_counts.negative,
+                })
+            );
+            ExitCode::SUCCESS
+        }
+    }
+}
+
+/// `fixture freeze-campaign --trace <FILE> --pilot <FILE> --baseline
+/// <FILE> --out <FILE>`: bind the fixture campaign inputs into a
+/// frozen manifest (frozen-campaign 01). The frozen section replays
+/// byte-identical; toolchain provenance stays labeled run-local.
+fn freeze_campaign_cmd(rest: &[String]) -> ExitCode {
+    let mut trace: Option<&str> = None;
+    let mut pilot: Option<&str> = None;
+    let mut baseline: Option<&str> = None;
+    let mut out: Option<&str> = None;
+    let mut args = rest.iter();
+    while let Some(flag) = args.next() {
+        let value = match args.next() {
+            Some(v) if !v.is_empty() && !v.starts_with('-') => v,
+            _ => return usage_error(),
+        };
+        match flag.as_str() {
+            "--trace" if trace.is_none() => trace = Some(value),
+            "--pilot" if pilot.is_none() => pilot = Some(value),
+            "--baseline" if baseline.is_none() => baseline = Some(value),
+            "--out" if out.is_none() => out = Some(value),
+            _ => return usage_error(),
+        }
+    }
+    let (Some(trace), Some(pilot), Some(baseline), Some(out)) = (trace, pilot, baseline, out)
+    else {
+        return usage_error();
+    };
+    let out = PathBuf::from(out);
+    if out.exists() {
+        let _ = writeln!(
+            std::io::stderr(),
+            "error: refusing to overwrite {}",
+            out.display()
+        );
+        return ExitCode::from(1);
+    }
+    let read = |p: &str| match std::fs::read(p) {
+        Err(e) => {
+            let _ = writeln!(std::io::stderr(), "error: read {p}: {e}");
+            None
+        }
+        Ok(b) => Some(b),
+    };
+    let (Some(trace_bytes), Some(pilot_bytes), Some(baseline_bytes)) =
+        (read(trace), read(pilot), read(baseline))
+    else {
+        return ExitCode::from(1);
+    };
+    let (Ok(trace_text), Ok(pilot_text), Ok(baseline_text)) = (
+        String::from_utf8(trace_bytes),
+        String::from_utf8(pilot_bytes),
+        String::from_utf8(baseline_bytes),
+    ) else {
+        let _ = writeln!(std::io::stderr(), "error: inputs must be utf8");
+        return ExitCode::from(1);
+    };
+    let manifest =
+        match hephaestus::campaign::freeze_campaign(&trace_text, &pilot_text, &baseline_text) {
+            Err(e) => {
+                let _ = writeln!(std::io::stderr(), "error: freeze: {e}");
+                return ExitCode::from(1);
+            }
+            Ok(m) => m,
+        };
+    let doc = match hephaestus::campaign::render_frozen_manifest(&manifest) {
+        Err(e) => {
+            let _ = writeln!(std::io::stderr(), "error: render: {e}");
+            return ExitCode::from(1);
+        }
+        Ok(d) => d,
+    };
+    match std::fs::write(&out, &doc) {
+        Err(e) => {
+            let _ = writeln!(std::io::stderr(), "error: write {}: {e}", out.display());
+            ExitCode::from(1)
+        }
+        Ok(()) => {
+            println!(
+                "{}",
+                serde_json::json!({
+                    "report": out.display().to_string(),
+                    "preregistration_id": manifest.preregistration_id,
+                    "trace_sha256": manifest.trace_sha256,
                 })
             );
             ExitCode::SUCCESS

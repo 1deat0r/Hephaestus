@@ -102,6 +102,8 @@ fn help_documents_both_subcommands() {
     assert!(text.contains("fixture recover"), "{text}");
     assert!(text.contains("fixture mission-run"), "{text}");
     assert!(text.contains("fixture pilot-batch"), "{text}");
+    assert!(text.contains("fixture assemble-release"), "{text}");
+    assert!(text.contains("fixture freeze-campaign"), "{text}");
     assert!(text.contains("fixture canary-watch"), "{text}");
 }
 
@@ -879,5 +881,156 @@ fn reproduce_v1_committed() {
         det_lines(&normalize(&committed_dossier)),
         "dossier deterministic sections replay"
     );
+    let _ = std::fs::remove_dir_all(&dir);
+}
+
+#[test]
+fn freeze_campaign_writes_manifest() {
+    // frozen-campaign 01 S1: inputs bound in one manifest.
+    let dir = temp_dir("freeze");
+    let out = dir.join("manifest.json");
+    let run = bin()
+        .args(["fixture", "freeze-campaign", "--trace"])
+        .arg(trace_fixture())
+        .arg("--pilot")
+        .arg(repo_file("docs/PILOT_CAMPAIGN_REPORT.md"))
+        .arg("--baseline")
+        .arg(repo_file("docs/BASELINE_COMPARISON_REPORT.md"))
+        .arg("--out")
+        .arg(&out)
+        .output()
+        .expect("spawn");
+    assert!(
+        run.status.success(),
+        "freeze failed: {}",
+        String::from_utf8_lossy(&run.stderr)
+    );
+    let manifest: serde_json::Value =
+        serde_json::from_slice(&std::fs::read(&out).expect("manifest")).expect("json");
+    assert_eq!(manifest["preregistration_id"], "prereg-fixture-campaign-1");
+    assert_eq!(manifest["scope"], "fixture (not confirmatory evidence)");
+    assert_eq!(manifest["package_version"], env!("CARGO_PKG_VERSION"));
+    let trace = std::fs::read(trace_fixture()).expect("trace");
+    assert_eq!(
+        manifest["trace_sha256"],
+        hephaestus::knowledge::sha256_hex(&trace).as_str()
+    );
+    assert!(manifest["frozen"]["plan"].is_object(), "plan frozen");
+    assert!(
+        manifest["provenance"]["toolchain"].is_string(),
+        "provenance labeled"
+    );
+    let _ = std::fs::remove_dir_all(&dir);
+}
+
+#[test]
+fn twin_freezes_match_on_frozen_section() {
+    // Frozen content replays; provenance may vary by machine.
+    let dir = temp_dir("freeze-twin");
+    let a = dir.join("a.json");
+    let b = dir.join("b.json");
+    for out in [&a, &b] {
+        let run = bin()
+            .args(["fixture", "freeze-campaign", "--trace"])
+            .arg(trace_fixture())
+            .arg("--pilot")
+            .arg(repo_file("docs/PILOT_CAMPAIGN_REPORT.md"))
+            .arg("--baseline")
+            .arg(repo_file("docs/BASELINE_COMPARISON_REPORT.md"))
+            .arg("--out")
+            .arg(out)
+            .output()
+            .expect("spawn");
+        assert!(run.status.success());
+    }
+    let frozen = |p: &std::path::Path| {
+        let v: serde_json::Value =
+            serde_json::from_slice(&std::fs::read(p).expect("read")).expect("json");
+        v["frozen"].clone()
+    };
+    assert_eq!(frozen(&a), frozen(&b), "frozen section replays");
+    assert_eq!(
+        std::fs::read(&a).expect("a bytes"),
+        std::fs::read(&b).expect("b bytes"),
+        "same-machine byte identity"
+    );
+    let _ = std::fs::remove_dir_all(&dir);
+}
+
+#[test]
+fn freeze_campaign_refuses_foreign_and_bad_args() {
+    // Review findings: refusal paths need proof.
+    let dir = temp_dir("freeze-bad");
+    let out = dir.join("f.json");
+    // Foreign pilot file: refused.
+    let run = bin()
+        .args(["fixture", "freeze-campaign", "--trace"])
+        .arg(trace_fixture())
+        .arg("--pilot")
+        .arg(trace_fixture())
+        .arg("--baseline")
+        .arg(repo_file("docs/BASELINE_COMPARISON_REPORT.md"))
+        .arg("--out")
+        .arg(&out)
+        .output()
+        .expect("spawn");
+    assert_eq!(run.status.code(), Some(1));
+    // Missing --out: usage error.
+    let run = bin()
+        .args(["fixture", "freeze-campaign", "--trace"])
+        .arg(trace_fixture())
+        .arg("--pilot")
+        .arg(repo_file("docs/PILOT_CAMPAIGN_REPORT.md"))
+        .arg("--baseline")
+        .arg(repo_file("docs/BASELINE_COMPARISON_REPORT.md"))
+        .output()
+        .expect("spawn");
+    assert_eq!(run.status.code(), Some(2));
+    // Existing --out: refused, never truncated.
+    std::fs::write(&out, "keep").expect("seed");
+    let run = bin()
+        .args(["fixture", "freeze-campaign", "--trace"])
+        .arg(trace_fixture())
+        .arg("--pilot")
+        .arg(repo_file("docs/PILOT_CAMPAIGN_REPORT.md"))
+        .arg("--baseline")
+        .arg(repo_file("docs/BASELINE_COMPARISON_REPORT.md"))
+        .arg("--out")
+        .arg(&out)
+        .output()
+        .expect("spawn");
+    assert_eq!(run.status.code(), Some(1));
+    assert_eq!(std::fs::read_to_string(&out).expect("kept"), "keep");
+    let _ = std::fs::remove_dir_all(&dir);
+}
+
+#[test]
+fn freeze_manifest_digests_match_input_bytes() {
+    // Review findings: digest equality needs proof.
+    let dir = temp_dir("freeze-digest");
+    let out = dir.join("m.json");
+    let run = bin()
+        .args(["fixture", "freeze-campaign", "--trace"])
+        .arg(trace_fixture())
+        .arg("--pilot")
+        .arg(repo_file("docs/PILOT_CAMPAIGN_REPORT.md"))
+        .arg("--baseline")
+        .arg(repo_file("docs/BASELINE_COMPARISON_REPORT.md"))
+        .arg("--out")
+        .arg(&out)
+        .output()
+        .expect("spawn");
+    assert!(run.status.success());
+    let manifest: serde_json::Value =
+        serde_json::from_slice(&std::fs::read(&out).expect("manifest")).expect("json");
+    let sha = hephaestus::knowledge::sha256_hex;
+    let trace = std::fs::read(trace_fixture()).expect("trace");
+    let pilot = std::fs::read(repo_file("docs/PILOT_CAMPAIGN_REPORT.md")).expect("pilot");
+    let baseline =
+        std::fs::read(repo_file("docs/BASELINE_COMPARISON_REPORT.md")).expect("baseline");
+    assert_eq!(manifest["trace_sha256"], sha(&trace).as_str());
+    assert_eq!(manifest["pilot_report_digest"], sha(&pilot).as_str());
+    assert_eq!(manifest["baseline_report_digest"], sha(&baseline).as_str());
+    assert_eq!(manifest["frozen"]["trace_sha256"], sha(&trace).as_str());
     let _ = std::fs::remove_dir_all(&dir);
 }

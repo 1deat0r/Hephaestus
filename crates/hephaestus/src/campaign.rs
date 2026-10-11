@@ -236,3 +236,92 @@ pub fn render_pilot_report(report: &BatchReport) -> String {
     }
     out
 }
+
+/// Frozen campaign manifest (frozen-campaign 01). The `frozen`
+/// section binds the inputs a future qualification check needs;
+/// it replays byte-identical. `provenance` carries run-local
+/// toolchain facts, labeled as such. `scope` marks fixture
+/// bounds on the face of the file: frozen inputs, not evidence.
+#[derive(Debug, Clone, PartialEq, serde::Serialize, serde::Deserialize)]
+pub struct FrozenManifest {
+    pub preregistration_id: String,
+    pub scope: String,
+    pub package_version: String,
+    pub trace_sha256: String,
+    pub pilot_report_digest: String,
+    pub baseline_report_digest: String,
+    pub frozen: FrozenInputs,
+    pub provenance: ProvenanceFacts,
+}
+
+/// The replay-stable core: plan plus input digests.
+#[derive(Debug, Clone, PartialEq, serde::Serialize, serde::Deserialize)]
+pub struct FrozenInputs {
+    pub plan: crate::pilot::record::PilotPlan,
+    pub trace_sha256: String,
+    pub pilot_report_digest: String,
+    pub baseline_report_digest: String,
+}
+
+/// Run-local facts: honest provenance, never frozen content.
+#[derive(Debug, Clone, PartialEq, serde::Serialize, serde::Deserialize)]
+pub struct ProvenanceFacts {
+    pub toolchain: String,
+    pub os: String,
+    pub arch: String,
+}
+
+/// Bind the fixture campaign inputs into a manifest. Substring
+/// marker checks refuse files that do not read as the campaign
+/// reports; a crafted file carrying the markers would pass, so the
+/// check is provenance screening, never authentication. Digests
+/// always bind (sha256 hex of the input bytes).
+pub fn freeze_campaign(
+    trace_text: &str,
+    pilot_text: &str,
+    baseline_text: &str,
+) -> Result<FrozenManifest, String> {
+    if !pilot_text.contains("prereg-fixture-campaign-1") {
+        return Err("pilot input is not a pilot campaign report".to_string());
+    }
+    if !baseline_text.contains("Baseline comparison report") {
+        return Err("baseline input is not a baseline comparison report".to_string());
+    }
+    let plan = batch_plan();
+    let trace_sha256 = crate::knowledge::sha256_hex(trace_text.as_bytes());
+    let pilot_digest = crate::knowledge::sha256_hex(pilot_text.as_bytes());
+    let baseline_digest = crate::knowledge::sha256_hex(baseline_text.as_bytes());
+    let toolchain = std::process::Command::new("rustc")
+        .arg("--version")
+        .output()
+        .ok()
+        .and_then(|o| String::from_utf8(o.stdout).ok())
+        .map(|s| s.trim().to_string())
+        .unwrap_or_else(|| "gap: rustc version unreadable".to_string());
+    Ok(FrozenManifest {
+        preregistration_id: plan.preregistration_id.clone(),
+        scope: "fixture (not confirmatory evidence)".to_string(),
+        package_version: env!("CARGO_PKG_VERSION").to_string(),
+        trace_sha256: trace_sha256.clone(),
+        pilot_report_digest: pilot_digest.clone(),
+        baseline_report_digest: baseline_digest.clone(),
+        frozen: FrozenInputs {
+            plan,
+            trace_sha256,
+            pilot_report_digest: pilot_digest,
+            baseline_report_digest: baseline_digest,
+        },
+        provenance: ProvenanceFacts {
+            toolchain,
+            os: std::env::consts::OS.to_string(),
+            arch: std::env::consts::ARCH.to_string(),
+        },
+    })
+}
+
+/// Render the manifest as pretty JSON in struct field order.
+/// Same-machine runs emit identical bytes; portable checks compare
+/// the parsed frozen section instead of file bytes.
+pub fn render_frozen_manifest(manifest: &FrozenManifest) -> Result<String, String> {
+    serde_json::to_string_pretty(manifest).map_err(|e| format!("manifest serialize: {e}"))
+}

@@ -1,0 +1,135 @@
+{
+  "preregistration_id": "prereg-fixture-campaign-1",
+  "scope": "fixture (not confirmatory evidence)",
+  "package_version": "0.2.0",
+  "trace_sha256": "59aae7921c250f5d4368acfca7a9c8f0c7ea1ba871bd0a0b170c834e4d0895af",
+  "pilot_report_digest": "c67110b0274b9a360da1e07d32f67014147384a95a68e729bb7357eddadabe0e",
+  "baseline_report_digest": "8ebd32f677ca180bf0342b0aecf8932fed8b7e480ba3a42d1153df025f340341",
+  "frozen": {
+    "plan": {
+      "preregistration_id": "prereg-fixture-campaign-1",
+      "stratification": {
+        "size_bands": [
+          "fixture"
+        ],
+        "topology_classes": [
+          "flat"
+        ]
+      },
+      "assignments": [
+        {
+          "repo_id": "trace-repo-0",
+          "partition": "Pilot",
+          "episode_ids": [
+            "ep-0-cand",
+            "ep-0-base"
+          ],
+          "size_band": "fixture",
+          "topology_class": "flat"
+        },
+        {
+          "repo_id": "trace-repo-1",
+          "partition": "Pilot",
+          "episode_ids": [
+            "ep-1-cand",
+            "ep-1-base"
+          ],
+          "size_band": "fixture",
+          "topology_class": "flat"
+        },
+        {
+          "repo_id": "trace-repo-2",
+          "partition": "Pilot",
+          "episode_ids": [
+            "ep-2-cand",
+            "ep-2-base"
+          ],
+          "size_band": "fixture",
+          "topology_class": "flat"
+        },
+        {
+          "repo_id": "trace-repo-3",
+          "partition": "Pilot",
+          "episode_ids": [
+            "ep-3-cand",
+            "ep-3-base"
+          ],
+          "size_band": "fixture",
+          "topology_class": "flat"
+        },
+        {
+          "repo_id": "trace-repo-4",
+          "partition": "Pilot",
+          "episode_ids": [
+            "ep-4-cand",
+            "ep-4-base"
+          ],
+          "size_band": "fixture",
+          "topology_class": "flat"
+        },
+        {
+          "repo_id": "trace-repo-5",
+          "partition": "Pilot",
+          "episode_ids": [
+            "ep-5-cand",
+            "ep-5-base"
+          ],
+          "size_band": "fixture",
+          "topology_class": "flat"
+        },
+        {
+          "repo_id": "trace-repo-6",
+          "partition": "Pilot",
+          "episode_ids": [
+            "ep-6-cand",
+            "ep-6-base"
+          ],
+          "size_band": "fixture",
+          "topology_class": "flat"
+        },
+        {
+          "repo_id": "trace-repo-7",
+          "partition": "Pilot",
+          "episode_ids": [
+            "ep-7-cand",
+            "ep-7-base"
+          ],
+          "size_band": "fixture",
+          "topology_class": "flat"
+        },
+        {
+          "repo_id": "trace-repo-8",
+          "partition": "Pilot",
+          "episode_ids": [
+            "ep-8-cand",
+            "ep-8-base"
+          ],
+          "size_band": "fixture",
+          "topology_class": "flat"
+        },
+        {
+          "repo_id": "trace-repo-9",
+          "partition": "Pilot",
+          "episode_ids": [
+            "ep-9-cand",
+            "ep-9-base"
+          ],
+          "size_band": "fixture",
+          "topology_class": "flat"
+        }
+      ],
+      "batch_size": 20,
+      "intent": "debugging batch — variance calibration only, not evidence",
+      "budget": 20,
+      "clustering_unit": "repository"
+    },
+    "trace_sha256": "59aae7921c250f5d4368acfca7a9c8f0c7ea1ba871bd0a0b170c834e4d0895af",
+    "pilot_report_digest": "c67110b0274b9a360da1e07d32f67014147384a95a68e729bb7357eddadabe0e",
+    "baseline_report_digest": "8ebd32f677ca180bf0342b0aecf8932fed8b7e480ba3a42d1153df025f340341"
+  },
+  "provenance": {
+    "toolchain": "rustc 1.98.1 (48a229cea 2026-09-01)",
+    "os": "linux",
+    "arch": "x86_64"
+  }
+}

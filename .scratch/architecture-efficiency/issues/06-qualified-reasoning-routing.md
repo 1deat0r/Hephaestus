@@ -1,6 +1,6 @@
 # AE-06: Qualified reasoning routing
 
-**Status:** ready-for-agent
+**Status:** done
 **Verify:** cargo test -p hephaestus --test architecture_qualified_reasoning_routing
 **Covers:** 16, 17, 18
 **Blocked by:** 05
@@ -36,15 +36,15 @@ Test names below are planned. Existing passing tests cannot substitute for these
       - [x] Add positive, refusal, and regression cases in `crates/hephaestus/tests/architecture_qualified_reasoning_routing.rs`.
       - [x] Implement the specified behavior in `crates/hephaestus/src/advisory/mod.rs`.
 
-3. [ ] **S3** Bound escalation and alternatives
-   **Status:** pending
+3. [x] **S3** Bound escalation and alternatives
+   **Status:** done
    **Verify:** cargo test -p hephaestus --test architecture_qualified_reasoning_routing s3_escalation
    Escalate from independent checks; enforce retry and token limits; count failures; avoid treating self-confidence as qualification.
    **Micro-tasks:**
-   1. [ ] **M1** Demonstrate the missing behavior; implement it; pass the same acceptance tests.
+   1. [x] **M1** Demonstrate the missing behavior; implement it; pass the same acceptance tests.
       **Verify:** cargo test -p hephaestus --test architecture_qualified_reasoning_routing s3_escalation
-      - [ ] Add positive, refusal, and regression cases in `crates/hephaestus/tests/architecture_qualified_reasoning_routing.rs`.
-      - [ ] Implement the specified behavior in `crates/hephaestus/src/advisory/mod.rs`.
+      - [x] Add positive, refusal, and regression cases in `crates/hephaestus/tests/architecture_qualified_reasoning_routing.rs`.
+      - [x] Implement the specified behavior in `crates/hephaestus/src/advisory/mod.rs`.
 
 ## Comments
 

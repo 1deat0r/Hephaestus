@@ -1,0 +1,11 @@
+{"commands": [{"small": "S3", "command": "cargo test -p hephaestus --test architecture_qualified_reasoning_routing s3_escalation"}], "cwd": "/run/media/ideator/Projects/AI Agents/Hephaestus"}
+### S3: cargo test -p hephaestus --test architecture_qualified_reasoning_routing s3_escalation
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.07s
+     Running tests/architecture_qualified_reasoning_routing.rs (target/debug/deps/architecture_qualified_reasoning_routing-2d29d40088e9c4ab)
+
+running 3 tests
+test s3_escalation_counts_and_replays_deterministically ... ok
+test s3_escalation_from_passing_check_within_limits ... ok
+test s3_escalation_refusals_named ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 6 filtered out; finished in 0.00s

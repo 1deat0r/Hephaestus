@@ -276,3 +276,119 @@ pub fn select_provider(
     });
     Ok(eligible[0].identity.clone())
 }
+
+/// Retry and token bounds for escalation (AC 18).
+#[derive(Debug, Clone, PartialEq)]
+pub struct EscalationPolicy {
+    pub max_retries: u32,
+    pub token_limit: u64,
+}
+
+/// One independent check result. `passed` comes from a verifier
+/// separate from the proposing provider — never from the
+/// provider's own confidence.
+#[derive(Debug, Clone, PartialEq)]
+pub struct IndependentCheck {
+    pub passed: bool,
+    pub tokens_used: u64,
+}
+
+/// Running escalation account: attempts spent, tokens spent, and
+/// failures observed. Counts only move forward.
+#[derive(Debug, Clone, Default, PartialEq, Eq)]
+pub struct EscalationState {
+    pub attempts: u32,
+    pub tokens_spent: u64,
+    pub failures: u64,
+}
+
+/// Why escalation refused.
+#[derive(Debug, Clone, PartialEq)]
+pub enum EscalationError {
+    /// The caller offered self-confidence instead of an independent
+    /// pass. Self-confidence never qualifies.
+    SelfConfidenceNotQualification { confidence: f64 },
+    /// The independent check failed. The failure counts.
+    IndependentCheckFailed { failures: u64 },
+    /// The retry budget is spent.
+    RetryBudgetExhausted { attempts: u32, max_retries: u32 },
+    /// The token limit binds.
+    TokenLimitExceeded { tokens_spent: u64, token_limit: u64 },
+}
+
+impl std::fmt::Display for EscalationError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::SelfConfidenceNotQualification { confidence } => {
+                write!(f, "self-confidence {confidence} is not qualification")
+            }
+            Self::IndependentCheckFailed { failures } => {
+                write!(f, "independent check failed (failures: {failures})")
+            }
+            Self::RetryBudgetExhausted {
+                attempts,
+                max_retries,
+            } => {
+                write!(
+                    f,
+                    "retry budget exhausted ({attempts} of {max_retries} spent)"
+                )
+            }
+            Self::TokenLimitExceeded {
+                tokens_spent,
+                token_limit,
+            } => {
+                write!(
+                    f,
+                    "token limit exceeded ({tokens_spent} of {token_limit} spent)"
+                )
+            }
+        }
+    }
+}
+
+impl std::error::Error for EscalationError {}
+
+/// Request escalation from an independent check.
+///
+/// The check must pass on its own; any offered self-confidence with
+/// a failing check refuses as `SelfConfidenceNotQualification`.
+/// Retry and token limits bind before any attempt records. Passed
+/// gates record one attempt plus tokens; a failing check also
+/// records one failure. Refusals from spent budgets record nothing.
+pub fn request_escalation(
+    state: &mut EscalationState,
+    policy: &EscalationPolicy,
+    check: &IndependentCheck,
+    self_confidence: Option<f64>,
+) -> Result<(), EscalationError> {
+    // Self-confidence never substitutes for an independent pass.
+    // Misuse refuses before any budget spends, but counts a failure.
+    if !check.passed
+        && let Some(confidence) = self_confidence
+    {
+        state.failures += 1;
+        return Err(EscalationError::SelfConfidenceNotQualification { confidence });
+    }
+    if state.attempts >= policy.max_retries {
+        return Err(EscalationError::RetryBudgetExhausted {
+            attempts: state.attempts,
+            max_retries: policy.max_retries,
+        });
+    }
+    if state.tokens_spent.saturating_add(check.tokens_used) > policy.token_limit {
+        return Err(EscalationError::TokenLimitExceeded {
+            tokens_spent: state.tokens_spent,
+            token_limit: policy.token_limit,
+        });
+    }
+    state.attempts += 1;
+    state.tokens_spent += check.tokens_used;
+    if !check.passed {
+        state.failures += 1;
+        return Err(EscalationError::IndependentCheckFailed {
+            failures: state.failures,
+        });
+    }
+    Ok(())
+}

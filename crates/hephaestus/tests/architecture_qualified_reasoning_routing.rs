@@ -140,3 +140,86 @@ fn s2_routing_tie_breaks_deterministically() {
     assert_eq!(first.name, "alpha");
     assert_eq!(first, second);
 }
+
+/// AE-06 S3 — bound escalation and alternatives (R-005, R-055).
+/// Escalation starts from independent checks. Retry and token limits
+/// bind. Failures count. Self-confidence never qualifies.
+use hephaestus::advisory::{
+    EscalationError, EscalationPolicy, EscalationState, IndependentCheck, request_escalation,
+};
+
+fn policy() -> EscalationPolicy {
+    EscalationPolicy {
+        max_retries: 2,
+        token_limit: 100,
+    }
+}
+
+fn passing_check(tokens: u64) -> IndependentCheck {
+    IndependentCheck {
+        passed: true,
+        tokens_used: tokens,
+    }
+}
+
+fn failing_check(tokens: u64) -> IndependentCheck {
+    IndependentCheck {
+        passed: false,
+        tokens_used: tokens,
+    }
+}
+
+#[test]
+fn s3_escalation_from_passing_check_within_limits() {
+    // AC 18 positive: a passing independent check escalates and the
+    // state records the attempt, tokens, and no failure.
+    let mut state = EscalationState::default();
+    request_escalation(&mut state, &policy(), &passing_check(30), None).expect("within limits");
+    assert_eq!(state.attempts, 1);
+    assert_eq!(state.tokens_spent, 30);
+    assert_eq!(state.failures, 0);
+}
+
+#[test]
+fn s3_escalation_refusals_named() {
+    // AC 18 refusal: self-confidence alone never qualifies.
+    let mut state = EscalationState::default();
+    assert!(matches!(
+        request_escalation(&mut state, &policy(), &failing_check(10), Some(0.99)),
+        Err(EscalationError::SelfConfidenceNotQualification { .. })
+    ));
+    // A failed independent check counts a failure and refuses.
+    assert!(matches!(
+        request_escalation(&mut state, &policy(), &failing_check(10), None),
+        Err(EscalationError::IndependentCheckFailed { .. })
+    ));
+    assert_eq!(state.failures, 2);
+    // Retry budget exhausted after two attempts.
+    let _ = request_escalation(&mut state, &policy(), &passing_check(10), None);
+    assert!(matches!(
+        request_escalation(&mut state, &policy(), &passing_check(10), None),
+        Err(EscalationError::RetryBudgetExhausted { .. })
+    ));
+    // Token limit binds even with retries left.
+    let mut rich = EscalationState::default();
+    assert!(matches!(
+        request_escalation(&mut rich, &policy(), &passing_check(101), None),
+        Err(EscalationError::TokenLimitExceeded { .. })
+    ));
+}
+
+#[test]
+fn s3_escalation_counts_and_replays_deterministically() {
+    // AC 18 regression: identical sequences reach identical states;
+    // failures accumulate across mixed outcomes.
+    let mut a = EscalationState::default();
+    let mut b = EscalationState::default();
+    for state in [&mut a, &mut b] {
+        let _ = request_escalation(state, &policy(), &failing_check(10), None);
+        let _ = request_escalation(state, &policy(), &passing_check(20), None);
+    }
+    assert_eq!(a, b);
+    assert_eq!(a.attempts, 2);
+    assert_eq!(a.failures, 1);
+    assert_eq!(a.tokens_spent, 30);
+}

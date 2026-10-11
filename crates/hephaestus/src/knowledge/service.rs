@@ -10,8 +10,9 @@ use std::collections::HashSet;
 use sha2::{Digest, Sha256};
 
 use super::record::{
-    CapturedSource, Corpus, CorpusCoverage, Edge, EdgeError, EdgeType, ParserId, QueryCoverage,
-    SearchHit, Span, SpanError,
+    CapturedSource, ContextError, ContextRequest, Corpus, CorpusCoverage, Edge, EdgeError,
+    EdgeType, MissingEvidence, ParserId, QueryCoverage, SearchHit, Span, SpanError,
+    assemble_intake,
 };
 use crate::ledger::{ArtifactStore, LedgerError};
 
@@ -559,6 +560,121 @@ pub fn authorize_reuse(key: &ReuseKey, presented: &ReusePresentation) -> Result<
         return Err(ReuseRefusal::DependenciesStale);
     }
     Ok(())
+}
+
+/// One bounded task context: deduped exact spans with provenance,
+/// explicit missing evidence, token use, and dedupe count.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct BoundedContext {
+    pub spans: Vec<Span>,
+    pub provenance: Vec<String>,
+    pub missing: Vec<MissingEvidence>,
+    pub tokens_used: usize,
+    pub dropped_duplicates: usize,
+}
+
+/// Why bounded assembly refused.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum AssemblyError {
+    Intake(ContextError),
+    MandatoryOmitted {
+        requirement_id: String,
+        tokens_needed: usize,
+        token_limit: usize,
+    },
+}
+
+impl std::fmt::Display for AssemblyError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::Intake(e) => write!(f, "intake refused: {e}"),
+            Self::MandatoryOmitted {
+                requirement_id,
+                tokens_needed,
+                token_limit,
+            } => {
+                write!(
+                    f,
+                    "budget {token_limit} omits mandatory {requirement_id} needing {tokens_needed}"
+                )
+            }
+        }
+    }
+}
+
+impl std::error::Error for AssemblyError {}
+
+/// Assemble a deduped, budget-bounded context from intake requirements.
+///
+/// Dedupes by exact (source, start, end): twin requirements resolve
+/// once. Counterevidence stays: same text from two sources carries
+/// two keys and never dedupes. Spans keep exact coordinates and
+/// bytes — nothing truncates. Intake missing carries through. A
+/// budget that excludes a mandatory span refuses with its id;
+/// optional spans past the budget drop silently in order.
+pub fn assemble_bounded_context(
+    corpus: &Corpus,
+    request: &ContextRequest,
+) -> Result<BoundedContext, AssemblyError> {
+    let intake = assemble_intake(corpus, request).map_err(AssemblyError::Intake)?;
+    // Re-resolve with requirement identity for dedupe + budget order.
+    let mut seen: HashSet<(u64, usize, usize)> = HashSet::new();
+    let mut unique: Vec<(String, bool, Span, String)> = Vec::new();
+    let mut dropped_duplicates = 0usize;
+    for req in &request.requirements {
+        let src = match corpus.get(req.source) {
+            Some(src) if src.quarantined.is_none() => src,
+            _ => continue,
+        };
+        if req.start > req.end || req.end > src.bytes.len() {
+            continue;
+        }
+        let key = (req.source, req.start, req.end);
+        if !seen.insert(key) {
+            dropped_duplicates += 1;
+            continue;
+        }
+        let text = String::from_utf8_lossy(&src.bytes[req.start..req.end]).into_owned();
+        unique.push((
+            req.id.clone(),
+            req.mandatory,
+            Span {
+                source: req.source,
+                start: req.start,
+                end: req.end,
+                text,
+                transforms: Vec::new(),
+            },
+            format!(
+                "source:{}:[{}..{})@{}",
+                req.source, req.start, req.end, src.sha256
+            ),
+        ));
+    }
+    let mut spans = Vec::new();
+    let mut provenance = Vec::new();
+    let mut tokens_used = 0usize;
+    for (id, mandatory, span, prov) in unique {
+        let cost = span.text.len();
+        if tokens_used + cost <= request.token_limit {
+            tokens_used += cost;
+            spans.push(span);
+            provenance.push(prov);
+        } else if mandatory {
+            return Err(AssemblyError::MandatoryOmitted {
+                requirement_id: id,
+                tokens_needed: cost,
+                token_limit: request.token_limit,
+            });
+        }
+    }
+    Ok(BoundedContext {
+        spans,
+        provenance,
+        missing: intake.missing,
+        tokens_used,
+        dropped_duplicates,
+    })
 }
 
 /// Evidence-class attestation (R-007/AT-007, MASTER_SPEC §3,

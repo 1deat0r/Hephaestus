@@ -26,15 +26,15 @@ Test names below are planned. Existing passing tests cannot substitute for these
        - [x] Add positive, refusal, and regression cases in `crates/hephaestus/tests/architecture_task_context_assembly.rs`.
        - [x] Implement the specified behavior in `crates/hephaestus/src/knowledge/record.rs`.
 
-2. [ ] **S2** Assemble bounded evidence context
-   **Status:** pending
+2. [x] **S2** Assemble bounded evidence context
+   **Status:** done
    **Verify:** cargo test -p hephaestus --test architecture_task_context_assembly s2_assembly
    Deduplicate evidence; retain counterevidence and shared origins; preserve exact spans; refuse budgets that omit mandatory evidence.
    **Micro-tasks:**
-   1. [ ] **M1** Demonstrate the missing behavior; implement it; pass the same acceptance tests.
-      **Verify:** cargo test -p hephaestus --test architecture_task_context_assembly s2_assembly
-      - [ ] Add positive, refusal, and regression cases in `crates/hephaestus/tests/architecture_task_context_assembly.rs`.
-      - [ ] Implement the specified behavior in `crates/hephaestus/src/knowledge/service.rs`.
+    1. [x] **M1** Demonstrate the missing behavior; implement it; pass the same acceptance tests.
+       **Verify:** cargo test -p hephaestus --test architecture_task_context_assembly s2_assembly
+       - [x] Add positive, refusal, and regression cases in `crates/hephaestus/tests/architecture_task_context_assembly.rs`.
+       - [x] Implement the specified behavior in `crates/hephaestus/src/knowledge/service.rs`.
 
 3. [ ] **S3** Verify incremental context correctness
    **Status:** pending

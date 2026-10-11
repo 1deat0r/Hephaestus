@@ -20,8 +20,9 @@ pub use record::{
     QueryCoverage, SearchHit, Span, SpanError, StatementIngestion, assemble_intake,
 };
 pub use service::{
-    AdapterError, LocalFileAdapter, OnDemandError, ReuseKey, ReusePresentation, ReuseRefusal,
-    SourceAdapter, attest_evidence_class, authorize_reuse, corpus_coverage, correct, count_origins,
-    ingest_bytes, link_edge, quarantine, read_verified_span, search, sha256_hex,
-    source_artifact_identity, store_source_bytes, tokenize, verify_span,
+    AdapterError, AssemblyError, BoundedContext, LocalFileAdapter, OnDemandError, ReuseKey,
+    ReusePresentation, ReuseRefusal, SourceAdapter, assemble_bounded_context,
+    attest_evidence_class, authorize_reuse, corpus_coverage, correct, count_origins, ingest_bytes,
+    link_edge, quarantine, read_verified_span, search, sha256_hex, source_artifact_identity,
+    store_source_bytes, tokenize, verify_span,
 };

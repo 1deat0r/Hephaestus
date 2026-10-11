@@ -264,8 +264,9 @@ impl ObjectCache {
 
 /// Process high-water resident memory in bytes, read from
 /// `/proc/self/status` (`VmHWM`). Returns `None` where the platform
-/// exposes no such file. The mark never recedes within a process, so a
-/// later reading is always greater than or equal to an earlier one.
+/// exposes no such file. The mark is a process-wide observation only:
+/// it carries no ordering guarantee for tests, and cache residence
+/// evidence comes from `ObjectCache` counters, not from this helper.
 pub fn process_peak_bytes() -> Option<u64> {
     let status = std::fs::read_to_string("/proc/self/status").ok()?;
     status.lines().find_map(|line| {

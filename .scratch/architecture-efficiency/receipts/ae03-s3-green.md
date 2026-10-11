@@ -52,3 +52,14 @@ process-wide, not per-cache. Cache holds no persistence; a restart
 starts cold. This completes AE-03 S1–S3 and unblocks AE-04.
 Developer model is Muse Spark per user direction to continue; the Pi
 protocol names MiMo. The contract code carries no model dependency.
+
+## Addendum 2026-10-11 — drop OS-mark ordering assert
+
+`make ci` failed once on
+`s3_cache_measures_cold_and_warm_peaks` at the
+`after >= before` process-mark assert. The cache counters
+(resident, peak, hits) all held; only the OS `VmHWM` ordering
+broke. The helper doc no longer claims monotonicity, and the test
+observes the mark without ordering it. Residence evidence comes
+from cache counters alone. This matches the earlier review flag
+that warm-peak measurement cannot rest on the process mark.

@@ -1,0 +1,12 @@
+{"commands": [{"small": "S2", "command": "cargo test -p hephaestus --test architecture_task_context_assembly s2_assembly"}], "cwd": "/run/media/ideator/Projects/AI Agents/Hephaestus"}
+### S2: cargo test -p hephaestus --test architecture_task_context_assembly s2_assembly
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 10.65s
+     Running tests/architecture_task_context_assembly.rs (target/debug/deps/architecture_task_context_assembly-711d5d7b9788371c)
+
+running 4 tests
+test s2_assembly_omits_optional_over_budget ... ok
+test s2_assembly_deduplicates_identical_spans ... ok
+test s2_assembly_refuses_budget_that_omits_mandatory ... ok
+test s2_assembly_retains_counterevidence_and_exact_spans ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 3 filtered out; finished in 0.00s

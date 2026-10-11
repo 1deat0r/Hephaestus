@@ -1,6 +1,6 @@
 # AE-04: Incremental invalidation
 
-**Status:** blocked
+**Status:** ready-for-agent
 **Verify:** cargo test -p hephaestus --test architecture_incremental_invalidation
 **Covers:** 10, 11, 12
 **Blocked by:** 03
@@ -16,15 +16,15 @@ Test names below are planned. Existing passing tests cannot substitute for these
 
 **Small tasks:**
 
-1. [ ] **S1** Index artifact dependencies
-   **Status:** pending
+1. [x] **S1** Index artifact dependencies
+   **Status:** done
    **Verify:** cargo test -p hephaestus --test architecture_incremental_invalidation s1_index
    Build rebuildable reverse dependencies using artifact versions; handle cycles and multiple dependency paths.
    **Micro-tasks:**
-   1. [ ] **M1** Demonstrate the missing behavior; implement it; pass the same acceptance tests.
-      **Verify:** cargo test -p hephaestus --test architecture_incremental_invalidation s1_index
-      - [ ] Add positive, refusal, and regression cases in `crates/hephaestus/tests/architecture_incremental_invalidation.rs`.
-      - [ ] Implement the specified behavior in `crates/hephaestus/src/trustprop/mod.rs`.
+    1. [x] **M1** Demonstrate the missing behavior; implement it; pass the same acceptance tests.
+       **Verify:** cargo test -p hephaestus --test architecture_incremental_invalidation s1_index
+       - [x] Add positive, refusal, and regression cases in `crates/hephaestus/tests/architecture_incremental_invalidation.rs`.
+       - [x] Implement the specified behavior in `crates/hephaestus/src/trustprop/mod.rs`.
 
 2. [ ] **S2** Invalidate affected derivatives
    **Status:** pending

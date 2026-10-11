@@ -1,0 +1,15 @@
+{"commands": [{"small": "S1", "command": "cargo test -p hephaestus --test architecture_incremental_invalidation s1_index"}], "cwd": "/run/media/ideator/Projects/AI Agents/Hephaestus"}
+### S1: cargo test -p hephaestus --test architecture_incremental_invalidation s1_index
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on build directory
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1m 03s
+     Running tests/architecture_incremental_invalidation.rs (target/debug/deps/architecture_incremental_invalidation-9dc233285e39204a)
+
+running 5 tests
+test s1_index_versions_scope_dependents ... ok
+test s1_index_conflicting_inputs_refuse ... ok
+test s1_index_chain_resolves_transitive_dependents ... ok
+test s1_index_rebuilds_from_exported_links ... ok
+test s1_index_cycles_terminate_and_dedupe ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s

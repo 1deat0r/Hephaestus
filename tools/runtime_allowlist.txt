@@ -645,3 +645,6 @@ tests/test_ticket_status.py
 .scratch/architecture-efficiency/receipts/ae03-s2-green.md
 .scratch/architecture-efficiency/receipts/ae03-s3-workflow-verify.log
 .scratch/architecture-efficiency/receipts/ae03-s3-green.md
+crates/hephaestus/tests/architecture_incremental_invalidation.rs
+.scratch/architecture-efficiency/receipts/ae04-s1-workflow-verify.log
+.scratch/architecture-efficiency/receipts/ae04-s1-green.md

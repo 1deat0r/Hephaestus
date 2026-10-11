@@ -8,6 +8,7 @@
 
 use crate::contracts::generated::TrustOrigin;
 use serde::{Deserialize, Serialize};
+use std::collections::{HashMap, HashSet, VecDeque};
 
 /// Trust ranking (weakest first): synthetic fixtures prove
 /// construction, not observation, so they rank BELOW observed tool
@@ -65,5 +66,204 @@ impl DerivedTrust {
             inherited_origin: derive_origin(source_origins),
             derivation: derivation.to_string(),
         }
+    }
+}
+
+/// One recorded input edge: derivative version built from an exact
+/// artifact version.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct DependencyLink {
+    /// The derived artifact id.
+    pub derivative: String,
+    /// The derived artifact version.
+    pub derivative_version: u64,
+    /// The input artifact id.
+    pub artifact: String,
+    /// The exact input artifact version the derivation consumed.
+    pub artifact_version: u64,
+}
+
+/// Why dependency recording refused.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum IndexError {
+    /// The derivative version already records different inputs:
+    /// conflicting provenance, never merged.
+    ConflictingInputs {
+        /// The derivative id.
+        derivative: String,
+        /// The derivative version.
+        version: u64,
+    },
+}
+
+impl std::fmt::Display for IndexError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::ConflictingInputs {
+                derivative,
+                version,
+            } => {
+                write!(f, "conflicting inputs for {derivative} v{version}")
+            }
+        }
+    }
+}
+
+impl std::error::Error for IndexError {}
+
+/// Rebuildable reverse-dependency index over versioned artifacts.
+///
+/// Nodes are (id, version) pairs: a derivative of artifact v1 is
+/// unaffected by artifact v2. Forward edges map a derivative version to
+/// the exact input versions it consumed; reverse edges map an artifact
+/// version to its direct dependents. Traversal terminates on cycles via
+/// a visited set and counts multiply-reached derivatives once. The
+/// exported link list rebuilds an identical index.
+#[derive(Debug, Clone, Default)]
+pub struct DependencyIndex {
+    forward: HashMap<(String, u64), Vec<(String, u64)>>,
+    reverse: HashMap<(String, u64), Vec<(String, u64)>>,
+}
+
+impl DependencyIndex {
+    /// Empty index.
+    pub fn new() -> Self {
+        DependencyIndex {
+            forward: HashMap::new(),
+            reverse: HashMap::new(),
+        }
+    }
+
+    /// Rebuild an index from an exported link list. Conflicting links
+    /// refuse exactly as direct recording does.
+    pub fn rebuild(links: &[DependencyLink]) -> Result<Self, IndexError> {
+        let mut grouped: HashMap<(String, u64), Vec<(String, u64)>> = HashMap::new();
+        for link in links {
+            grouped
+                .entry((link.derivative.clone(), link.derivative_version))
+                .or_default()
+                .push((link.artifact.clone(), link.artifact_version));
+        }
+        let mut index = DependencyIndex::new();
+        for ((derivative, version), inputs) in &grouped {
+            let refs: Vec<(&str, u64)> = inputs
+                .iter()
+                .map(|(id, version)| (id.as_str(), *version))
+                .collect();
+            index.record(derivative, *version, &refs)?;
+        }
+        Ok(index)
+    }
+
+    /// Record that a derivative version consumed exact input versions.
+    /// Re-recording identical inputs is idempotent; differing inputs
+    /// refuse as conflicting provenance.
+    pub fn record(
+        &mut self,
+        derivative: &str,
+        derivative_version: u64,
+        inputs: &[(&str, u64)],
+    ) -> Result<(), IndexError> {
+        let key = (derivative.to_string(), derivative_version);
+        let mut normalized: Vec<(String, u64)> = inputs
+            .iter()
+            .map(|(id, version)| (id.to_string(), *version))
+            .collect();
+        normalized.sort();
+        normalized.dedup();
+        if let Some(existing) = self.forward.get(&key) {
+            if *existing == normalized {
+                return Ok(());
+            }
+            return Err(IndexError::ConflictingInputs {
+                derivative: derivative.to_string(),
+                version: derivative_version,
+            });
+        }
+        for (artifact, version) in &normalized {
+            self.reverse
+                .entry((artifact.clone(), *version))
+                .or_default()
+                .push(key.clone());
+        }
+        self.forward.insert(key, normalized);
+        Ok(())
+    }
+
+    /// Exact input versions a derivative version consumed, sorted.
+    pub fn direct_inputs(&self, derivative: &str, version: u64) -> Vec<(String, u64)> {
+        self.forward
+            .get(&(derivative.to_string(), version))
+            .cloned()
+            .unwrap_or_default()
+    }
+
+    /// Derivative versions built directly from an artifact version, sorted.
+    pub fn direct_dependents(&self, artifact: &str, version: u64) -> Vec<(String, u64)> {
+        let mut out = self
+            .reverse
+            .get(&(artifact.to_string(), version))
+            .cloned()
+            .unwrap_or_default();
+        out.sort();
+        out.dedup();
+        out
+    }
+
+    /// All transitively affected derivative versions, sorted and deduped.
+    /// The queried node itself is excluded. Cycles terminate via the
+    /// visited set: each node expands once.
+    pub fn affected(&self, artifact: &str, version: u64) -> Vec<(String, u64)> {
+        let start = (artifact.to_string(), version);
+        let mut visited: HashSet<(String, u64)> = HashSet::from([start]);
+        let mut queue: VecDeque<(String, u64)> = self
+            .direct_dependents(artifact, version)
+            .into_iter()
+            .collect();
+        while let Some(node) = queue.pop_front() {
+            if !visited.insert(node.clone()) {
+                continue;
+            }
+            for next in self.direct_dependents(&node.0, node.1) {
+                if !visited.contains(&next) {
+                    queue.push_back(next);
+                }
+            }
+        }
+        visited.remove(&(artifact.to_string(), version));
+        let mut out: Vec<(String, u64)> = visited.into_iter().collect();
+        out.sort();
+        out
+    }
+
+    /// Every recorded input edge, sorted. Feeds `rebuild` for a
+    /// persistence round-trip.
+    pub fn links(&self) -> Vec<DependencyLink> {
+        let mut out = Vec::new();
+        for ((derivative, derivative_version), inputs) in &self.forward {
+            for (artifact, artifact_version) in inputs {
+                out.push(DependencyLink {
+                    derivative: derivative.clone(),
+                    derivative_version: *derivative_version,
+                    artifact: artifact.clone(),
+                    artifact_version: *artifact_version,
+                });
+            }
+        }
+        out.sort_by(|a, b| {
+            (
+                &a.derivative,
+                a.derivative_version,
+                &a.artifact,
+                a.artifact_version,
+            )
+                .cmp(&(
+                    &b.derivative,
+                    b.derivative_version,
+                    &b.artifact,
+                    b.artifact_version,
+                ))
+        });
+        out
     }
 }

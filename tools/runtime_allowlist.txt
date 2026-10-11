@@ -657,4 +657,6 @@ crates/hephaestus/tests/architecture_task_context_assembly.rs
 .scratch/architecture-efficiency/receipts/ae05-s1-green.md
 .scratch/architecture-efficiency/receipts/ae05-s2-workflow-verify.log
 .scratch/architecture-efficiency/receipts/ae05-s2-green.md
+.scratch/architecture-efficiency/receipts/ae05-s3-workflow-verify.log
+.scratch/architecture-efficiency/receipts/ae05-s3-green.md
 docs/V0_01_EXPERIMENTAL.md

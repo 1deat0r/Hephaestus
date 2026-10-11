@@ -1,8 +1,9 @@
 //! AE-05 S1 — context assembly interface (AC13).
 
 use hephaestus::knowledge::{
-    AssemblyError, ContextError, ContextRequest, Corpus, EvidenceRequirement, ParserId,
-    assemble_bounded_context, assemble_intake, ingest_bytes,
+    AssemblyError, CandidateContext, CandidateEdge, ContextCorrectness, ContextError,
+    ContextRequest, Corpus, EvidenceRequirement, ParserId, assemble_bounded_context,
+    assemble_intake, ingest_bytes, verify_dependency_context,
 };
 
 fn parser() -> ParserId {
@@ -195,4 +196,101 @@ fn s2_assembly_omits_optional_over_budget() {
     let ctx = assemble_bounded_context(&corpus, &tight).expect("optional drops");
     assert_eq!(ctx.spans.len(), 1);
     assert_eq!(ctx.spans[0].source, 0);
+}
+
+fn edge(from: &str, target: &str) -> CandidateEdge {
+    CandidateEdge {
+        from_module: from.to_string(),
+        target: target.to_string(),
+        alias: None,
+    }
+}
+
+fn context(declared: &[&str], edges: Vec<CandidateEdge>) -> CandidateContext {
+    CandidateContext {
+        declared: declared.iter().map(|s| s.to_string()).collect(),
+        edges,
+    }
+}
+
+#[test]
+fn s3_correctness_match_accepts() {
+    // AC 15 positive: declared closure equals the resolved graph.
+    let verdict = verify_dependency_context(&context(
+        &["crate::a", "crate::b"],
+        vec![edge("crate::a", "crate::b")],
+    ));
+    match verdict {
+        ContextCorrectness::Matched { cycles } => assert!(cycles.is_empty()),
+        other => panic!("expected Matched, got: {other:?}"),
+    }
+}
+
+#[test]
+fn s3_correctness_cycles_report_and_terminate() {
+    // AC 15 positive: a two-module cycle terminates and is reported;
+    // the verdict still accepts the (completely declared) closure.
+    let verdict = verify_dependency_context(&context(
+        &["crate::x", "crate::y"],
+        vec![edge("crate::x", "crate::y"), edge("crate::y", "crate::x")],
+    ));
+    match verdict {
+        ContextCorrectness::Matched { cycles } => {
+            assert_eq!(cycles.len(), 1);
+            assert_eq!(
+                cycles[0].modules,
+                vec!["crate::x".to_string(), "crate::y".to_string()]
+            );
+        }
+        other => panic!("expected Matched with cycle, got: {other:?}"),
+    }
+}
+
+#[test]
+fn s3_correctness_deletion_reports_stale() {
+    // AC 15 positive: a declared module with no resolved edge
+    // (deleted or renamed away) reports stale, never silently drops.
+    let verdict = verify_dependency_context(&context(
+        &["crate::a", "crate::b", "crate::gone"],
+        vec![edge("crate::a", "crate::b")],
+    ));
+    match verdict {
+        ContextCorrectness::Mismatched { stale, missing, .. } => {
+            assert_eq!(stale, vec!["crate::gone".to_string()]);
+            assert!(missing.is_empty());
+        }
+        other => panic!("expected Mismatched stale, got: {other:?}"),
+    }
+}
+
+#[test]
+fn s3_correctness_missing_reports_missing() {
+    // AC 15 positive: a resolved module absent from the declaration
+    // reports missing.
+    let verdict =
+        verify_dependency_context(&context(&["crate::a"], vec![edge("crate::a", "crate::b")]));
+    match verdict {
+        ContextCorrectness::Mismatched { stale, missing, .. } => {
+            assert!(stale.is_empty());
+            assert_eq!(missing, vec!["crate::b".to_string()]);
+        }
+        other => panic!("expected Mismatched missing, got: {other:?}"),
+    }
+}
+
+#[test]
+fn s3_correctness_unsupported_blocks_conservatively() {
+    // AC 15 refusal: a dynamic import blocks without omission — the
+    // verdict names the entry and accepts nothing.
+    let verdict = verify_dependency_context(&context(
+        &["crate::a"],
+        vec![edge("crate::a", "dyn::plugin")],
+    ));
+    match verdict {
+        ContextCorrectness::BlockedUnsupported { entries } => {
+            assert_eq!(entries.len(), 1);
+            assert!(entries[0].contains("dyn::plugin"));
+        }
+        other => panic!("expected BlockedUnsupported, got: {other:?}"),
+    }
 }

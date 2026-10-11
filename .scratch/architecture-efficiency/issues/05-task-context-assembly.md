@@ -1,6 +1,6 @@
 # AE-05: Task context assembly
 
-**Status:** ready-for-agent
+**Status:** done
 **Verify:** cargo test -p hephaestus --test architecture_task_context_assembly
 **Covers:** 13, 14, 15
 **Blocked by:** 04
@@ -36,15 +36,15 @@ Test names below are planned. Existing passing tests cannot substitute for these
        - [x] Add positive, refusal, and regression cases in `crates/hephaestus/tests/architecture_task_context_assembly.rs`.
        - [x] Implement the specified behavior in `crates/hephaestus/src/knowledge/service.rs`.
 
-3. [ ] **S3** Verify incremental context correctness
-   **Status:** pending
+3. [x] **S3** Verify incremental context correctness
+   **Status:** done
    **Verify:** cargo test -p hephaestus --test architecture_task_context_assembly s3_correctness
    Compare Python dependency contexts against the protected oracle; handle cycles, deletions, renames, and unsupported imports conservatively.
    **Micro-tasks:**
-   1. [ ] **M1** Demonstrate the missing behavior; implement it; pass the same acceptance tests.
-      **Verify:** cargo test -p hephaestus --test architecture_task_context_assembly s3_correctness
-      - [ ] Add positive, refusal, and regression cases in `crates/hephaestus/tests/architecture_task_context_assembly.rs`.
-      - [ ] Implement the specified behavior in `crates/hephaestus/src/knowledge/service.rs`.
+    1. [x] **M1** Demonstrate the missing behavior; implement it; pass the same acceptance tests.
+       **Verify:** cargo test -p hephaestus --test architecture_task_context_assembly s3_correctness
+       - [x] Add positive, refusal, and regression cases in `crates/hephaestus/tests/architecture_task_context_assembly.rs`.
+       - [x] Implement the specified behavior in `crates/hephaestus/src/knowledge/service.rs`.
 
 ## Comments
 

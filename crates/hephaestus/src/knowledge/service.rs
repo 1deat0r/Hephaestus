@@ -14,6 +14,10 @@ use super::record::{
     EdgeType, MissingEvidence, ParserId, QueryCoverage, SearchHit, Span, SpanError,
     assemble_intake,
 };
+use crate::importclosure::record::ClosureMismatch;
+use crate::importclosure::{
+    ImportCycle, check_closure, detect_cycles, oracle_agreement, resolve_edges,
+};
 use crate::ledger::{ArtifactStore, LedgerError};
 
 /// Lowercase hex sha256 of raw bytes.
@@ -693,4 +697,99 @@ pub fn attest_evidence_class(
         });
     }
     Ok(())
+}
+
+/// One candidate dependency edge as written (for example by a Python
+/// worker): the importing module, the target as written, and an
+/// optional alias the target binds to.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct CandidateEdge {
+    pub from_module: String,
+    pub target: String,
+    pub alias: Option<String>,
+}
+
+/// A candidate dependency context: a declared closure plus written
+/// edges. The protected oracle resolves and judges; this struct only
+/// carries the candidate's claims.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct CandidateContext {
+    pub declared: Vec<String>,
+    pub edges: Vec<CandidateEdge>,
+}
+
+/// Correctness verdict for a candidate context against the protected
+/// oracle. Cycles are reported, never silently accepted; unsupported
+/// imports block without omission.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum ContextCorrectness {
+    Matched {
+        cycles: Vec<ImportCycle>,
+    },
+    Mismatched {
+        stale: Vec<String>,
+        missing: Vec<String>,
+        cycles: Vec<ImportCycle>,
+    },
+    BlockedUnsupported {
+        entries: Vec<String>,
+    },
+    BlockedDisagreement {
+        oracle_a_digest: String,
+        oracle_b_digest: String,
+    },
+}
+
+/// Compare a candidate dependency context against the protected
+/// oracle. Resolution, closure check, cycle detection, and the
+/// oracle-agreement gate all run in the oracle; this layer only maps
+/// the verdict. Deletions and renames surface as stale entries;
+/// unsupported imports block conservatively.
+pub fn verify_dependency_context(ctx: &CandidateContext) -> ContextCorrectness {
+    let raw: Vec<(&str, &str, Option<&str>)> = ctx
+        .edges
+        .iter()
+        .map(|e| {
+            (
+                e.from_module.as_str(),
+                e.target.as_str(),
+                e.alias.as_deref(),
+            )
+        })
+        .collect();
+    let resolved = resolve_edges(&raw);
+    let declared: Vec<&str> = ctx.declared.iter().map(String::as_str).collect();
+    match check_closure(&declared, &resolved) {
+        crate::importclosure::ClosureVerdict::BlockedUnresolved(entries) => {
+            ContextCorrectness::BlockedUnsupported { entries }
+        }
+        crate::importclosure::ClosureVerdict::Mismatched(mismatches) => {
+            let mut stale = Vec::new();
+            let mut missing = Vec::new();
+            for m in mismatches {
+                match m {
+                    ClosureMismatch::Stale { module } => stale.push(module),
+                    ClosureMismatch::Missing { module } => missing.push(module),
+                }
+            }
+            stale.sort();
+            missing.sort();
+            ContextCorrectness::Mismatched {
+                stale,
+                missing,
+                cycles: detect_cycles(&resolved),
+            }
+        }
+        crate::importclosure::ClosureVerdict::Matched => {
+            match oracle_agreement(&declared, &resolved) {
+                Ok(()) => ContextCorrectness::Matched {
+                    cycles: detect_cycles(&resolved),
+                },
+                Err(d) => ContextCorrectness::BlockedDisagreement {
+                    oracle_a_digest: d.oracle_a_digest,
+                    oracle_b_digest: d.oracle_b_digest,
+                },
+            }
+        }
+    }
 }

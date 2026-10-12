@@ -728,3 +728,7 @@ docs/SANDBOX_FLAKE_NOTE.md
 .scratch/honesty-sweep/receipts/01-green.md
 .scratch/honesty-sweep/receipts/verify.log
 .scratch/honesty-sweep/receipts/sweep.log
+docs/CI_REPRODUCTION_NOTE.md
+.scratch/repro-ci/spec.md
+.scratch/repro-ci/issues/01-record-ci-arm.md
+.scratch/repro-ci/receipts/01-green.md

@@ -14,7 +14,7 @@ in the row).
 | 3 | Metered currency absent | owner | yes | metered provider or budget source | cost per qualified outcome | dossier Q3 |
 | 4 | Confirmatory campaign unflown; qualifying scope undecided | owner | yes | frozen campaign + spend + scope decision | QUALIFIED scope | dossier Q4 |
 | 5 | Confirmatory campaign security gates unrun | owner | yes | campaign flown (gap 4) | security gates completeness | posture untested 3 |
-| 6 | Cross-machine reproduction unproven | agent | partial | agent: CI arm now; owner: second machine | independent_reproduction input | posture untested 2 |
+| 6 | Cross-machine reproduction unproven | agent | partial | agent part done: CI re-verifies per push (note docs/CI_REPRODUCTION_NOTE.md); owner part: second machine | independent_reproduction input | posture untested 2 |
 | 7 | Live adversarial testing unrun | owner | yes | test scope + target | production security posture | posture untested 1 |
 | 8 | Supply-chain audit beyond lockfile | agent | no | audit landed (supply-chain ticket 01); deny.toml policy still open | security gates completeness | posture untested 4 |
 | 9 | Provisional targets unmeasured | agent | partial | agent: mark stays-provisional; owner: campaign measures | any speed/novelty claim | release packet ProvisionalTarget claims |

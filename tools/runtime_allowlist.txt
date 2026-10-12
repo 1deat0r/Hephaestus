@@ -699,3 +699,6 @@ docs/CAMPAIGN_MANIFEST.json
 .scratch/frozen-campaign/spec.md
 .scratch/frozen-campaign/issues/01-freeze-manifest.md
 .scratch/frozen-campaign/receipts/01-green.md
+crates/hephaestus/tests/campaign_manifest.rs
+.scratch/frozen-campaign/issues/02-verify-manifest.md
+.scratch/frozen-campaign/receipts/02-green.md

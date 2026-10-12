@@ -325,3 +325,95 @@ pub fn freeze_campaign(
 pub fn render_frozen_manifest(manifest: &FrozenManifest) -> Result<String, String> {
     serde_json::to_string_pretty(manifest).map_err(|e| format!("manifest serialize: {e}"))
 }
+
+/// Re-verification verdict for a frozen manifest (frozen-campaign
+/// 02). Anything but Valid refuses the manifest as stale; stale is
+/// never valid. Version binding means a code change re-freezes.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum ManifestVerdict {
+    Valid,
+    /// A live digest differs from the frozen one; the field is named.
+    DigestMismatch {
+        field: String,
+    },
+    /// The manifest binds a different package version.
+    VersionMismatch {
+        expected: String,
+        found: String,
+    },
+}
+
+/// Re-verify a manifest against live bytes. Checks internal
+/// consistency (top-level digests equal the frozen section),
+/// frozen plan equality with the code-derived plan, then live
+/// digests in fixed order: trace, pilot, baseline, package
+/// version. The first mismatch wins so verdicts stay
+/// deterministic; any non-Valid refuses the manifest, so the
+/// single-field diagnostic loses nothing at the gate.
+pub fn verify_manifest(
+    manifest: &FrozenManifest,
+    trace_bytes: &[u8],
+    pilot_bytes: &[u8],
+    baseline_bytes: &[u8],
+) -> ManifestVerdict {
+    let digest_of = |bytes: &[u8]| crate::knowledge::sha256_hex(bytes);
+    for (field, top, frozen) in [
+        (
+            "trace_sha256",
+            manifest.trace_sha256.clone(),
+            manifest.frozen.trace_sha256.clone(),
+        ),
+        (
+            "pilot_report_digest",
+            manifest.pilot_report_digest.clone(),
+            manifest.frozen.pilot_report_digest.clone(),
+        ),
+        (
+            "baseline_report_digest",
+            manifest.baseline_report_digest.clone(),
+            manifest.frozen.baseline_report_digest.clone(),
+        ),
+    ] {
+        if top != frozen {
+            return ManifestVerdict::DigestMismatch {
+                field: format!("{field}:top-level"),
+            };
+        }
+    }
+    if manifest.frozen.plan != batch_plan() {
+        return ManifestVerdict::DigestMismatch {
+            field: "plan".to_string(),
+        };
+    }
+    for (field, live, frozen) in [
+        (
+            "trace_sha256",
+            digest_of(trace_bytes),
+            manifest.frozen.trace_sha256.clone(),
+        ),
+        (
+            "pilot_report_digest",
+            digest_of(pilot_bytes),
+            manifest.frozen.pilot_report_digest.clone(),
+        ),
+        (
+            "baseline_report_digest",
+            digest_of(baseline_bytes),
+            manifest.frozen.baseline_report_digest.clone(),
+        ),
+    ] {
+        if live != frozen {
+            return ManifestVerdict::DigestMismatch {
+                field: field.to_string(),
+            };
+        }
+    }
+    let expected = env!("CARGO_PKG_VERSION").to_string();
+    if manifest.package_version != expected {
+        return ManifestVerdict::VersionMismatch {
+            expected,
+            found: manifest.package_version.clone(),
+        };
+    }
+    ManifestVerdict::Valid
+}

@@ -249,3 +249,47 @@ fn at_076_a_fully_pinned_measured_claim_passes_and_is_funneled() {
         "measured claim is displayable as achieved"
     );
 }
+
+#[test]
+fn provisional_never_renders_as_achieved_in_v1_dossier() {
+    // gaps row 9 agent part: the dossier renderer funnels through
+    // achieved_benchmarks, so provisional targets never display.
+    use hephaestus::evalsuite::EfficiencyComparison;
+    use hephaestus::release::render_v1_dossier_verdict;
+    let mut p = packet();
+    p.performance_claims = vec![
+        PerformanceClaim::ProvisionalTarget {
+            feature: s("unimplemented-widget"),
+            metric_label: s("p95 latency"),
+            target_value: s("<100 ms"),
+        },
+        PerformanceClaim::MeasuredBenchmark {
+            feature: s("fixture-cand-margin"),
+            metric_label: s("positive-margin fraction"),
+            measured_value: s("1"),
+            unit: s("fraction"),
+            benchmark_receipt: s("pilot-report:abc"),
+            reference_machine: s("linux-x86_64"),
+        },
+    ];
+    let comparison = EfficiencyComparison {
+        baseline_id: s("base"),
+        candidate_id: s("cand"),
+        baseline_correctness: 0.0,
+        candidate_correctness: 1.0,
+        false_promotions: 0,
+        baseline_tokens: 10,
+        candidate_tokens: 10,
+        baseline_cost: 0.0,
+        candidate_cost: 0.0,
+        baseline_latency_ms: 1,
+        candidate_latency_ms: 1,
+        baseline_throughput: 10.0,
+        candidate_throughput: 10.0,
+        baseline_peak_memory_bytes: 512,
+        candidate_peak_memory_bytes: 512,
+    };
+    let doc = render_v1_dossier_verdict(&p, &comparison, 0, "passed", "d1", "d2");
+    assert!(!doc.contains("unimplemented-widget"), "provisional hidden");
+    assert!(doc.contains("fixture-cand-margin"), "measured shown");
+}

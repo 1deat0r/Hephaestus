@@ -17,7 +17,7 @@ in the row).
 | 6 | Cross-machine reproduction unproven | agent | partial | agent part done: CI re-verifies per push (note docs/CI_REPRODUCTION_NOTE.md); owner part: second machine | independent_reproduction input | posture untested 2 |
 | 7 | Live adversarial testing unrun | owner | yes | test scope + target | production security posture | posture untested 1 |
 | 8 | Supply-chain audit beyond lockfile | agent | no | audit landed (supply-chain ticket 01); deny.toml policy still open | security gates completeness | posture untested 4 |
-| 9 | Provisional targets unmeasured | agent | partial | agent: mark stays-provisional; owner: campaign measures | any speed/novelty claim | release packet ProvisionalTarget claims |
+| 9 | Provisional targets unmeasured | agent | partial | agent part done: funnel + dossier guards (prov-targets ticket 01); owner: campaign measures | any speed/novelty claim | release packet ProvisionalTarget claims |
 | 10 | Sandbox CI flake cause unknown | agent | no | reproduction attempt inconclusive (flake-hunt ticket 01); fix needs own ticket, none exists yet | CI trust (named, not hidden) | posture audit flake note |
 
 ## Resolved (evidence linked)

@@ -732,3 +732,6 @@ docs/CI_REPRODUCTION_NOTE.md
 .scratch/repro-ci/spec.md
 .scratch/repro-ci/issues/01-record-ci-arm.md
 .scratch/repro-ci/receipts/01-green.md
+.scratch/prov-targets/spec.md
+.scratch/prov-targets/issues/01-render-guard.md
+.scratch/prov-targets/receipts/01-green.md

@@ -1,0 +1,68 @@
+# Project license policy (supply-chain audit follow-up).
+# Deny-by-default: only the permissive licenses below pass.
+# Copyleft and unknown licenses fail the check on sight.
+
+[licenses]
+allow = [
+    "MIT",
+    "MIT-0",
+    "Apache-2.0",
+    "ISC",
+    "BSD-2-Clause",
+    "BSD-3-Clause",
+    "Unicode-3.0",
+    "Zlib",
+    "Unlicense",
+    "CC0-1.0",
+    "CDLA-Permissive-2.0", # permissive data license (web-pki root certs); CDLA-Sharing stays out
+]
+confidence-threshold = 0.8
+# Unlisted licenses (including unlicensed crates) fail by default:
+# the allow table above is exclusive in this deny version.
+
+# Non-SPDX "/" forms mean the same dual license as the OR form
+# (upstream shorthand, verified against each crate's license files).
+# Slash shorthand upstream means dual licensing; both texts ship.
+[[licenses.exceptions]]
+name = "bytecount"
+version = "0.6.9"
+allow = ["Apache-2.0", "MIT"]
+# Slash shorthand upstream means dual licensing; both texts ship.
+[[licenses.exceptions]]
+name = "fnv"
+version = "1.0.7"
+allow = ["Apache-2.0", "MIT"]
+# Slash shorthand upstream means dual licensing; both texts ship.
+[[licenses.exceptions]]
+name = "num-cmp"
+version = "0.1.0"
+allow = ["MIT", "Apache-2.0"]
+# Slash shorthand upstream means dual licensing; both texts ship.
+[[licenses.exceptions]]
+name = "same-file"
+version = "1.0.6"
+allow = ["Unlicense", "MIT"]
+# Slash shorthand upstream means dual licensing; both texts ship.
+[[licenses.exceptions]]
+name = "version_check"
+version = "0.9.5"
+allow = ["MIT", "Apache-2.0"]
+# Slash shorthand upstream means dual licensing; both texts ship.
+[[licenses.exceptions]]
+name = "walkdir"
+version = "2.5.0"
+allow = ["Unlicense", "MIT"]
+
+[advisories]
+yanked = "warn"
+
+[bans]
+multiple-versions = "allow"
+
+[sources]
+unknown-registry = "deny"
+unknown-git = "deny"
+
+# LGPL note: r-efi carries MIT OR Apache-2.0 OR LGPL-2.1-or-later.
+# The check passes on the MIT/Apache alternatives; no LGPL-only
+# crate exists in the tree, and LGPL stays off the allowlist.

@@ -1,0 +1,79 @@
+warning[license-exception-not-encountered]: license exception was not encountered
+   ┌─ /run/media/ideator/Projects/AI Agents/Hephaestus/deny.toml:27:9
+   │
+27 │ name = "bytecount"
+   │         ━━━━━━━━━ unmatched license exception
+
+warning[license-exception-not-encountered]: license exception was not encountered
+   ┌─ /run/media/ideator/Projects/AI Agents/Hephaestus/deny.toml:32:9
+   │
+32 │ name = "fnv"
+   │         ━━━ unmatched license exception
+
+warning[license-exception-not-encountered]: license exception was not encountered
+   ┌─ /run/media/ideator/Projects/AI Agents/Hephaestus/deny.toml:37:9
+   │
+37 │ name = "num-cmp"
+   │         ━━━━━━━ unmatched license exception
+
+warning[license-exception-not-encountered]: license exception was not encountered
+   ┌─ /run/media/ideator/Projects/AI Agents/Hephaestus/deny.toml:42:9
+   │
+42 │ name = "same-file"
+   │         ━━━━━━━━━ unmatched license exception
+
+warning[license-exception-not-encountered]: license exception was not encountered
+   ┌─ /run/media/ideator/Projects/AI Agents/Hephaestus/deny.toml:47:9
+   │
+47 │ name = "version_check"
+   │         ━━━━━━━━━━━━━ unmatched license exception
+
+warning[license-exception-not-encountered]: license exception was not encountered
+   ┌─ /run/media/ideator/Projects/AI Agents/Hephaestus/deny.toml:52:9
+   │
+52 │ name = "walkdir"
+   │         ━━━━━━━ unmatched license exception
+
+warning[license-not-encountered]: license was not encountered
+   ┌─ /run/media/ideator/Projects/AI Agents/Hephaestus/deny.toml:11:6
+   │
+11 │     "BSD-2-Clause",
+   │      ━━━━━━━━━━━━ unmatched license allowance
+
+warning[license-not-encountered]: license was not encountered
+   ┌─ /run/media/ideator/Projects/AI Agents/Hephaestus/deny.toml:12:6
+   │
+12 │     "BSD-3-Clause",
+   │      ━━━━━━━━━━━━ unmatched license allowance
+
+warning[license-not-encountered]: license was not encountered
+   ┌─ /run/media/ideator/Projects/AI Agents/Hephaestus/deny.toml:16:6
+   │
+16 │     "CC0-1.0",
+   │      ━━━━━━━ unmatched license allowance
+
+warning[license-not-encountered]: license was not encountered
+   ┌─ /run/media/ideator/Projects/AI Agents/Hephaestus/deny.toml:17:6
+   │
+17 │     "CDLA-Permissive-2.0", # permissive data license (web-pki root certs); CDLA-Sharing stays out
+   │      ━━━━━━━━━━━━━━━━━━━ unmatched license allowance
+
+warning[license-not-encountered]: license was not encountered
+   ┌─ /run/media/ideator/Projects/AI Agents/Hephaestus/deny.toml:10:6
+   │
+10 │     "ISC",
+   │      ━━━ unmatched license allowance
+
+warning[license-not-encountered]: license was not encountered
+  ┌─ /run/media/ideator/Projects/AI Agents/Hephaestus/deny.toml:8:6
+  │
+8 │     "MIT-0",
+  │      ━━━━━ unmatched license allowance
+
+warning[license-not-encountered]: license was not encountered
+   ┌─ /run/media/ideator/Projects/AI Agents/Hephaestus/deny.toml:14:6
+   │
+14 │     "Zlib",
+   │      ━━━━ unmatched license allowance
+
+licenses ok

@@ -735,3 +735,8 @@ docs/CI_REPRODUCTION_NOTE.md
 .scratch/prov-targets/spec.md
 .scratch/prov-targets/issues/01-render-guard.md
 .scratch/prov-targets/receipts/01-green.md
+deny.toml
+.scratch/license-policy/spec.md
+.scratch/license-policy/issues/01-allowlist.md
+.scratch/license-policy/receipts/01-green.md
+.scratch/license-policy/receipts/check.log

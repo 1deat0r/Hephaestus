@@ -709,3 +709,7 @@ docs/SECURITY_POSTURE_V02.md
 .scratch/security-posture/issues/01-audit-posture.md
 .scratch/security-posture/receipts/01-green.md
 .scratch/security-posture/receipts/suites.log
+docs/V1_GAPS.md
+.scratch/v1-gaps/spec.md
+.scratch/v1-gaps/issues/01-write-register.md
+.scratch/v1-gaps/receipts/01-green.md

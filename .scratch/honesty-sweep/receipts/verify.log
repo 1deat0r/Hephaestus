@@ -1,0 +1,11 @@
+=== leg 1: repro guard
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 27 filtered out; finished in 0.03s
+
+leg1 exit: 0
+=== leg 2: manifest
+{"verdict":"Valid"}
+leg2 exit: 0
+=== leg 3: format
+ticket-status: ok (147 issue files; statuses valid; open tickets declare Verify+Covers; four-level nesting holds (small<=8, micro<=6, nano<=4, per-level Status/Verify, atomic markers); scope-ID caps hold; open features cover every spec AC)
+leg3 exit: 0

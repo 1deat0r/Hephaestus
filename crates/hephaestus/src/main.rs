@@ -9,6 +9,7 @@
 //!   hephaestus fixture baseline-compare --trace <FILE> --out <FILE>
 //!   hephaestus fixture assemble-release --trace <FILE> --pilot <FILE> --baseline <FILE> --out <FILE>
 //!   hephaestus fixture freeze-campaign --trace <FILE> --pilot <FILE> --baseline <FILE> --out <FILE>
+//!   hephaestus fixture verify-manifest --manifest <FILE> --trace <FILE> --pilot <FILE> --baseline <FILE>
 //!   hephaestus fixture canary-watch
 //!   hephaestus --help
 //!
@@ -25,7 +26,7 @@ use std::io::Write;
 use std::path::PathBuf;
 use std::process::ExitCode;
 
-const USAGE: &str = "usage: hephaestus <fixture run|fixture recover> --state-dir <DIR>\n       hephaestus <fixture mission-run> --trace <FILE>\n       hephaestus <fixture pilot-batch> --trace <FILE> --out <FILE>\n       hephaestus <fixture baseline-compare> --trace <FILE> --out <FILE>\n       hephaestus <fixture assemble-release> --trace <FILE> --pilot <FILE> --baseline <FILE> --out <FILE>\n       hephaestus <fixture freeze-campaign> --trace <FILE> --pilot <FILE> --baseline <FILE> --out <FILE>\n       hephaestus <fixture canary-watch>\n       hephaestus --help\n";
+const USAGE: &str = "usage: hephaestus <fixture run|fixture recover> --state-dir <DIR>\n       hephaestus <fixture mission-run> --trace <FILE>\n       hephaestus <fixture pilot-batch> --trace <FILE> --out <FILE>\n       hephaestus <fixture baseline-compare> --trace <FILE> --out <FILE>\n       hephaestus <fixture assemble-release> --trace <FILE> --pilot <FILE> --baseline <FILE> --out <FILE>\n       hephaestus <fixture freeze-campaign> --trace <FILE> --pilot <FILE> --baseline <FILE> --out <FILE>\n       hephaestus <fixture verify-manifest> --manifest <FILE> --trace <FILE> --pilot <FILE> --baseline <FILE>\n       hephaestus <fixture canary-watch>\n       hephaestus --help\n";
 
 fn print_help() {
     println!(
@@ -45,6 +46,9 @@ fn print_help() {
          \x20       --baseline <FILE> --out <FILE>   gate and render the v1 dossier\n\
          \x20   fixture freeze-campaign --trace <FILE> --pilot <FILE>\n\
          \x20       --baseline <FILE> --out <FILE>   freeze campaign inputs\n\
+         \x20   fixture verify-manifest --manifest <FILE> --trace <FILE>
+\
+         \x20       --pilot <FILE> --baseline <FILE>   verify a frozen manifest\n\
          \x20   fixture canary-watch                monitor the fixture deployment over a\n\
          \x20                                       fixed observation stream and print\n\
          \x20                                       the stop outcome + rollback receipt\n\n\
@@ -206,6 +210,7 @@ fn main() -> ExitCode {
             Some("baseline-compare") => baseline_compare(&rest[1..]),
             Some("assemble-release") => assemble_release_cmd(&rest[1..]),
             Some("freeze-campaign") => freeze_campaign_cmd(&rest[1..]),
+            Some("verify-manifest") => verify_manifest_cmd(&rest[1..]),
             _ => usage_error(),
         },
         _ => usage_error(),
@@ -575,5 +580,63 @@ fn freeze_campaign_cmd(rest: &[String]) -> ExitCode {
             );
             ExitCode::SUCCESS
         }
+    }
+}
+
+/// `fixture verify-manifest --manifest <FILE> --trace <FILE> --pilot
+/// <FILE> --baseline <FILE>`: re-verify a frozen manifest against
+/// live bytes and print the typed verdict (frozen-campaign 03).
+/// Exit 0 on Valid, exit 1 on any stale verdict or unreadable input.
+fn verify_manifest_cmd(rest: &[String]) -> ExitCode {
+    let mut manifest: Option<&str> = None;
+    let mut trace: Option<&str> = None;
+    let mut pilot: Option<&str> = None;
+    let mut baseline: Option<&str> = None;
+    let mut args = rest.iter();
+    while let Some(flag) = args.next() {
+        let value = match args.next() {
+            Some(v) if !v.is_empty() && !v.starts_with('-') => v,
+            _ => return usage_error(),
+        };
+        match flag.as_str() {
+            "--manifest" if manifest.is_none() => manifest = Some(value),
+            "--trace" if trace.is_none() => trace = Some(value),
+            "--pilot" if pilot.is_none() => pilot = Some(value),
+            "--baseline" if baseline.is_none() => baseline = Some(value),
+            _ => return usage_error(),
+        }
+    }
+    let (Some(manifest), Some(trace), Some(pilot), Some(baseline)) =
+        (manifest, trace, pilot, baseline)
+    else {
+        return usage_error();
+    };
+    let read = |p: &str| match std::fs::read(p) {
+        Err(e) => {
+            let _ = writeln!(std::io::stderr(), "error: read {p}: {e}");
+            None
+        }
+        Ok(b) => Some(b),
+    };
+    let (Some(manifest_bytes), Some(trace_bytes), Some(pilot_bytes), Some(baseline_bytes)) =
+        (read(manifest), read(trace), read(pilot), read(baseline))
+    else {
+        return ExitCode::from(1);
+    };
+    let parsed: hephaestus::campaign::FrozenManifest = match serde_json::from_slice(&manifest_bytes)
+    {
+        Err(e) => {
+            let _ = writeln!(std::io::stderr(), "error: manifest parse: {e}");
+            return ExitCode::from(1);
+        }
+        Ok(m) => m,
+    };
+    let verdict =
+        hephaestus::campaign::verify_manifest(&parsed, &trace_bytes, &pilot_bytes, &baseline_bytes);
+    println!("{}", serde_json::json!({ "verdict": verdict }));
+    if verdict == hephaestus::campaign::ManifestVerdict::Valid {
+        ExitCode::SUCCESS
+    } else {
+        ExitCode::from(1)
     }
 }

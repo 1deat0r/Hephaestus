@@ -329,7 +329,7 @@ pub fn render_frozen_manifest(manifest: &FrozenManifest) -> Result<String, Strin
 /// Re-verification verdict for a frozen manifest (frozen-campaign
 /// 02). Anything but Valid refuses the manifest as stale; stale is
 /// never valid. Version binding means a code change re-freezes.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub enum ManifestVerdict {
     Valid,
     /// A live digest differs from the frozen one; the field is named.

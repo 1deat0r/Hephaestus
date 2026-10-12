@@ -702,3 +702,5 @@ docs/CAMPAIGN_MANIFEST.json
 crates/hephaestus/tests/campaign_manifest.rs
 .scratch/frozen-campaign/issues/02-verify-manifest.md
 .scratch/frozen-campaign/receipts/02-green.md
+.scratch/frozen-campaign/issues/03-verify-command.md
+.scratch/frozen-campaign/receipts/03-green.md

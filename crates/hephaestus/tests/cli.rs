@@ -104,6 +104,7 @@ fn help_documents_both_subcommands() {
     assert!(text.contains("fixture pilot-batch"), "{text}");
     assert!(text.contains("fixture assemble-release"), "{text}");
     assert!(text.contains("fixture freeze-campaign"), "{text}");
+    assert!(text.contains("fixture verify-manifest"), "{text}");
     assert!(text.contains("fixture canary-watch"), "{text}");
 }
 
@@ -1032,5 +1033,60 @@ fn freeze_manifest_digests_match_input_bytes() {
     assert_eq!(manifest["pilot_report_digest"], sha(&pilot).as_str());
     assert_eq!(manifest["baseline_report_digest"], sha(&baseline).as_str());
     assert_eq!(manifest["frozen"]["trace_sha256"], sha(&trace).as_str());
+    let _ = std::fs::remove_dir_all(&dir);
+}
+
+#[test]
+fn verify_manifest_cmd() {
+    // frozen-campaign 03 S1: verdicts surface end to end.
+    let dir = temp_dir("verify-manifest");
+    // Valid path: the committed manifest against live inputs.
+    let run = bin()
+        .args(["fixture", "verify-manifest", "--manifest"])
+        .arg(repo_file("docs/CAMPAIGN_MANIFEST.json"))
+        .arg("--trace")
+        .arg(trace_fixture())
+        .arg("--pilot")
+        .arg(repo_file("docs/PILOT_CAMPAIGN_REPORT.md"))
+        .arg("--baseline")
+        .arg(repo_file("docs/BASELINE_COMPARISON_REPORT.md"))
+        .output()
+        .expect("spawn");
+    assert!(
+        run.status.success(),
+        "verify failed: {}",
+        String::from_utf8_lossy(&run.stderr)
+    );
+    let verdict: serde_json::Value = serde_json::from_slice(&run.stdout).expect("verdict json");
+    assert_eq!(verdict["verdict"], "Valid");
+    // Stale path: a tampered trace refuses with the field named.
+    let mut tampered = std::fs::read(trace_fixture()).expect("trace");
+    tampered.push(b'x');
+    let bad_trace = dir.join("bad-trace.log");
+    std::fs::write(&bad_trace, tampered).expect("write");
+    let run = bin()
+        .args(["fixture", "verify-manifest", "--manifest"])
+        .arg(repo_file("docs/CAMPAIGN_MANIFEST.json"))
+        .arg("--trace")
+        .arg(&bad_trace)
+        .arg("--pilot")
+        .arg(repo_file("docs/PILOT_CAMPAIGN_REPORT.md"))
+        .arg("--baseline")
+        .arg(repo_file("docs/BASELINE_COMPARISON_REPORT.md"))
+        .output()
+        .expect("spawn");
+    assert_eq!(run.status.code(), Some(1));
+    let verdict: serde_json::Value = serde_json::from_slice(&run.stdout).expect("verdict json");
+    assert_eq!(
+        verdict["verdict"]["DigestMismatch"]["field"],
+        "trace_sha256"
+    );
+    // Missing --manifest: usage error.
+    let run = bin()
+        .args(["fixture", "verify-manifest", "--trace"])
+        .arg(trace_fixture())
+        .output()
+        .expect("spawn");
+    assert_eq!(run.status.code(), Some(2));
     let _ = std::fs::remove_dir_all(&dir);
 }

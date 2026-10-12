@@ -1,0 +1,131 @@
+cargo audit
+    Fetching advisory database from `https://github.com/RustSec/advisory-db.git`
+      Loaded 1296 security advisories (from /home/ideator/.cargo/advisory-db)
+    Updating crates.io index
+    Scanning Cargo.lock for vulnerabilities (221 crate dependencies)
+Crate:     yoke-derive
+Version:   0.8.3
+Warning:   yanked
+
+warning: 1 allowed warning found
+cargo deny check advisories licenses bans sources
+warning[license-exception-not-encountered]: license exception was not encountered
+   ┌─ /run/media/ideator/Projects/AI Agents/Hephaestus/deny.toml:27:9
+   │
+27 │ name = "bytecount"
+   │         ━━━━━━━━━ unmatched license exception
+
+warning[license-exception-not-encountered]: license exception was not encountered
+   ┌─ /run/media/ideator/Projects/AI Agents/Hephaestus/deny.toml:32:9
+   │
+32 │ name = "fnv"
+   │         ━━━ unmatched license exception
+
+warning[license-exception-not-encountered]: license exception was not encountered
+   ┌─ /run/media/ideator/Projects/AI Agents/Hephaestus/deny.toml:37:9
+   │
+37 │ name = "num-cmp"
+   │         ━━━━━━━ unmatched license exception
+
+warning[license-exception-not-encountered]: license exception was not encountered
+   ┌─ /run/media/ideator/Projects/AI Agents/Hephaestus/deny.toml:42:9
+   │
+42 │ name = "same-file"
+   │         ━━━━━━━━━ unmatched license exception
+
+warning[license-exception-not-encountered]: license exception was not encountered
+   ┌─ /run/media/ideator/Projects/AI Agents/Hephaestus/deny.toml:47:9
+   │
+47 │ name = "version_check"
+   │         ━━━━━━━━━━━━━ unmatched license exception
+
+warning[license-exception-not-encountered]: license exception was not encountered
+   ┌─ /run/media/ideator/Projects/AI Agents/Hephaestus/deny.toml:52:9
+   │
+52 │ name = "walkdir"
+   │         ━━━━━━━ unmatched license exception
+
+warning[license-not-encountered]: license was not encountered
+   ┌─ /run/media/ideator/Projects/AI Agents/Hephaestus/deny.toml:11:6
+   │
+11 │     "BSD-2-Clause",
+   │      ━━━━━━━━━━━━ unmatched license allowance
+
+warning[license-not-encountered]: license was not encountered
+   ┌─ /run/media/ideator/Projects/AI Agents/Hephaestus/deny.toml:12:6
+   │
+12 │     "BSD-3-Clause",
+   │      ━━━━━━━━━━━━ unmatched license allowance
+
+warning[license-not-encountered]: license was not encountered
+   ┌─ /run/media/ideator/Projects/AI Agents/Hephaestus/deny.toml:16:6
+   │
+16 │     "CC0-1.0",
+   │      ━━━━━━━ unmatched license allowance
+
+warning[license-not-encountered]: license was not encountered
+   ┌─ /run/media/ideator/Projects/AI Agents/Hephaestus/deny.toml:17:6
+   │
+17 │     "CDLA-Permissive-2.0", # permissive data license (web-pki root certs); CDLA-Sharing stays out
+   │      ━━━━━━━━━━━━━━━━━━━ unmatched license allowance
+
+warning[license-not-encountered]: license was not encountered
+   ┌─ /run/media/ideator/Projects/AI Agents/Hephaestus/deny.toml:10:6
+   │
+10 │     "ISC",
+   │      ━━━ unmatched license allowance
+
+warning[license-not-encountered]: license was not encountered
+  ┌─ /run/media/ideator/Projects/AI Agents/Hephaestus/deny.toml:8:6
+  │
+8 │     "MIT-0",
+  │      ━━━━━ unmatched license allowance
+
+warning[license-not-encountered]: license was not encountered
+   ┌─ /run/media/ideator/Projects/AI Agents/Hephaestus/deny.toml:14:6
+   │
+14 │     "Zlib",
+   │      ━━━━ unmatched license allowance
+
+warning[yanked]: detected yanked crate (try `cargo update -p yoke-derive`)
+    ┌─ /run/media/ideator/Projects/AI Agents/Hephaestus/Cargo.lock:199:1
+    │
+199 │ yoke-derive 0.8.3 registry+https://github.com/rust-lang/crates.io-index
+    │ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ yanked version
+    │
+    ├ yoke-derive v0.8.3
+      └── yoke v0.8.3
+          ├── icu_collections v2.3.0
+          │   ├── icu_normalizer v2.3.0
+          │   │   └── idna_adapter v1.2.2
+          │   │       └── idna v1.1.0
+          │   │           ├── jsonschema v0.58.2
+          │   │           │   └── (dev) hephaestus v0.2.0
+          │   │           └── url v2.5.8
+          │   │               ├── reqwest v0.13.5
+          │   │               │   └── jsonschema v0.58.2 (*)
+          │   │               └── tower-http v0.6.11
+          │   │                   └── reqwest v0.13.5 (*)
+          │   └── icu_properties v2.3.0
+          │       └── idna_adapter v1.2.2 (*)
+          ├── icu_provider v2.3.1
+          │   ├── icu_normalizer v2.3.0 (*)
+          │   └── icu_properties v2.3.0 (*)
+          ├── zerotrie v0.2.5
+          │   ├── icu_properties v2.3.0 (*)
+          │   └── icu_provider v2.3.1 (*)
+          └── zerovec v0.11.8
+              ├── icu_collections v2.3.0 (*)
+              ├── icu_locale_core v2.3.0
+              │   ├── icu_properties v2.3.0 (*)
+              │   └── icu_provider v2.3.1 (*)
+              ├── icu_normalizer v2.3.0 (*)
+              ├── icu_properties v2.3.0 (*)
+              ├── icu_provider v2.3.1 (*)
+              ├── potential_utf v0.1.6
+              │   └── icu_collections v2.3.0 (*)
+              └── tinystr v0.8.4
+                  └── icu_locale_core v2.3.0 (*)
+
+advisories ok, bans ok, licenses ok, sources ok
+exit: 0

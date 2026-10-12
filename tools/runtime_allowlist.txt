@@ -740,3 +740,7 @@ deny.toml
 .scratch/license-policy/issues/01-allowlist.md
 .scratch/license-policy/receipts/01-green.md
 .scratch/license-policy/receipts/check.log
+.scratch/supply-ci/spec.md
+.scratch/supply-ci/issues/01-wire-ci.md
+.scratch/supply-ci/receipts/01-green.md
+.scratch/supply-ci/receipts/check.log

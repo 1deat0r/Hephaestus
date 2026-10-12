@@ -5,7 +5,7 @@
 PY := .venv/bin/python
 CARGO := cargo
 
-.PHONY: ci ci-fast fmt fmt-check clippy test-rust test-py verify test-package gen-check conflict-staged conflict-tree manifest-check req-coverage about-check about-live about-sync scheduled-check md-links readme-fences report-unreferenced gate-seal seal hooks hooks-check setup clean doc-check
+.PHONY: ci ci-fast fmt fmt-check clippy test-rust test-py verify test-package gen-check conflict-staged conflict-tree manifest-check req-coverage about-check about-live about-sync scheduled-check md-links readme-fences report-unreferenced gate-seal seal hooks hooks-check setup clean doc-check supply-check
 
 ## Run every environment-independent gate (mirrors CI; the single gate registry).
 ci: fmt-check clippy test-rust test-py conflict-tree manifest-check req-coverage about-check ticket-status md-links readme-fences report-unreferenced gate-seal ci-fast hooks-check
@@ -20,6 +20,13 @@ ci-fast: gen-check verify test-package conflict-staged manifest-check
 ## step 10); the remote docs job remains the automatic backstop (ADR-025).
 doc-check:
 	RUSTDOCFLAGS="-D warnings" cargo doc --workspace --no-deps
+
+## Supply-chain posture (cargo audit + cargo deny). Deliberately NOT
+## part of `make ci`: tool installs and advisory-db fetch belong on
+## CI runners, and `make ci` membership stays frozen.
+supply-check:
+	cargo audit
+	cargo deny check advisories licenses bans sources
 
 fmt:
 	$(CARGO) fmt --all

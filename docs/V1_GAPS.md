@@ -18,7 +18,7 @@ in the row).
 | 7 | Live adversarial testing unrun | owner | yes | test scope + target | production security posture | posture untested 1 |
 | 8 | Supply-chain audit beyond lockfile | agent | no | audit landed (supply-chain ticket 01); deny.toml policy still open | security gates completeness | posture untested 4 |
 | 9 | Provisional targets unmeasured | agent | partial | agent: mark stays-provisional; owner: campaign measures | any speed/novelty claim | release packet ProvisionalTarget claims |
-| 10 | Sandbox CI flake cause unknown | agent | no | repeated runs / runner data; no ticket exists yet | CI trust (named, not hidden) | posture audit flake note |
+| 10 | Sandbox CI flake cause unknown | agent | no | reproduction attempt inconclusive (flake-hunt ticket 01); fix needs own ticket, none exists yet | CI trust (named, not hidden) | posture audit flake note |
 
 ## Resolved (evidence linked)
 

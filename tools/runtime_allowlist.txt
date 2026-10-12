@@ -717,3 +717,9 @@ docs/SUPPLY_CHAIN_AUDIT.md
 .scratch/supply-chain/spec.md
 .scratch/supply-chain/issues/01-run-scans.md
 .scratch/supply-chain/receipts/01-green.md
+docs/SANDBOX_FLAKE_NOTE.md
+.scratch/flake-hunt/spec.md
+.scratch/flake-hunt/issues/01-characterize.md
+.scratch/flake-hunt/receipts/solo.log
+.scratch/flake-hunt/receipts/loaded.log
+.scratch/flake-hunt/receipts/01-green.md

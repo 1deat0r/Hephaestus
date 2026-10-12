@@ -1,0 +1,16 @@
+### solo series (no added load)
+--- solo run 1 load_before: 1.97 2.93 4.08 5/3143 2423776
+test result: ok. 17 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.07s
+load_after: 1.97 2.93 4.08 2/3062 2423973
+--- solo run 2 load_before: 1.97 2.93 4.08 3/3062 2423974
+test result: ok. 17 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.06s
+load_after: 1.97 2.93 4.08 6/3047 2424279
+--- solo run 3 load_before: 1.97 2.93 4.08 7/3047 2424280
+test result: ok. 17 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.09s
+load_after: 2.22 2.96 4.09 3/3125 2424582
+--- solo run 4 load_before: 2.22 2.96 4.09 3/3125 2424583
+test result: ok. 17 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.06s
+load_after: 2.22 2.96 4.09 4/3133 2424789
+--- solo run 5 load_before: 2.22 2.96 4.09 3/3133 2424790
+test result: ok. 17 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.06s
+load_after: 2.22 2.96 4.09 3/3134 2424993

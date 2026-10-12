@@ -27,5 +27,10 @@ included).
 
 ## Limitations
 
-Pinned installs cost CI minutes. The job has not executed
-on CI yet; first push proves it.
+Pinned installs cost CI minutes.
+
+## CI proof (2026-10-12 UTC)
+
+Run 38202673997 (push of this ticket): all jobs success,
+including the new `supply` job. The receipt's earlier
+unverified line now reads verified.
